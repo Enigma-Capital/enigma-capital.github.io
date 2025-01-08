@@ -1,26 +1,130 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Enigma Capital</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enigma Capital: Coming Soon</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #0e0e10, #1a1a1f);
+      color: #e0e0e0;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .header {
       text-align: center;
-      padding-top: 50px;
+      margin-bottom: 50px;
     }
-    h1 {
-      font-size: 36px;
+    .header h1 {
+      font-size: 3.5rem;
+      color: #76c7ff;
+      text-shadow: 0 0 10px #76c7ff, 0 0 30px #76c7ff;
+      margin: 0;
+      animation: flicker 1.5s infinite alternate;
+    }
+    .header p {
+      font-size: 1.2rem;
+      color: #b3b3b3;
+      margin: 10px 0 0;
+      max-width: 600px;
+    }
+    .content {
+      text-align: center;
+    }
+    .content h2 {
+      font-size: 2.5rem;
+      color: #ff5c8d;
       margin-bottom: 20px;
+      text-shadow: 0 0 8px #ff5c8d, 0 0 20px #ff5c8d;
     }
-    p {
-      font-size: 18px;
-      margin-bottom: 30px;
+    .content p {
+      font-size: 1rem;
+      line-height: 1.6;
+      color: #cccccc;
+      max-width: 600px;
+      margin: 0 auto 20px;
+    }
+    .coming-soon {
+      font-size: 1.8rem;
+      color: #76c7ff;
+      text-shadow: 0 0 8px #76c7ff, 0 0 16px #76c7ff;
+      margin-top: 40px;
+      animation: pulse 2.5s infinite;
+    }
+    .login-button {
+      margin-top: 40px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      color: #1a1a1f;
+      background: linear-gradient(135deg, #76c7ff, #ff5c8d);
+      border: none;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(118,199,255,0.6), 0 2px 8px rgba(255,92,141,0.6);
+      cursor: pointer;
+      text-shadow: 0 0 6px #1a1a1f;
+      transition: all 0.4s;
+    }
+    .login-button:hover {
+      background: linear-gradient(135deg, #5aaee0, #e85d89);
+      box-shadow: 0 6px 20px rgba(118,199,255,0.8), 0 3px 12px rgba(255,92,141,0.8);
+      transform: scale(1.05);
+    }
+    @keyframes flicker {
+      0% { opacity: 1; }
+      50% { opacity: 0.8; }
+      100% { opacity: 1; }
+    }
+    @keyframes pulse {
+      0%, 100% { text-shadow: 0 0 8px #76c7ff, 0 0 16px #76c7ff; }
+      50% { text-shadow: 0 0 16px #76c7ff, 0 0 32px #76c7ff; }
+    }
+    .shader {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      background: radial-gradient(circle, rgba(118,199,255,0.1), rgba(0,0,0,0.7) 70%);
+      mix-blend-mode: overlay;
+    }
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 2.5rem;
+      }
+      .content h2 {
+        font-size: 2rem;
+      }
+      .content p {
+        font-size: 0.9rem;
+      }
+      .coming-soon {
+        font-size: 1.5rem;
+      }
+      .login-button {
+        font-size: 0.9rem;
+      }
     }
   </style>
 </head>
 <body>
-  <h1>Welcome to Enigma Capital</h1>
-  <p>This is the homepage of your Enigma Capital organization.</p>
-  <p>You can start collaborating with your team and building your projects here.</p>
+  <div class="shader"></div>
+  <header class="header">
+    <h1>Enigma Capital</h1>
+    <p>Redefining possibilities in financial technology. Stay tuned.</p>
+  </header>
+  <main class="content">
+    <h2>Innovation in Progress</h2>
+    <p>Our journey towards revolutionizing financial systems is underway. Be part of the transformation.</p>
+    <div class="coming-soon">Coming Soon</div>
+    <button class="login-button" onclick="location.href='lol.html'">Member Login</button>
+  </main>
 </body>
 </html>
