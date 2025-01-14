@@ -3,30 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enigma - Coming Soon</title>
+    <title>Enigma Capital - Coming Soon</title>
     <style>
         body {
             margin: 0;
             padding: 0;
-            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            background-size: 400% 400%;
             color: #e4e4e4;
-            font-family: 'Courier New', Courier, monospace;
+            font-family: 'Roboto', sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             overflow: hidden;
+            animation: backgroundShift 10s ease-in-out infinite;
         }
         .container {
             text-align: center;
-            max-width: 700px;
-            padding: 20px;
+            max-width: 800px;
+            padding: 30px;
             animation: fadeIn 2s ease-in-out;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
         h1 {
-            font-size: 3.5em;
-            font: sans-serif;
-            background: linear-gradient(90deg, #00f260, #0575e6);
+            font-size: 4em;
+            background: linear-gradient(90deg, #ff8c00, #ff0080);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             animation: glow 1.5s infinite alternate;
@@ -34,36 +38,41 @@
         p {
             font-size: 1.2em;
             margin: 20px 0;
-            opacity: 0.8;
+            line-height: 1.6;
+            opacity: 0.9;
             animation: slideIn 1.5s ease-in-out;
         }
         .button-container {
             margin-top: 40px;
         }
         .btn {
-            background: #1a759f;
+            background: linear-gradient(90deg, #ff6f61, #ff9f1c);
             color: white;
-            padding: 10px 20px;
-            font-size: 1.1em;
+            padding: 12px 25px;
+            font-size: 1.2em;
             border: none;
-            border-radius: 5px;
+            border-radius: 30px;
             cursor: pointer;
             text-decoration: none;
-            transition: background 0.3s, transform 0.2s;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
             animation: buttonPop 1.5s ease-in-out;
         }
         .btn:hover {
-            background: #00b4d8;
-            transform: scale(1.05);
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(255, 111, 97, 0.5);
         }
         .btn:active {
-            background: #0077b6;
+            transform: scale(0.98);
+            box-shadow: none;
         }
         footer {
             margin-top: 50px;
             font-size: 0.9em;
-            opacity: 0.6;
+            opacity: 0.7;
             animation: fadeIn 3s ease-in-out;
+        }
+        .caret {
+            animation: blink 1s steps(1) infinite;
         }
 
         @keyframes fadeIn {
@@ -77,10 +86,10 @@
 
         @keyframes glow {
             from {
-                text-shadow: 0 0 5px #00f260, 0 0 10px #0575e6;
+                text-shadow: 0 0 10px #ff8c00, 0 0 20px #ff0080;
             }
             to {
-                text-shadow: 0 0 20px #00f260, 0 0 30px #0575e6;
+                text-shadow: 0 0 20px #ff8c00, 0 0 40px #ff0080;
             }
         }
 
@@ -103,21 +112,39 @@
                 transform: scale(1);
             }
         }
+
+        @keyframes backgroundShift {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: 0;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>ENIGMA CAPITAL</h1>
-        <p>Where next-generation asset management meets the power of cutting-edge computational models. Trading beyond the limits.</p>
+        <p>Redefining asset management with cutting-edge computational models and transformative strategies.</p>
 
-        <p class="glitch-effect">Initiating the future... <span class="caret">|</span></p>
+        <p class="glitch-effect">Launching the future of trading... <span class="caret">|</span></p>
 
         <div class="button-container">
-            <a href="#" class="btn">Member? Login Here</a>
+            <a href="#" class="btn">Member Access</a>
         </div>
 
         <footer>
-            <p>Coming soon. Stay tuned for the revolution.</p>
+            <p>&copy; 2025 Enigma Capital. Revolutionizing the financial landscape. Stay connected.</p>
         </footer>
     </div>
 </body>
