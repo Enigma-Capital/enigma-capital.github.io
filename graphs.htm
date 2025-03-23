@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mmmh chart</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            background: #121212;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+        }
+        h1 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #00ffcc;
+        }
+        canvas {
+            max-width: 90%;
+            max-height: 80vh;
+            background: #1e1e1e;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <h1>📈 AVA v/s IBIT</h1>
+    <canvas id="myChart"></canvas>
+    <script>
+        async function fetchData() {
+            try {
+                const response = await fetch("https://extra-backends.onrender.com/get_data");
+                const data = await response.json();
+
+                const labels = Object.values(data.DATETIME).map(date => new Date(date));
+                const ibitData = Object.values(data.IBIT);
+                const profitData = Object.values(data["Profit%"]);
+
+                const ctx = document.getElementById('myChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'AVA cumulative returns (%)',
+                                data: profitData,
+                                borderColor: '#00ffcc',
+                                backgroundColor: 'rgba(0, 255, 204, 0.2)',
+                                borderWidth: 2,
+                                pointRadius: 5,
+                                pointHoverRadius: 7,
+                                tension: 0.4
+                            },
+                            {
+                                label: 'IBIT cumulative returns (%)',
+                                data: ibitData,
+                                borderColor: '#ff5733',
+                                backgroundColor: 'rgba(255, 87, 51, 0.2)',
+                                borderWidth: 2,
+                                pointRadius: 5,
+                                pointHoverRadius: 7,
+                                tension: 0.4
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: {
+                                type: 'time',
+                                time: {
+                                    unit: 'day'
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Date',
+                                    color: '#aaa'
+                                },
+                                grid: {
+                                    color: 'rgba(255,255,255,0.1)'
+                                },
+                                ticks: {
+                                    color: '#fff'
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Values',
+                                    color: '#aaa'
+                                },
+                                grid: {
+                                    color: 'rgba(255,255,255,0.1)'
+                                },
+                                ticks: {
+                                    color: '#fff'
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                labels: {
+                                    color: '#fff'
+                                }
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(50, 50, 50, 0.8)',
+                                titleColor: '#00ffcc',
+                                bodyColor: '#fff',
+                                borderWidth: 1,
+                                borderColor: '#00ffcc'
+                            }
+                        },
+                        animation: {
+                            duration: 1000,
+                            easing: 'easeInOutQuart'
+                        }
+                    }
+                });
+
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        }
+
+        fetchData();
+    </script>
+</body>
+</html>
