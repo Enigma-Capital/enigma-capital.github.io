@@ -1,192 +1,123 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>AVA vs IBIT vs BTC Performance</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      background: #0f0f0f;
-      color: #f0f0f0;
-      font-family: "Segoe UI", sans-serif;
-      padding: 40px 20px;
-      text-align: center;
-    }
-
-    h1 {
-      font-size: 2rem;
-      margin-bottom: 15px;
-      color: #00ffe7;
-      text-shadow: 0 0 8px rgba(0, 255, 231, 0.4);
-    }
-
-    .description {
-      font-size: 1rem;
-      max-width: 700px;
-      margin: 0 auto 40px;
-      color: #ccc;
-      line-height: 1.6;
-    }
-
-    canvas {
-      max-width: 100%;
-      height: 70vh;
-      background: #181818;
-      border-radius: 12px;
-      box-shadow: 0 0 30px rgba(0, 255, 231, 0.08);
-      padding: 16px;
-    }
-
-    #preloader {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: #0f0f0f;
-      color: #00ffe7;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 999;
-      font-size: 18px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AVA v/s IBIT v/s BTCUSDT:BINANCE % Returns</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="5602ec2b-35ca-418d-8899-53ed35d6853f"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            background: #121212;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+        }
+        h1 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #00ffcc;
+        }
+        .ibit {
+            color: #ff5733;
+        }
+        .btcusdt {
+            color: #FFD700;
+        }
+        .vs{
+            color:#FFFFFF
+        }
+        canvas {
+            max-width: 90%;
+            max-height: 80vh;
+            background: #1e1e1e;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.5);
+        }
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #121212;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: #00ffcc;
+        }
+    </style>
 </head>
 <body>
-  <div id="preloader">Loading chart...</div>
+    <div id="preloader">Loading data...</div>
+    <h1>📈 AVA <span class='vs'>v/s</span> <span class="ibit">IBIT</span> <span class='vs'>v/s</span> <span class="btcusdt">BTC/USDT</span></h1>
+    <canvas id="myChart"></canvas>
+    
+    <script>
+        const urls = [
+            "https://top-sought-sunbird.ngrok-free.app/get_data",
+            "https://extra-backends.onrender.com/get_data"
+        ];
 
-  <h1>📈 AVA vs IBIT vs Bitcoin: Who Performed Better?</h1>
-  <p class="description">
-    This chart compares how AVA, IBIT, and BTC/USDT (Bitcoin) performed over time using 
-    <strong>cumulative returns</strong>. It shows which investment grew (or fell) more,
-    from the same starting point.
-    <br><br>
-    🟢 AVA | 🔴 IBIT | 🟡 BTC/USDT
-  </p>
+        async function fetchData(urlIndex = 0) {
+            try {
+                const response = await fetch(urls[urlIndex], {
+                    headers: { "ngrok-skip-browser-warning": "true" }
+                });
 
-  <canvas id="myChart"></canvas>
+                if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+                
+                const data = await response.json();
+                document.getElementById("preloader").style.display = "none";
 
-  <script>
-    const urls = [
-      "https://top-sought-sunbird.ngrok-free.app/get_data",
-      "https://extra-backends.onrender.com/get_data"
-    ];
+                const labels = Object.values(data.DATETIME).map(date => new Date(date));
+                const ibitData = Object.values(data.IBIT);
+                const profitData = Object.values(data["Profit%"]);
+                const btcusdtData = Object.values(data["BTCUSDT"]);
 
-    async function fetchData(urlIndex = 0) {
-      try {
-        const response = await fetch(urls[urlIndex], {
-          headers: { "ngrok-skip-browser-warning": "true" }
-        });
-
-        if (!response.ok) throw new Error("Failed to fetch data");
-
-        const data = await response.json();
-        document.getElementById("preloader").style.display = "none";
-
-        const labels = Object.values(data.DATETIME).map(date => new Date(date));
-        const ibitData = Object.values(data.IBIT);
-        const profitData = Object.values(data["Profit%"]);
-        const btcusdtData = Object.values(data["BTCUSDT"]);
-
-        const ctx = document.getElementById("myChart").getContext("2d");
-        new Chart(ctx, {
-          type: "line",
-          data: {
-            labels: labels,
-            datasets: [
-              {
-                label: "AVA",
-                data: profitData,
-                borderColor: "#00ffe7",
-                backgroundColor: "rgba(0, 255, 231, 0.1)",
-                pointRadius: 2,
-                borderWidth: 2,
-                tension: 0.4,
-              },
-              {
-                label: "IBIT",
-                data: ibitData,
-                borderColor: "#ff6b6b",
-                backgroundColor: "rgba(255, 107, 107, 0.1)",
-                pointRadius: 2,
-                borderWidth: 2,
-                tension: 0.4,
-              },
-              {
-                label: "BTC/USDT",
-                data: btcusdtData,
-                borderColor: "#ffd700",
-                backgroundColor: "rgba(255, 215, 0, 0.1)",
-                pointRadius: 2,
-                borderWidth: 2,
-                tension: 0.4,
-              }
-            ]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-              x: {
-                type: 'time',
-                time: { unit: 'day' },
-                ticks: { color: '#aaa' },
-                grid: { color: 'rgba(255,255,255,0.05)' },
-                title: {
-                  display: true,
-                  text: "Date",
-                  color: "#ccc",
-                  font: { size: 14 }
+                const ctx = document.getElementById('myChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            { label: 'AVA cumulative returns (%)', data: profitData, borderColor: '#00ffcc', backgroundColor: 'rgba(0, 255, 204, 0.2)', borderWidth: 2, tension: 0.4 },
+                            { label: 'IBIT cumulative returns (%)', data: ibitData, borderColor: '#ff5733', backgroundColor: 'rgba(255, 87, 51, 0.2)', borderWidth: 2, tension: 0.4 },
+                            { label: 'BTCUSDT cumulative returns (%)', data: btcusdtData, borderColor: '#FFD700', backgroundColor: 'rgba(255, 215, 0, 0.2)', borderWidth: 2, tension: 0.4 }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: { x: { type: 'time', time: { unit: 'day' }, ticks: { color: '#fff' } }, y: { ticks: { color: '#fff' } } },
+                        plugins: { legend: { labels: { color: '#fff' } } }
+                    }
+                });
+            } catch (error) {
+                console.error(`Error with ${urls[urlIndex]}:`, error);
+                if (urlIndex + 1 < urls.length) {
+                    console.log("Switching to alternate URL...");
+                    fetchData(urlIndex + 1);
+                } else {
+                    document.getElementById("preloader").innerText = "Failed to load data. Try again later.";
                 }
-              },
-              y: {
-                ticks: { color: '#aaa' },
-                grid: { color: 'rgba(255,255,255,0.05)' },
-                title: {
-                  display: true,
-                  text: "Cumulative Returns (%)",
-                  color: "#ccc",
-                  font: { size: 14 }
-                }
-              }
-            },
-            plugins: {
-              legend: {
-                labels: {
-                  color: "#ccc",
-                  font: { size: 14 }
-                }
-              },
-              tooltip: {
-                callbacks: {
-                  label: ctx => `${ctx.dataset.label}: ${ctx.parsed.y.toFixed(2)}%`
-                }
-              },
-              title: {
-                display: false
-              }
             }
-          }
-        });
-
-      } catch (error) {
-        console.error(error);
-        if (urlIndex + 1 < urls.length) {
-          fetchData(urlIndex + 1);
-        } else {
-          document.getElementById("preloader").innerText = "Failed to load data.";
         }
-      }
-    }
 
-    fetchData();
-  </script>
+        fetchData();
+    </script>
 </body>
 </html>
