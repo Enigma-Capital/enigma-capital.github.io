@@ -63,7 +63,10 @@
 </head>
 <body>
     <div id="preloader">Loading data...</div>
-    <h1>📈 AVA <span class='vs'>v/s</span> <span class="ibit">IBIT</span> <span class='vs'>v/s</span> <span class="btcusdt">BTC/USDT</span></h1>
+
+    <!-- ✅ Updated Header -->
+    <h1>📊 % Change in AVA, IBIT, and BTC/USDT Over Trading Days</h1>
+
     <canvas id="myChart"></canvas>
     
     <script>
@@ -102,8 +105,31 @@
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        scales: { x: { type: 'time', time: { unit: 'day' }, ticks: { color: '#fff' } }, y: { ticks: { color: '#fff' } } },
-                        plugins: { legend: { labels: { color: '#fff' } } }
+                        scales: {
+                            x: {
+                                type: 'time',
+                                time: { unit: 'day' },
+                                ticks: { color: '#fff' },
+                                title: {
+                                    display: true,
+                                    text: 'Trading Days',
+                                    color: '#fff',
+                                    font: { size: 14 }
+                                }
+                            },
+                            y: {
+                                ticks: { color: '#fff' },
+                                title: {
+                                    display: true,
+                                    text: '% Change',
+                                    color: '#fff',
+                                    font: { size: 14 }
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: { labels: { color: '#fff' } }
+                        }
                     }
                 });
             } catch (error) {
