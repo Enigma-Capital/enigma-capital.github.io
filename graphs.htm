@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AVA v/s IBIT v/s BTCUSDT:BINANCE % Returns</title>
+    <title>Compare Returns: AVA vs IBIT vs Bitcoin</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script defer src="https://cloud.umami.is/script.js" data-website-id="5602ec2b-35ca-418d-8899-53ed35d6853f"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
@@ -20,27 +20,28 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            height: 100vh;
+            justify-content: flex-start;
+            min-height: 100vh;
+            padding: 40px 20px;
             text-align: center;
         }
         h1 {
-            margin-bottom: 20px;
-            font-size: 24px;
+            margin-bottom: 10px;
+            font-size: 28px;
             color: #00ffcc;
         }
-        .ibit {
-            color: #ff5733;
+        p.description {
+            margin-bottom: 30px;
+            font-size: 16px;
+            max-width: 700px;
+            color: #cccccc;
         }
-        .btcusdt {
-            color: #FFD700;
-        }
-        .vs{
-            color:#FFFFFF
-        }
+        .ibit { color: #ff5733; }
+        .btcusdt { color: #FFD700; }
+        .vs { color: #FFFFFF; }
         canvas {
-            max-width: 90%;
-            max-height: 80vh;
+            max-width: 100%;
+            max-height: 70vh;
             background: #1e1e1e;
             padding: 20px;
             border-radius: 10px;
@@ -58,14 +59,26 @@
             justify-content: center;
             font-size: 20px;
             color: #00ffcc;
+            z-index: 999;
         }
     </style>
 </head>
 <body>
     <div id="preloader">Loading data...</div>
-    <h1>📈 AVA <span class='vs'>v/s</span> <span class="ibit">IBIT</span> <span class='vs'>v/s</span> <span class="btcusdt">BTC/USDT</span></h1>
+
+    <h1>📊 How Did AVA, IBIT, and Bitcoin Perform?</h1>
+    <p class="description">
+        This chart compares the <strong>cumulative percentage returns</strong> of three assets: 
+        <span style="color:#00ffcc;">AVA</span>, 
+        <span class="ibit">IBIT</span>, and 
+        <span class="btcusdt">BTC/USDT</span> (Bitcoin). 
+        It shows how much each one has grown (or shrunk) over time, starting from the same baseline. 
+        <br><br>
+        Think of it as a way to see which investment did better or worse over time — regardless of their starting prices.
+    </p>
+
     <canvas id="myChart"></canvas>
-    
+
     <script>
         const urls = [
             "https://top-sought-sunbird.ngrok-free.app/get_data",
@@ -79,7 +92,7 @@
                 });
 
                 if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-                
+
                 const data = await response.json();
                 document.getElementById("preloader").style.display = "none";
 
@@ -94,16 +107,79 @@
                     data: {
                         labels: labels,
                         datasets: [
-                            { label: 'AVA cumulative returns (%)', data: profitData, borderColor: '#00ffcc', backgroundColor: 'rgba(0, 255, 204, 0.2)', borderWidth: 2, tension: 0.4 },
-                            { label: 'IBIT cumulative returns (%)', data: ibitData, borderColor: '#ff5733', backgroundColor: 'rgba(255, 87, 51, 0.2)', borderWidth: 2, tension: 0.4 },
-                            { label: 'BTCUSDT cumulative returns (%)', data: btcusdtData, borderColor: '#FFD700', backgroundColor: 'rgba(255, 215, 0, 0.2)', borderWidth: 2, tension: 0.4 }
+                            {
+                                label: 'AVA cumulative returns (%)',
+                                data: profitData,
+                                borderColor: '#00ffcc',
+                                backgroundColor: 'rgba(0, 255, 204, 0.2)',
+                                borderWidth: 2,
+                                tension: 0.4
+                            },
+                            {
+                                label: 'IBIT cumulative returns (%)',
+                                data: ibitData,
+                                borderColor: '#ff5733',
+                                backgroundColor: 'rgba(255, 87, 51, 0.2)',
+                                borderWidth: 2,
+                                tension: 0.4
+                            },
+                            {
+                                label: 'BTC/USDT cumulative returns (%)',
+                                data: btcusdtData,
+                                borderColor: '#FFD700',
+                                backgroundColor: 'rgba(255, 215, 0, 0.2)',
+                                borderWidth: 2,
+                                tension: 0.4
+                            }
                         ]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        scales: { x: { type: 'time', time: { unit: 'day' }, ticks: { color: '#fff' } }, y: { ticks: { color: '#fff' } } },
-                        plugins: { legend: { labels: { color: '#fff' } } }
+                        scales: {
+                            x: {
+                                type: 'time',
+                                time: { unit: 'day' },
+                                ticks: { color: '#fff' },
+                                title: {
+                                    display: true,
+                                    text: 'Date',
+                                    color: '#fff'
+                                }
+                            },
+                            y: {
+                                ticks: { color: '#fff' },
+                                title: {
+                                    display: true,
+                                    text: 'Cumulative Returns (%)',
+                                    color: '#fff'
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                labels: { color: '#fff' }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return `${context.dataset.label}: ${context.parsed.y.toFixed(2)}%`;
+                                    }
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: 'Performance of AVA, IBIT, and Bitcoin Over Time',
+                                color: '#fff',
+                                font: {
+                                    size: 16
+                                },
+                                padding: {
+                                    top: 10,
+                                    bottom: 20
+                                }
+                            }
+                        }
                     }
                 });
             } catch (error) {
