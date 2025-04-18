@@ -59,15 +59,26 @@
             font-size: 20px;
             color: #00ffcc;
         }
+         .ibit {
+            color: #ff5733;
+        }
+        .btcusdt {
+            color: #FFD700;
+        }
+        .vs{
+            color:#FFFFFF
+        }
+        .pstag{
+            color: #FFFFFF
+        }
     </style>
 </head>
 <body>
     <div id="preloader">Loading data...</div>
 
     <!-- ✅ Updated Header -->
-    <h1>Performance Comparison: AVA vs IBIT vs BTC/USDT (% Returns)</h1>
-
-    <canvas id="myChart"></canvas>
+<!--     <h1>Performance Comparison: AVA vs IBIT vs BTC/USDT (% Returns)</h1> -->
+    <h1><span class='pstag'>Performance Comparison:</span>AVA<span class='vs'>v/s</span> <span class="ibit">IBIT</span> <span class='vs'>v/s</span> <span class="btcusdt">BTC/USDT</span></h1>
     
     <script>
         const urls = [
@@ -109,12 +120,12 @@
                             x: {
                                 type: 'time',
                                 time: { unit: 'day' },
-                                ticks: { color: '#00facc' },
+                                ticks: { color: '#fff' },
                                 title: {
                                     display: true,
                                     text: 'Trading Days',
                                     color: '#00facc',
-                                    font: { size: 25 },
+                                    font: { size: 20 },
                                     
                                 }
                             },
@@ -123,8 +134,8 @@
                                 title: {
                                     display: true,
                                     text: '% Change',
-                                    color: '#fff',
-                                    font: { size: 14 }
+                                    color: '#00facc',
+                                    font: { size: 20 }
                                 }
                             }
                         },
