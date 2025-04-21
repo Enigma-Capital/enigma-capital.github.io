@@ -83,8 +83,50 @@
     <script>
         const urls = [
             "https://top-sought-sunbird.ngrok-free.app/get_data",
-            "https://extra-backends.onrender.com/get_data"
+            "https://top-sought-sunbird.ngrok-free.app/get_sharpe",
+            "https://extra-backends.onrender.com/get_data",
+            "https://extra-backends.onrender.com/get_sharpe"
         ];
+
+
+        async function fetchSharpe(urlIndex = 1) {
+    try {
+        const response = await fetch(urls[urlIndex], {
+            headers: { "ngrok-skip-browser-warning": "true" }
+        });
+
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+        
+        const sharpeData = await response.json();
+        console.log("Sharpe Ratios:", sharpeData);
+
+        // Example: Dynamically show Sharpe ratios below the chart
+        const container = document.createElement('div');
+        container.style.marginTop = '20px';
+        container.innerHTML = `
+            <p class='pstag'>Sharpe Ratios</p>
+            <p>AVA: <span style="color:#00ffcc">${sharpeData.AVA}</span></p>
+            <p>IBIT: <span style="color:#ff5733">${sharpeData.IBIT}</span></p>
+            <p>BTCUSDT: <span style="color:#FFD700">${sharpeData.BTCUSDT}</span></p>
+        `;
+        document.body.appendChild(container);
+
+    } catch (error) {
+        console.error(`Sharpe fetch failed at ${urls[urlIndex]}:`, error);
+        if (urlIndex + 2 < urls.length) {
+            console.log("Trying next Sharpe URL...");
+            fetchSharpe(urlIndex + 2);
+        } else {
+            const errEl = document.createElement('p');
+            errEl.style.color = "#ff4444";
+            errEl.textContent = "Failed to load Sharpe ratios.";
+            document.body.appendChild(errEl);
+        }
+    }
+}
+
+
+        
 
         async function fetchData(urlIndex = 0) {
             try {
