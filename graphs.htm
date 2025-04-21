@@ -102,6 +102,8 @@
                 const profitData = Object.values(data["Profit%"]);
                 const btcusdtData = Object.values(data["BTCUSDT"]);
 
+                console.log(data)
+
                 const ctx = document.getElementById('myChart').getContext('2d');
                 new Chart(ctx, {
                     type: 'line',
