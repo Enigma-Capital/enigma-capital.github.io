@@ -71,6 +71,20 @@
         .pstag{
             color: #FFFFFF
         }
+
+        #sharpeLabel {
+            position: absolute;
+            top: 110px; /* Adjust depending on screen */
+            right: 50px;
+            color: #00ffcc;
+            background: rgba(30, 30, 30, 0.7);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            box-shadow: 0 0 10px rgba(0, 255, 204, 0.4);
+        }
+
     </style>
 </head>
 <body>
@@ -80,6 +94,8 @@
 <!--     <h1>Performance Comparison: AVA vs IBIT vs BTC/USDT (% Returns)</h1> -->
     <h1><span class='pstag'>Performance Comparison: </span>AVA <span class='vs'>v/s</span> <span class="ibit">IBIT</span> <span class='vs'>v/s</span> <span class="btcusdt">BTC/USDT</span></h1>
     <canvas id="myChart"></canvas>
+
+    <div id="sharpeLabel">Sharpe Ratio: 3.08</div>
 
     <script>
         const urls = [
