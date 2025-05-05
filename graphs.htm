@@ -3,11 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AVA v/s IBIT v/s BTCUSDT:BINANCE % Returns</title>
+    <title>T-25 Capy v/s IBIT v/s BTCUSDT:BINANCE % Returns</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script defer src="https://cloud.umami.is/script.js" data-website-id="5602ec2b-35ca-418d-8899-53ed35d6853f"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
     <style>
+
+        p {
+            color: #c0c0c0;
+            margin-bottom: 2rem;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -91,8 +97,10 @@
     <div id="preloader">Loading data...</div>
 
     <!-- ✅ Updated Header -->
-<!--     <h1>Performance Comparison: AVA vs IBIT vs BTC/USDT (% Returns)</h1> -->
-    <h1><span class='pstag'>Live Performance Comparison: </span>AVA <span class='vs'>v/s</span> <span class="ibit">IBIT</span> <span class='vs'>v/s</span> <span class="btcusdt">BTC/USDT</span></h1>
+<!--     <h1>Performance Comparison: T-25 Capy vs IBIT vs BTC/USDT (% Returns)</h1> -->
+    <h1><span class='pstag'>Live Performance Comparison: </span>T-25 Capy <span class='vs'>v/s</span> <span class="ibit">IBIT</span> <span class='vs'>v/s</span> <span class="btcusdt">BTC/USDT</span></h1>
+    <p>The graph below represents a live cumulative returns comparison between our model T-25 Capy against Blackrock's IBIT ETF and Bitcoin Itself</p>
+
     <canvas id="myChart">
 
         <h3 id="sharpeLabel">Sharpe Ratio: 3.08</h3>
@@ -132,7 +140,7 @@
                     data: {
                         labels: labels,
                         datasets: [
-                            { label: 'AVA cumulative returns (%)', data: profitData, borderColor: '#00ffcc', backgroundColor: 'rgba(0, 255, 204, 0.2)', borderWidth: 2, tension: 0.4 },
+                            { label: 'T-25 Capy cumulative returns (%)', data: profitData, borderColor: '#00ffcc', backgroundColor: 'rgba(0, 255, 204, 0.2)', borderWidth: 2, tension: 0.4 },
                             { label: 'IBIT cumulative returns (%)', data: ibitData, borderColor: '#ff5733', backgroundColor: 'rgba(255, 87, 51, 0.2)', borderWidth: 2, tension: 0.4 },
                             { label: 'BTCUSDT cumulative returns (%)', data: btcusdtData, borderColor: '#FFD700', backgroundColor: 'rgba(255, 215, 0, 0.2)', borderWidth: 2, tension: 0.4 }
                         ]
