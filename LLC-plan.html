@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap');
+
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: #0a0a0a;
+      color: #f0f0f0;
+      line-height: 1.6;
+      padding: 2rem;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    h1, h2, h3 {
+      color: #ffffff;
+      font-weight: 600;
+      margin-top: 2rem;
+    }
+
+    h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 2.5rem;
+      border-bottom: 2px solid #222;
+      padding-bottom: 0.5rem;
+    }
+
+    h2 {
+      font-size: 1.75rem;
+      margin-top: 1.5rem;
+    }
+
+    h3 {
+      font-size: 1.25rem;
+      margin-top: 1.2rem;
+    }
+
+    p {
+      color: #c0c0c0;
+      margin-top: 1rem;
+    }
+
+    a {
+      color: #33d6a6;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    ::selection {
+      background: #33d6a6;
+      color: #000;
+    }
+
+    .Disclaimer {
+      font-style: italic;
+      font-weight: bolder;
+    }
+
+    .roadmap {
+      margin-top: 3rem;
+      border-left: 2px solid #33d6a6;
+      padding-left: 2rem;
+      position: relative;
+    }
+
+    .roadmap::before {
+      content: '';
+      position: absolute;
+      left: -10px;
+      top: 0;
+      height: 100%;
+      width: 4px;
+      background: linear-gradient(to bottom, #33d6a6, transparent);
+    }
+
+    .roadmap-item {
+      margin-bottom: 2.5rem;
+      position: relative;
+    }
+
+    .roadmap-item::before {
+      content: '';
+      position: absolute;
+      left: -30px;
+      top: 5px;
+      width: 12px;
+      height: 12px;
+      background-color: #33d6a6;
+      border-radius: 50%;
+      box-shadow: 0 0 10px #33d6a6;
+    }
+
+    .roadmap-item h3 {
+      margin: 0 0 0.5rem 0;
+      font-size: 1.2rem;
+      color: #ffffff;
+    }
+
+    .roadmap-item p {
+      margin: 0;
+      color: #c0c0c0;
+    }
+
+    .glow-low::before {
+      box-shadow: 0 0 6px #ababab;
+      background-color: rgb(193, 193, 193);
+    }
+
+    .glow-mid::before {
+      box-shadow: 0 0 12px #00fb5c;
+      background-color: rgb(14, 219, 99);
+    }
+
+    .glow-high::before {
+      box-shadow: 0 0 20px #33d6a6, 0 0 30px #33d6a6;
+      background-color: #3fa;
+    }
+</style>
+<body>
+    <h1>Roadmap to LLC</h1>
+    <p>Note: This roadmap is not static and will be subject to continuous modifications as deemed necessary by the team</p>
+    <div class="roadmap">
+        <div class="roadmap-item glow-high">
+          <h3>Phase 0: The Epoch</h3>
+          <p>- Develop and start forward testing phase of <a href="graphs.htm">T-25 Capy Mk1 Trading Algorithm</a></p>
+        </div>
+
+        <div class="roadmap-item glow-mid">
+          <h3>Phase 1: Stabilise and Grow</h3>
+          <p>- Finish Forwardtesting of T-25 Capy</p>
+          <p>- Simultaneously develop a Stock Trading Model (Preferably for Indian Markets first...)</p>
+          <p>- Plan Branding and Launch the startup</p>
+        </div>
+
+        <div class="roadmap-item glow-low">
+          <h3>Phase 2: Test!</h3>
+          <p>- Pitch to Friends and Family for initial investments to grow fund size</p>
+          <p>- Create Business plan</p>
+          <p>- Build a community around Quant Finance</p>
+        </div>
+        <div class="roadmap-item glow-low">
+          <h3>Phase 3: Reogranise and Stabilise</h3>
+          <p>- Monitor Stability of both Bitcoin and Stocks model</p>
+          <p>- Prepare a pitch deck</p>
+          <p>- Pitch to Mentors and Professionals if deemed necessary in future</p>
+        </div>
+        <div class="roadmap-item glow-low">
+          <h3>Phase 4: Its Showtime!</h3>
+          <p>Prepare for SEC/SEBI filings. Target institutional capital. Launch flagship Enigma Capital fund.</p>
+        </div>
+      </div>
+    
+</body>
+</html>
