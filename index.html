@@ -91,6 +91,90 @@
             mix-blend-mode: difference;
         }
 
+        .twitter-hack-banner {
+  position: relative;
+  margin-top: 50px;
+  padding: 20px 30px;
+  border: 2px solid #00fff7;
+  border-radius: 12px;
+  background: linear-gradient(145deg, rgba(0, 255, 255, 0.05), rgba(0, 255, 200, 0.1));
+  box-shadow:
+    0 0 20px #00fff7,
+    0 0 40px rgba(0, 255, 247, 0.3),
+    inset 0 0 10px rgba(0, 255, 247, 0.1);
+  backdrop-filter: blur(8px);
+  mix-blend-mode: difference;
+  animation: twitchy 4s infinite;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  cursor: pointer;
+  transform: perspective(600px) rotateX(2deg);
+}
+
+@keyframes twitchy {
+  0%, 100% { transform: perspective(600px) rotateX(2deg) rotateY(0deg); }
+  50% { transform: perspective(600px) rotateX(2.5deg) rotateY(0.5deg); }
+}
+
+.twitter-hack-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: #00fff7;
+}
+
+.hack-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  filter: drop-shadow(0 0 6px #00fff7);
+}
+
+.hack-text {
+  font-family: monospace;
+  text-transform: uppercase;
+  font-size: 1.2em;
+  line-height: 1.4;
+  color: #00fff7;
+  text-shadow:
+    0 0 5px #00fff7,
+    0 0 15px rgba(0, 255, 255, 0.5);
+  animation: flicker 2.5s infinite alternate;
+}
+
+@keyframes flicker {
+  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+    opacity: 1;
+  }
+  20%, 24%, 55% {
+    opacity: 0.5;
+  }
+}
+
+.scanlines {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0,255,247,0.03),
+    rgba(0,255,247,0.03) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  pointer-events: none;
+  z-index: 2;
+  animation: scan 4s linear infinite;
+}
+
+@keyframes scan {
+  0% { background-position: 0 0; }
+  100% { background-position: 0 100%; }
+}
+
         .status-container {
     display: flex;
     align-items: center;
@@ -164,6 +248,20 @@
         <a href="graphs.htm" class="btn">Checkout T-25 Capy</a>
         <a href="businessplan.html" class="btn" target="_blank">View Business Plan</a>
     </div>
+    <div class="twitter-hack-banner">
+        <a href="https://x.com/enigmacaptech" target="_blank" class="twitter-hack-link">
+          <div class="scanlines"></div>
+          <img src="https://abs.twimg.com/icons/apple-touch-icon-192x192.png" alt="X" class="hack-icon">
+          <div class="hack-text">
+            <span>FOLLOW US</span>
+            <br>
+            <strong>@enigmacaptech</strong>
+          </div>
+        </a>
+      </div>
+      
+      
+      
     <footer>
         <p>&copy; 2025 Enigma Capital. Revolutionizing the financial landscape.</p>
     </footer>
