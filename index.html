@@ -1,16 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-        <!-- Google tag (gtag.js) -->
+    <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3DLVKMZF6"></script>
     <script defer src="https://cloud.umami.is/script.js" data-website-id="5602ec2b-35ca-418d-8899-53ed35d6853f"></script>
     <script>
-
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-Y3DLVKMZF6');
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-Y3DLVKMZF6');
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -31,208 +29,139 @@
             height: 100vh;
             text-align: center;
             overflow: hidden;
-            
         }
+
         canvas {
             position: fixed;
             top: 0;
             left: 0;
             z-index: -1;
         }
-        h1 {
-    font-size: clamp(2rem, 5vw, 3.5rem);
-    letter-spacing: 0.1em;
-    word-break: break-word;
-    padding: 0 1em;
-}
 
-        p {
-            font-size: 1.1em;
-            line-height: 1.6;
-            opacity: 0.85;
-            max-width: 600px;
-            margin: 1em auto;
-            mix-blend-mode: difference;
+        h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            letter-spacing: 0.1em;
+            word-break: break-word;
+            padding: 0 1em;
         }
-        .button-container {
-            margin-top: 30px;
+
+        .main-header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background-color: #0b0b0b;
             display: flex;
-            gap: 15px;
-            justify-content: center;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.2rem 3rem;
+            z-index: 1000;
+            border-bottom: 1px solid #1a1a1a;
+            box-shadow: 0 2px 6px rgba(0, 255, 255, 0.05);
         }
-        .btn {
-            background: transparent;
-            color: white;
-            padding: 12px 24px;
-            font-size: 1em;
-            border: 1px solid #ffffff;
-            cursor: pointer;
-            text-decoration: none;
-            transition: 0.3s ease-in-out;
-            mix-blend-mode: difference;
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-left: 3rem; /* Adjust this value as needed */
+            transition: transform 0.7s ease 0.2s, text-shadow 0.3s ease; /* Added delay to the size increase */
         }
-        .btn:hover {
-            background: #ffffff;
-            color: #000000;
-        }
+
+        .logo:hover {
+            transform: scale(1.1); /* Slightly increase the size */
+            text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 30px #00ffff; /* Glowing effect */
+            }
+
+            .nav-links {
+                display: flex;
+                justify-content: center; /* Center the links horizontally */
+                align-items: center; /* Center the links vertically if needed */
+                width: 100%; /* Ensure it takes up the full width of the header */
+                margin-right: 15rem;
+            }
+
+            .nav-links a {
+                color: #eee;
+                margin: 0 2.5rem; /* Adjusted spacing between links */
+                text-decoration: none;
+                font-weight: 400;
+                font-size: 1rem;
+                transition: color 0.7s ease;
+            }
+
+            .nav-links a:hover {
+                color: #00ffff;
+            }
+
+
         footer {
             margin-top: 40px;
             font-size: 0.9em;
             opacity: 0.7;
-            mix-blend-mode: difference;
-        }
-        .ascii-art {
-            font-family: monospace;
-            white-space: pre;
-            font-size: 12px;
-            line-height: 1.2;
-            color: #ffffff;
-            margin-bottom: 20px;
-            mix-blend-mode: difference;
         }
 
-        .twitter-hack-banner {
-  position: relative;
-  margin-top: 50px;
-  padding: 20px 30px;
-  border: 2px solid #00fff7;
-  border-radius: 12px;
-  background: linear-gradient(145deg, rgba(0, 255, 255, 0.05), rgba(0, 255, 200, 0.1));
-  box-shadow:
-    0 0 20px #00fff7,
-    0 0 40px rgba(0, 255, 247, 0.3),
-    inset 0 0 10px rgba(0, 255, 247, 0.1);
-  backdrop-filter: blur(8px);
-  mix-blend-mode: difference;
-  animation: twitchy 4s infinite;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  cursor: pointer;
-  transform: perspective(600px) rotateX(2deg);
-}
-
-@keyframes twitchy {
-  0%, 100% { transform: perspective(600px) rotateX(2deg) rotateY(0deg); }
-  50% { transform: perspective(600px) rotateX(2.5deg) rotateY(0.5deg); }
-}
-
-.twitter-hack-link {
-  display: flex;
-  align-items: center;
-  text-decoration: none;
-  color: #00fff7;
-}
-
-.hack-icon {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  filter: drop-shadow(0 0 6px #00fff7);
-}
-
-.hack-text {
-  font-family: monospace;
-  text-transform: uppercase;
-  font-size: 1.2em;
-  line-height: 1.4;
-  color: #00fff7;
-  text-shadow:
-    0 0 5px #00fff7,
-    0 0 15px rgba(0, 255, 255, 0.5);
-  animation: flicker 2.5s infinite alternate;
-}
-
-@keyframes flicker {
-  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
-    opacity: 1;
-  }
-  20%, 24%, 55% {
-    opacity: 0.5;
-  }
-}
-
-.scanlines {
-  position: absolute;
-  top: 0; left: 0;
-  width: 100%;
-  height: 100%;
-  background: repeating-linear-gradient(
-    to bottom,
-    rgba(0,255,247,0.03),
-    rgba(0,255,247,0.03) 1px,
-    transparent 1px,
-    transparent 3px
-  );
-  pointer-events: none;
-  z-index: 2;
-  animation: scan 4s linear infinite;
-}
-
-@keyframes scan {
-  0% { background-position: 0 0; }
-  100% { background-position: 0 100%; }
-}
+        .trademark-footer{
+            margin-top: 2rem;
+        }
 
         .status-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-top: 20px;
-    animation: fadeIn 2s ease-in-out;
-}
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
 
-.dot {
-    width: 10px;
-    height: 10px;
-    background-color: #00ffcc;
-    border-radius: 50%;
-    animation: blink 1.2s infinite ease-in-out;
-    box-shadow: 0 0 8px #00ffcc;
-}
+        .dot {
+            width: 10px;
+            height: 10px;
+            background-color: #00ffcc;
+            border-radius: 50%;
+            animation: blink 1.2s infinite ease-in-out;
+            box-shadow: 0 0 8px #00ffcc;
+        }
 
-.dot:nth-child(2) {
-    animation-delay: 0.2s;
-}
-.dot:nth-child(3) {
-    animation-delay: 0.4s;
-}
+        .dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
 
-.status-text {
-    font-size: 1.2em;
-    opacity: 0.75;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: #999;
-    font-family: monospace;
-    margin-left: 10px;
-}
+        .dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
 
-@keyframes blink {
-    0%, 80%, 100% {
-        opacity: 0.2;
-        transform: scale(0.9);
-    }
-    40% {
-        opacity: 1;
-        transform: scale(1.3);
-    }
-}
+        .status-text {
+            font-size: 1.2em;
+            opacity: 0.75;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #999;
+            font-family: monospace;
+            margin-left: 10px;
+        }
 
-        
+        @keyframes blink {
+            0%, 80%, 100% {
+                opacity: 0.2;
+                transform: scale(0.9);
+            }
+            40% {
+                opacity: 1;
+                transform: scale(1.3);
+            }
+        }
     </style>
 </head>
 <body>
     <canvas id="shader"></canvas>
-    <!-- <pre class="ascii-art">
-      ███████╗███╗   ██╗██╗ ██████╗ ███╗   ███╗ █████╗      
-      ██╔════╝████╗  ██║██║██╔════╝ ████╗ ████║██╔══██╗     
-      █████╗  ██╔██╗ ██║██║██║  ███╗██╔████╔██║███████║     
-      ██╔══╝  ██║╚██╗██║██║██║   ██║██║╚██╔╝██║██╔══██║     
-      ███████╗██║ ╚████║██║╚██████╔╝██║ ╚═╝ ██║██║  ██║     
-      ╚══════╝╚═╝  ╚═══╝╚═╝ ╚═════╝ ╚═╝     ╚═╝╚═╝  ╚═╝     
-    </pre> -->
+
+    <header class="main-header">
+        <div class="logo">Enigmacapital</div>
+        <nav class="nav-links">
+            <a href="#">T-25 Capy</a>
+            <a href="#">Business Plan</a>
+            <a href="#">@enigmacaptech</a>
+        </nav>
+    </header>
+
     <h1>Enigmacapital</h1>
     <p>We build cool models to trade...</p>
     
@@ -242,31 +171,8 @@
         <span class="dot"></span>
         <p class="status-text">status: Launching soon</p>
     </div>
-    
-    
-    <div class="button-container">
-        <a href="graphs.htm" class="btn">Checkout T-25 Capy</a>
-        <a href="businessplan.html" class="btn" target="_blank">View Business Plan</a>
-    </div>
 
-
-    <!-- twitter social -->
-    <!-- <div class="twitter-hack-banner">
-        <a href="https://x.com/enigmacaptech" target="_blank" class="twitter-hack-link">
-          <div class="scanlines"></div>
-          <img src="https://abs.twimg.com/icons/apple-touch-icon-192x192.png" alt="X" class="hack-icon">
-          <div class="hack-text">
-            <span>FOLLOW US</span>
-            <br>
-            <strong>@enigmacaptech</strong>
-          </div>
-        </a>
-      </div> -->
-      
-      
-      
-      <footer>
-        <p style="margin-bottom: 10px; opacity: 0.7;">&copy; 2025 Enigma Capital. Revolutionizing the financial landscape.</p>
+    <footer>
         <a href="https://x.com/enigmacaptech" target="_blank" style="
             display: inline-flex;
             align-items: center;
@@ -282,12 +188,11 @@
             box-shadow: 0 0 8px rgba(0,255,247,0.2);
             transition: all 0.2s ease-in-out;
         " onmouseover="this.style.boxShadow='0 0 14px #00fff7'; this.style.background='rgba(0,255,247,0.1)';" onmouseout="this.style.boxShadow='0 0 8px rgba(0,255,247,0.2)'; this.style.background='rgba(0,255,247,0.05)';">
-          <img src="https://abs.twimg.com/icons/apple-touch-icon-192x192.png" alt="X" style="width: 20px; height: 20px; filter: drop-shadow(0 0 3px #00fff7);">
-          @enigmacaptech
+            <img src="https://abs.twimg.com/icons/apple-touch-icon-192x192.png" alt="X" style="width: 20px; height: 20px; filter: drop-shadow(0 0 3px #00fff7);">
+            @enigmacaptech
         </a>
-      </footer>
-      
-    
+        <p class="trademark-footer"margin-bottom: 10px; opacity: 0.7;">&copy; 2025 Enigma Capital. Revolutionizing the financial landscape.</p>
+    </footer>
 
     <script>
         const canvas = document.getElementById('shader');
@@ -314,12 +219,10 @@
                 return fract(sin(dot(st.xy, vec2(12.9898,78.233))) * 43758.5453123);
             }
 
-            // Voronoi pattern
             vec2 voronoi(vec2 x) {
                 vec2 n = floor(x);
                 vec2 f = fract(x);
                 vec2 mg = vec2(0.0);
-                
                 for(int j = -1; j <= 1; j++) {
                     for(int i = -1; i <= 1; i++) {
                         vec2 g = vec2(float(i), float(j));
@@ -336,34 +239,19 @@
             void main() {
                 vec2 st = gl_FragCoord.xy/u_resolution.xy;
                 st.x *= u_resolution.x/u_resolution.y;
-                
-                // Scale and transform coordinates
                 vec2 pos = st * 4.0;
                 pos.y += u_time * 0.2;
-                
-                // Create geometric patterns
                 vec2 v = voronoi(pos);
                 float pattern = length(v);
-                
-                // Create flowing lines
                 float lines = sin(st.y * 50.0 + u_time + pattern * 3.0) * 0.5 + 0.5;
-                
-                // Fibonacci spiral
                 float theta = u_time * 0.5;
                 float r = pow(2.71828, 0.306349 * theta);
                 vec2 spiral = vec2(r * cos(theta), r * sin(theta));
                 float spiralPattern = length(st - 0.5 - spiral * 0.1);
-                
-                // Combine patterns
                 float final = pattern * 0.5 + lines * 0.2 + (1.0 - smoothstep(0.0, 0.1, spiralPattern)) * 0.3;
-                
-                // Add subtle vignette
                 float vignette = length(st - 0.5);
                 final *= 1.0 - vignette * 0.5;
-                
-                // Create monochrome output
                 vec3 color = vec3(final);
-                
                 gl_FragColor = vec4(color, 1.0);
             }
         `;
@@ -412,10 +300,9 @@
         function render() {
             const time = (Date.now() - startTime) * 0.001;
 
-            gl.clearColor(0, 0, 0, 1);
             gl.clear(gl.COLOR_BUFFER_BIT);
-
             gl.useProgram(program);
+
             gl.enableVertexAttribArray(positionLocation);
             gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
             gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
@@ -424,6 +311,7 @@
             gl.uniform1f(timeLocation, time);
 
             gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+
             requestAnimationFrame(render);
         }
 
