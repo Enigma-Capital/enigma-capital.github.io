@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>T-25 Capy v/s IBIT v/s BTCUSDT:BINANCE % Returns</title>
+    <title>Compare Performance: T-25 Capy vs Others</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script defer src="https://cloud.umami.is/script.js" data-website-id="5602ec2b-35ca-418d-8899-53ed35d6853f"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
     <style>
-
         p {
             color: #c0c0c0;
             margin-bottom: 2rem;
@@ -65,7 +64,7 @@
             font-size: 20px;
             color: #00ffcc;
         }
-         .ibit {
+        .ibit {
             color: #ff5733;
         }
         .btcusdt {
@@ -77,73 +76,93 @@
         .pstag{
             color: #FFFFFF
         }
-
-/*         #sharpeLabel {
-            position: absolute;
-            top: 110px;
-            right: 50px;
+        select {
+            background-color: #121212;
             color: #00ffcc;
-            background: rgba(30, 30, 30, 0.7);
-            padding: 6px 12px;
+            font-size: 16px;
+            padding: 8px;
             border-radius: 8px;
-            font-size: 14px;
-            font-weight: bold;
-            box-shadow: 0 0 10px rgba(0, 255, 204, 0.4);
-        } */
-
+            border: 1px solid #00ffcc;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
     <div id="preloader">Loading data...</div>
 
-    <!-- ✅ Updated Header -->
-<!--     <h1>Performance Comparison: T-25 Capy vs IBIT vs BTC/USDT (% Returns)</h1> -->
     <h1><span class='pstag'>Live Performance Comparison: </span>T-25 Capy <span class='vs'>v/s</span> <span class="ibit">IBIT</span> <span class='vs'>v/s</span> <span class="btcusdt">BTC/USDT</span></h1>
     <p>The graph below represents a live cumulative returns comparison between our model T-25 Capy against Blackrock's IBIT ETF and Bitcoin Itself</p>
 
-    <canvas id="myChart">
-
-        <h3 id="sharpeLabel">Sharpe Ratio: 3.08</h3>
-    </canvas>
+    <!-- Dropdown for selecting the comparison target -->
+    <select id="dropdown" onchange="updateData()">
+        <option value="0">Compare with T-25 Capy</option>
+        <option value="1">Compare with S&P 500 (SPY, ARCA)</option>
+        <option value="2">Compare with NIFTY50 (NIFTY, NSE)</option>
+    </select>
+    
+    <canvas id="myChart"></canvas>
 
     <script>
         const urls = [
-            "http://127.0.0.1:5000/get_data",
-            "https://top-sought-sunbird.ngrok-free.app/get_data",
-     
-            "https://extra-backends.onrender.com/get_data" 
+            "http://127.0.0.1:5000/compare"
         ];
 
-
-      
+        let selectedOption = 0; // Default selection: Compare with IBIT
+        let chart = null;  // Declare chart variable globally
 
         async function fetchData(urlIndex = 0) {
             try {
-                const response = await fetch(urls[urlIndex], {
+                const response = await fetch(urls[urlIndex] + "?selectedOption=" + selectedOption, {
                     headers: { "ngrok-skip-browser-warning": "true" }
                 });
 
                 if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-                
+
                 const data = await response.json();
                 document.getElementById("preloader").style.display = "none";
 
-                const labels = Object.values(data.DATETIME).map(date => new Date(date));
-                const ibitData = Object.values(data.IBIT);
-                const profitData = Object.values(data["Profit%"]);
-                const btcusdtData = Object.values(data["BTCUSDT"]);
+                // Ensure the data is not undefined or null
+                if (!data || !data.modelData || !data.selectedData) {
+                    throw new Error('Invalid data structure');
+                }
 
-                console.log(data)
+                const labels = Object.keys(data.modelData).map(date => new Date(date));
+                const modelData = Object.values(data.modelData);
+                const selectedData = Object.values(data.selectedData);
+                const ticker = data.ticker;  // The actual ticker name
+
+                console.log("Model Data:", modelData);  // Debugging: log Model data
+                console.log("Selected Data:", selectedData);  // Debugging: log Selected data
 
                 const ctx = document.getElementById('myChart').getContext('2d');
-                new Chart(ctx, {
+
+                // Destroy the previous chart if it exists
+                if (chart) {
+                    chart.destroy();
+                }
+
+                // Create a new chart
+                chart = new Chart(ctx, {
                     type: 'line',
                     data: {
                         labels: labels,
                         datasets: [
-                            { label: 'T-25 Capy cumulative returns (%)', data: profitData, borderColor: '#00ffcc', backgroundColor: 'rgba(0, 255, 204, 0.2)', borderWidth: 2, tension: 0.4 },
-                            { label: 'IBIT cumulative returns (%)', data: ibitData, borderColor: '#ff5733', backgroundColor: 'rgba(255, 87, 51, 0.2)', borderWidth: 2, tension: 0.4 },
-                            { label: 'BTCUSDT cumulative returns (%)', data: btcusdtData, borderColor: '#FFD700', backgroundColor: 'rgba(255, 215, 0, 0.2)', borderWidth: 2, tension: 0.4 }
+                            { 
+                                label: 'T-25 Capy cumulative returns (%)', 
+                                data: modelData, 
+                                borderColor: '#00ffcc', 
+                                backgroundColor: 'rgba(0, 255, 204, 0.2)', 
+                                borderWidth: 2, 
+                                tension: 0.4 
+                            },
+                            { 
+                                label: ticker + ' cumulative returns (%)', 
+                                data: selectedData, 
+                                borderColor: '#FFD700', 
+                                backgroundColor: 'rgba(255, 215, 0, 0.2)', 
+                                borderWidth: 2, 
+                                tension: 0.4 
+                            }
                         ]
                     },
                     options: {
@@ -159,7 +178,6 @@
                                     text: 'Trading Days',
                                     color: '#00facc',
                                     font: { size: 20 },
-                                    
                                 }
                             },
                             y: {
@@ -177,18 +195,20 @@
                         }
                     }
                 });
+
             } catch (error) {
                 console.error(`Error with ${urls[urlIndex]}:`, error);
-                if (urlIndex + 1 < urls.length) {
-                    console.log("Switching to alternate URL...");
-                    fetchData(urlIndex + 1);
-                } else {
-                    document.getElementById("preloader").innerText = "Failed to load data. Try again later.";
-                }
+                document.getElementById("preloader").innerText = "Failed to load data. Try again later.";
             }
         }
 
-        fetchData();
+        function updateData() {
+            selectedOption = parseInt(document.getElementById('dropdown').value);
+            fetchData();
+        }
+
+        fetchData();  // Initial data fetch on page load
     </script>
+
 </body>
 </html>

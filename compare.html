@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compare Performance: T-25 Capy vs Others</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="5602ec2b-35ca-418d-8899-53ed35d6853f"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+    <style>
+        p {
+            color: #c0c0c0;
+            margin-bottom: 2rem;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            background: #121212;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+        }
+        h1 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #00ffcc;
+        }
+        .ibit {
+            color: #ff5733;
+        }
+        .btcusdt {
+            color: #FFD700;
+        }
+        .vs{
+            color:#FFFFFF
+        }
+        canvas {
+            max-width: 90%;
+            max-height: 80vh;
+            background: #1e1e1e;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.5);
+        }
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #121212;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: #00ffcc;
+        }
+        .ibit {
+            color: #ff5733;
+        }
+        .btcusdt {
+            color: #FFD700;
+        }
+        .vs{
+            color:#FFFFFF
+        }
+        .pstag{
+            color: #FFFFFF
+        }
+        select {
+            background-color: #121212;
+            color: #00ffcc;
+            font-size: 16px;
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid #00ffcc;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="preloader">Loading data...</div>
+
+    <h1><span class='pstag'>Live Performance Comparison: </span>T-25 Capy <span class='vs'>v/s</span> <span class="ibit">IBIT</span> <span class='vs'>v/s</span> <span class="btcusdt">BTC/USDT</span></h1>
+    <p>The graph below represents a live cumulative returns comparison between our model T-25 Capy against Blackrock's IBIT ETF and Bitcoin Itself</p>
+
+    <!-- Dropdown for selecting the comparison target -->
+    <select id="dropdown" onchange="fetchData()">
+        <option value="0">Compare with T-25 Capy</option>
+        <option value="1">Compare with S&P 500 (SPY, ARCA)</option>
+        <option value="2">Compare with NIFTY50 (NIFTY, NSE)</option>
+    </select>
+    
+
+    <canvas id="myChart"></canvas>
+
+    <script>
+        const urls = [
+
+            "http://127.0.0.1:5000/get_data"
+        ];
+
+        let selectedOption = 0; // Default selection: Compare with IBIT
+
+        let chart = null;  // Declare chart variable globally
+
+
+async function fetchData(urlIndex = 0) {
+    try {
+        const response = await fetch(urls[urlIndex], {
+            headers: { "ngrok-skip-browser-warning": "true" }
+        });
+
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+
+        const data = await response.json();
+        document.getElementById("preloader").style.display = "none";
+
+        const labels = Object.values(data.DATETIME).map(date => new Date(date));
+        const spyData = Object.values(data["SPY"]);
+        const niftyData = Object.values(data["NIFTY"]);
+        const profitData = Object.values(data["Profit%"]);
+
+        console.log(data);
+
+        const ctx = document.getElementById('myChart').getContext('2d');
+
+        // Destroy the previous chart if it exists
+        if (chart) {
+            chart.destroy();
+        }
+
+        // Create a new chart
+        chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    { label: 'T-25 Capy cumulative returns (%)', data: profitData, borderColor: '#00ffcc', backgroundColor: 'rgba(0, 255, 204, 0.2)', borderWidth: 2, tension: 0.4 }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        type: 'time',
+                        time: { unit: 'day' },
+                        ticks: { color: '#fff' },
+                        title: {
+                            display: true,
+                            text: 'Trading Days',
+                            color: '#00facc',
+                            font: { size: 20 },
+                        }
+                    },
+                    y: {
+                        ticks: { color: '#fff' },
+                        title: {
+                            display: true,
+                            text: '% Change',
+                            color: '#00facc',
+                            font: { size: 20 }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { labels: { color: '#fff' } }
+                }
+            }
+        });
+
+        // Update chart based on selected option
+        const selectedOption = document.getElementById("dropdown").value;
+
+        if (selectedOption === "1") { // Compare with S&P 500 (SPY)
+            chart.data.datasets.push({
+                label: 'S&P 500 (SPY) cumulative returns (%)', 
+                data: spyData, 
+                borderColor: '#ff5733', 
+                backgroundColor: 'rgba(255, 87, 51, 0.2)', 
+                borderWidth: 2, 
+                tension: 0.4
+            });
+        } else if (selectedOption === "2") { // Compare with NIFTY50 (NIFTY)
+            chart.data.datasets.push({
+                label: 'NIFTY50 (NIFTY) cumulative returns (%)', 
+                data: niftyData, 
+                borderColor: '#FFD700', 
+                backgroundColor: 'rgba(255, 215, 0, 0.2)', 
+                borderWidth: 2, 
+                tension: 0.4
+            });
+        }
+
+        chart.update();
+    } catch (error) {
+        console.error(`Error with ${urls[urlIndex]}:`, error);
+        if (urlIndex + 1 < urls.length) {
+            console.log("Switching to alternate URL...");
+            fetchData(urlIndex + 1);
+        } else {
+            document.getElementById("preloader").innerText = "Failed to load data. Try again later.";
+        }
+    }
+}
+
+
+
+        function updateData() {
+            selectedOption = parseInt(document.getElementById('dropdown').value);
+            fetchData();
+        }
+
+        fetchData();
+    </script>
+</body>
+</html>
