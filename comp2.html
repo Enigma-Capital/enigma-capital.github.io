@@ -85,6 +85,15 @@
             border: 1px solid #00ffcc;
             margin-bottom: 20px;
         }
+        #error-message {
+            color: #ff5733;
+            margin-top: 10px;
+            font-size: 16px;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: rgba(255, 87, 51, 0.1);
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -95,73 +104,133 @@
 
     <!-- Dropdown for selecting the comparison target -->
     <select id="dropdown" onchange="updateData()">
-        <option value="0">Compare with T-25 Capy</option>
-        <option value="1">Compare with S&P 500 (SPY, ARCA)</option>
-        <option value="2">Compare with NIFTY50 (NIFTY, NSE)</option>
+        <option value="BTC">T-25 Capy vs BTC (default)</option>
+        <option value="SPY">T-25 Capy vs S&P 500 (SPY)</option>
+        <option value="NIFTY">T-25 Capy vs NIFTY50 (NSE)</option>
     </select>
     
     <canvas id="myChart"></canvas>
+    <div id="error-message"></div>
 
     <script>
-        const urls = [
-            "http://127.0.0.1:5000/compare"
+        const baseUrls = [
+            "http://127.0.0.1:5000",
+            "https://top-sought-sunbird.ngrok-free.app",
+            "https://extra-backends.onrender.com"
         ];
 
-        let selectedOption = 0; // Default selection: Compare with IBIT
-        let chart = null;  // Declare chart variable globally
+        let baseUrl = baseUrls[0]; // Default to localhost
 
-        async function fetchData(urlIndex = 0) {
+        async function selectAvailableServer() {
+            const testUrl = "/ping"; // Endpoint to test server reachability
+
+            for (const url of baseUrls) {
             try {
-                const response = await fetch(urls[urlIndex] + "?selectedOption=" + selectedOption, {
-                    headers: { "ngrok-skip-browser-warning": "true" }
-                });
-
-                if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-
-                const data = await response.json();
-                document.getElementById("preloader").style.display = "none";
-
-                // Ensure the data is not undefined or null
-                if (!data || !data.modelData || !data.selectedData) {
-                    throw new Error('Invalid data structure');
+                const response = await fetch(url + testUrl, { method: "HEAD", mode: "no-cors" });
+                if (response.ok || response.type === "opaque") {
+                baseUrl = url; // Use the first available server
+                console.log(`Selected available server: ${baseUrl}`);
+                return;
                 }
+            } catch (error) {
+                console.warn(`Server unreachable: ${url}`, error);
+            }
+            }
 
-                const labels = Object.keys(data.modelData).map(date => new Date(date));
-                const modelData = Object.values(data.modelData);
-                const selectedData = Object.values(data.selectedData);
-                const ticker = data.ticker;  // The actual ticker name
+            console.error("No servers are reachable. Defaulting to localhost.");
+        }
 
-                console.log("Model Data:", modelData);  // Debugging: log Model data
-                console.log("Selected Data:", selectedData);  // Debugging: log Selected data
-
+        // Select the first available server on page load
+        selectAvailableServer();
+        let selectedOption = "BTC";
+        let chart = null;
+        
+        // Show error message with specific text
+        function showError(message) {
+            const errorElement = document.getElementById("error-message");
+            errorElement.innerText = message;
+            errorElement.style.display = "block";
+            document.getElementById("preloader").style.display = "none";
+        }
+        
+        // Hide error message
+        function hideError() {
+            document.getElementById("error-message").style.display = "none";
+        }
+        
+        async function fetchData() {
+            // Show loading indicator
+            document.getElementById("preloader").style.display = "flex";
+            hideError();
+            
+            try {
+                // 1. Fetch model data first (T-25 Capy data)
+                const modelDataRes = await fetch(`${baseUrl}/get_data`);
+                
+                if (!modelDataRes.ok) {
+                    throw new Error(`HTTP error fetching model data! Status: ${modelDataRes.status}`);
+                }
+                
+                const modelRaw = await modelDataRes.json();
+                
+                // Check if model data is valid array
+                if (!Array.isArray(modelRaw)) {
+                    throw new Error('Invalid data format from model endpoint - expected array');
+                }
+                
+                // Extract T-25 Capy data
+                const modelDataParsed = modelRaw.map(entry => entry["Profit%"]);
+                const modelLabels = modelRaw.map(entry => new Date(entry["DATETIME"]));
+                
+                // 2. Fetch comparison data (BTC, SPY, or NIFTY)
+                const compareUrl = `${baseUrl}/compare?with=${selectedOption}`;
+                const compareRes = await fetch(compareUrl);
+                
+                if (!compareRes.ok) {
+                    throw new Error(`HTTP error fetching comparison data! Status: ${compareRes.status}`);
+                }
+                
+                const compareData = await compareRes.json();
+                
+                // Ensure the comparison data is valid
+                if (!compareData || !Array.isArray(compareData.returns) || !Array.isArray(compareData.dates)) {
+                    throw new Error('Invalid data format from compare endpoint');
+                }
+                
+                // Format dates and prepare data
+                const compareDates = compareData.dates.map(date => new Date(date));
+                const compareReturns = compareData.returns;
+                const compareLabel = compareData.ticker;
+                
+                // 3. Create or update chart
                 const ctx = document.getElementById('myChart').getContext('2d');
-
-                // Destroy the previous chart if it exists
+                
+                // Destroy existing chart if there is one
                 if (chart) {
                     chart.destroy();
                 }
-
-                // Create a new chart
+                
+                // Create new chart
                 chart = new Chart(ctx, {
                     type: 'line',
                     data: {
-                        labels: labels,
+                        labels: modelLabels,
                         datasets: [
-                            { 
-                                label: 'T-25 Capy cumulative returns (%)', 
-                                data: modelData, 
-                                borderColor: '#00ffcc', 
-                                backgroundColor: 'rgba(0, 255, 204, 0.2)', 
-                                borderWidth: 2, 
-                                tension: 0.4 
+                            {
+                                label: 'T-25 Capy cumulative returns (%)',
+                                data: modelDataParsed,
+                                borderColor: '#00ffcc',
+                                backgroundColor: 'rgba(0, 255, 204, 0.2)',
+                                borderWidth: 2,
+                                tension: 0.4
                             },
-                            { 
-                                label: ticker + ' cumulative returns (%)', 
-                                data: selectedData, 
-                                borderColor: '#FFD700', 
-                                backgroundColor: 'rgba(255, 215, 0, 0.2)', 
-                                borderWidth: 2, 
-                                tension: 0.4 
+                            {
+                                label: `${compareLabel} cumulative returns (%)`,
+                                data: compareReturns,
+                                borderColor: '#FFD700',
+                                backgroundColor: 'rgba(255, 215, 0, 0.2)',
+                                borderWidth: 2,
+                                tension: 0.4
                             }
                         ]
                     },
@@ -195,20 +264,23 @@
                         }
                     }
                 });
-
+                
+                // Hide loading indicator
+                document.getElementById("preloader").style.display = "none";
+                
             } catch (error) {
-                console.error(`Error with ${urls[urlIndex]}:`, error);
-                document.getElementById("preloader").innerText = "Failed to load data. Try again later.";
+                console.error(`Error:`, error);
+                showError(`Failed to load data: ${error.message}`);
             }
         }
-
+        
         function updateData() {
-            selectedOption = parseInt(document.getElementById('dropdown').value);
+            selectedOption = document.getElementById('dropdown').value;
             fetchData();
         }
-
-        fetchData();  // Initial data fetch on page load
+        
+        // Initial data load
+        fetchData();
     </script>
-
 </body>
 </html>
