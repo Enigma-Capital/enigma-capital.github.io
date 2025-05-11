@@ -126,12 +126,14 @@
                 if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
                 
                 const data = await response.json();
-                document.getElementById("preloader").style.display = "none";
+document.getElementById("preloader").style.display = "none";
 
-                const labels = Object.values(data.DATETIME).map(date => new Date(date));
-                const ibitData = Object.values(data.IBIT);
-                const profitData = Object.values(data["Profit%"]);
-                const btcusdtData = Object.values(data["BTCUSDT"]);
+// Correctly extract values from the array of objects
+const labels = data.map(entry => new Date(entry.DATETIME));
+const ibitData = data.map(entry => entry.IBIT);
+const profitData = data.map(entry => entry["Profit%"]);
+const btcusdtData = data.map(entry => entry.BTCUSDT);
+
 
                 console.log(data)
 
