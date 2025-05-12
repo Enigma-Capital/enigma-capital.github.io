@@ -94,19 +94,17 @@
             background-color: rgba(255, 87, 51, 0.1);
             display: none;
         }
-
-        h4{
-            margin-bottom: 1rem;
-        }
     </style>
 </head>
 <body>
     <div id="preloader">Loading data...</div>
 
-    <h4>Choose Assets to compare for Cumulative Returns against T-52 Capy(BETA)</h4>
+    <h1><span class='pstag'>Live Performance Comparison: </span>T-25 Capy <span class='vs'>v/s</span> <span class="ibit">IBIT</span> <span class='vs'>v/s</span> <span class="btcusdt">BTC/USDT</span></h1>
+    <p>The graph below represents a live cumulative returns comparison between our model T-25 Capy against Blackrock's IBIT ETF and Bitcoin Itself</p>
 
     <!-- Dropdown for selecting the comparison target -->
     <select id="dropdown" onchange="updateData()">
+        <option value="BTC">T-25 Capy vs BTC (default)</option>
         <option value="SPY">T-25 Capy vs S&P 500 (SPY)</option>
         <option value="NIFTY">T-25 Capy vs NIFTY50 (NSE)</option>
     </select>
