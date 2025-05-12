@@ -105,116 +105,118 @@
 
     <script>
         const urls = [
-
-            "http://127.0.0.1:5000/get_data"
+            "https://top-sought-sunbird.ngrok-free.app/get_data",
+            "https://extra-backends.onrender.com/get_data"
         ];
 
         let selectedOption = 0; // Default selection: Compare with IBIT
 
         let chart = null;  // Declare chart variable globally
 
+        async function fetchData(urlIndex = 0) {
+            try {
+                const response = await fetch(urls[urlIndex], {
+                    headers: {
+                        'Accept': 'application/json',
+                        'ngrok-skip-browser-warning': 'true'
+                    }
+                });
 
-async function fetchData(urlIndex = 0) {
-    try {
-        const response = await fetch(urls[urlIndex], {
-            headers: { "ngrok-skip-browser-warning": "true" }
-        });
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
 
-        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+                const data = await response.json();
+                document.getElementById("preloader").style.display = "none";
 
-        const data = await response.json();
-        document.getElementById("preloader").style.display = "none";
+                const labels = Object.values(data.DATETIME).map(date => new Date(date));
+                const spyData = Object.values(data["SPY"]);
+                const niftyData = Object.values(data["NIFTY"]);
+                const profitData = Object.values(data["Profit%"]);
 
-        const labels = Object.values(data.DATETIME).map(date => new Date(date));
-        const spyData = Object.values(data["SPY"]);
-        const niftyData = Object.values(data["NIFTY"]);
-        const profitData = Object.values(data["Profit%"]);
+                console.log(data);
 
-        console.log(data);
+                const ctx = document.getElementById('myChart').getContext('2d');
 
-        const ctx = document.getElementById('myChart').getContext('2d');
+                // Destroy the previous chart if it exists
+                if (chart) {
+                    chart.destroy();
+                }
 
-        // Destroy the previous chart if it exists
-        if (chart) {
-            chart.destroy();
-        }
-
-        // Create a new chart
-        chart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [
-                    { label: 'T-25 Capy cumulative returns (%)', data: profitData, borderColor: '#00ffcc', backgroundColor: 'rgba(0, 255, 204, 0.2)', borderWidth: 2, tension: 0.4 }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    x: {
-                        type: 'time',
-                        time: { unit: 'day' },
-                        ticks: { color: '#fff' },
-                        title: {
-                            display: true,
-                            text: 'Trading Days',
-                            color: '#00facc',
-                            font: { size: 20 },
-                        }
+                // Create a new chart
+                chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            { label: 'T-25 Capy cumulative returns (%)', data: profitData, borderColor: '#00ffcc', backgroundColor: 'rgba(0, 255, 204, 0.2)', borderWidth: 2, tension: 0.4 }
+                        ]
                     },
-                    y: {
-                        ticks: { color: '#fff' },
-                        title: {
-                            display: true,
-                            text: '% Change',
-                            color: '#00facc',
-                            font: { size: 20 }
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: {
+                                type: 'time',
+                                time: { unit: 'day' },
+                                ticks: { color: '#fff' },
+                                title: {
+                                    display: true,
+                                    text: 'Trading Days',
+                                    color: '#00facc',
+                                    font: { size: 20 },
+                                }
+                            },
+                            y: {
+                                ticks: { color: '#fff' },
+                                title: {
+                                    display: true,
+                                    text: '% Change',
+                                    color: '#00facc',
+                                    font: { size: 20 }
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: { labels: { color: '#fff' } }
                         }
                     }
-                },
-                plugins: {
-                    legend: { labels: { color: '#fff' } }
+                });
+
+                // Update chart based on selected option
+                const selectedOption = document.getElementById("dropdown").value;
+
+                if (selectedOption === "1") { // Compare with S&P 500 (SPY)
+                    chart.data.datasets.push({
+                        label: 'S&P 500 (SPY) cumulative returns (%)', 
+                        data: spyData, 
+                        borderColor: '#ff5733', 
+                        backgroundColor: 'rgba(255, 87, 51, 0.2)', 
+                        borderWidth: 2, 
+                        tension: 0.4
+                    });
+                } else if (selectedOption === "2") { // Compare with NIFTY50 (NIFTY)
+                    chart.data.datasets.push({
+                        label: 'NIFTY50 (NIFTY) cumulative returns (%)', 
+                        data: niftyData, 
+                        borderColor: '#FFD700', 
+                        backgroundColor: 'rgba(255, 215, 0, 0.2)', 
+                        borderWidth: 2, 
+                        tension: 0.4
+                    });
+                }
+
+                chart.update();
+            } catch (error) {
+                console.error(`Error with ${urls[urlIndex]}:`, error);
+                if (urlIndex + 1 < urls.length) {
+                    console.log("Switching to alternate URL...");
+                    fetchData(urlIndex + 1);
+                } else {
+                    document.getElementById("preloader").innerText = "Failed to load data. Try again later.";
                 }
             }
-        });
-
-        // Update chart based on selected option
-        const selectedOption = document.getElementById("dropdown").value;
-
-        if (selectedOption === "1") { // Compare with S&P 500 (SPY)
-            chart.data.datasets.push({
-                label: 'S&P 500 (SPY) cumulative returns (%)', 
-                data: spyData, 
-                borderColor: '#ff5733', 
-                backgroundColor: 'rgba(255, 87, 51, 0.2)', 
-                borderWidth: 2, 
-                tension: 0.4
-            });
-        } else if (selectedOption === "2") { // Compare with NIFTY50 (NIFTY)
-            chart.data.datasets.push({
-                label: 'NIFTY50 (NIFTY) cumulative returns (%)', 
-                data: niftyData, 
-                borderColor: '#FFD700', 
-                backgroundColor: 'rgba(255, 215, 0, 0.2)', 
-                borderWidth: 2, 
-                tension: 0.4
-            });
         }
-
-        chart.update();
-    } catch (error) {
-        console.error(`Error with ${urls[urlIndex]}:`, error);
-        if (urlIndex + 1 < urls.length) {
-            console.log("Switching to alternate URL...");
-            fetchData(urlIndex + 1);
-        } else {
-            document.getElementById("preloader").innerText = "Failed to load data. Try again later.";
-        }
-    }
-}
-
-
 
         function updateData() {
             selectedOption = parseInt(document.getElementById('dropdown').value);

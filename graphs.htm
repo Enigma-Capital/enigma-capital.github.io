@@ -119,19 +119,24 @@
         async function fetchData(urlIndex = 0) {
             try {
                 const response = await fetch(urls[urlIndex], {
-                    headers: { "ngrok-skip-browser-warning": "true" }
+                    headers: {
+                        'Accept': 'application/json',
+                        'ngrok-skip-browser-warning': 'true'
+                    }
                 });
 
-                if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
                 
                 const data = await response.json();
-document.getElementById("preloader").style.display = "none";
+                document.getElementById("preloader").style.display = "none";
 
-// Correctly extract values from the array of objects
-const labels = data.map(entry => new Date(entry.DATETIME));
-const ibitData = data.map(entry => entry.IBIT);
-const profitData = data.map(entry => entry["Profit%"]);
-const btcusdtData = data.map(entry => entry.BTCUSDT);
+                // Correctly extract values from the array of objects
+                const labels = data.map(entry => new Date(entry.DATETIME));
+                const ibitData = data.map(entry => entry.IBIT);
+                const profitData = data.map(entry => entry["Profit%"]);
+                const btcusdtData = data.map(entry => entry.BTCUSDT);
 
 
                 console.log(data)

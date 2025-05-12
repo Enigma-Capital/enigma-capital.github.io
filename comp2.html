@@ -124,16 +124,22 @@
             const testUrl = "/ping"; // Endpoint to test server reachability
 
             for (const url of baseUrls) {
-            try {
-                const response = await fetch(url + testUrl, { method: "HEAD", mode: "no-cors" });
-                if (response.ok || response.type === "opaque") {
-                baseUrl = url; // Use the first available server
-                console.log(`Selected available server: ${baseUrl}`);
-                return;
+                try {
+                    const response = await fetch(url + testUrl, {
+                        method: "HEAD",
+                        headers: {
+                            'Accept': 'application/json',
+                            'ngrok-skip-browser-warning': 'true'
+                        }
+                    });
+                    if (response.ok) {
+                        baseUrl = url;
+                        console.log(`Selected available server: ${baseUrl}`);
+                        return;
+                    }
+                } catch (error) {
+                    console.warn(`Server unreachable: ${url}`, error);
                 }
-            } catch (error) {
-                console.warn(`Server unreachable: ${url}`, error);
-            }
             }
 
             console.error("No servers are reachable. Defaulting to localhost.");
@@ -164,7 +170,12 @@
             
             try {
                 // 1. Fetch model data first (T-25 Capy data)
-                const modelDataRes = await fetch(`${baseUrl}/get_data`);
+                const modelDataRes = await fetch(`${baseUrl}/get_data`, {
+                    headers: {
+                        'Accept': 'application/json',
+                        'ngrok-skip-browser-warning': 'true'
+                    }
+                });
                 
                 if (!modelDataRes.ok) {
                     throw new Error(`HTTP error fetching model data! Status: ${modelDataRes.status}`);
@@ -183,7 +194,12 @@
                 
                 // 2. Fetch comparison data (BTC, SPY, or NIFTY)
                 const compareUrl = `${baseUrl}/compare?with=${selectedOption}`;
-                const compareRes = await fetch(compareUrl);
+                const compareRes = await fetch(compareUrl, {
+                    headers: {
+                        'Accept': 'application/json',
+                        'ngrok-skip-browser-warning': 'true'
+                    }
+                });
                 
                 if (!compareRes.ok) {
                     throw new Error(`HTTP error fetching comparison data! Status: ${compareRes.status}`);
