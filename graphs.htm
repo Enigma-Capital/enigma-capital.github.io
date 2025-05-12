@@ -91,6 +91,18 @@
             box-shadow: 0 0 10px rgba(0, 255, 204, 0.4);
         } */
 
+        #error-message {
+            color: #ff5733;
+            margin-top: 10px;
+            font-size: 16px;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: rgba(255, 87, 51, 0.1);
+            display: none;
+            max-width: 80%;
+            margin: 20px auto;
+        }
+
     </style>
 </head>
 <body>
@@ -101,8 +113,8 @@
     <h1><span class='pstag'>Live Performance Comparison: </span>T-25 Capy <span class='vs'>v/s</span> <span class="ibit">IBIT</span> <span class='vs'>v/s</span> <span class="btcusdt">BTC/USDT</span></h1>
     <p>The graph below represents a live cumulative returns comparison between our model T-25 Capy against Blackrock's IBIT ETF and Bitcoin Itself</p>
 
+    <div id="error-message"></div>
     <canvas id="myChart">
-
         <h3 id="sharpeLabel">Sharpe Ratio: 3.08</h3>
     </canvas>
 
@@ -116,8 +128,24 @@
 
       
 
+        // Show error message with specific text
+        function showError(message) {
+            const errorElement = document.getElementById("error-message");
+            errorElement.innerText = message;
+            errorElement.style.display = "block";
+            document.getElementById("preloader").style.display = "none";
+        }
+        
+        // Hide error message
+        function hideError() {
+            document.getElementById("error-message").style.display = "none";
+        }
+
         async function fetchData(urlIndex = 0) {
             try {
+                hideError();
+                document.getElementById("preloader").style.display = "flex";
+                
                 const response = await fetch(urls[urlIndex], {
                     headers: {
                         'Accept': 'application/json',
@@ -189,7 +217,11 @@
                     console.log("Switching to alternate URL...");
                     fetchData(urlIndex + 1);
                 } else {
-                    document.getElementById("preloader").innerText = "Failed to load data. Try again later.";
+                    const errorMessage = error.message.includes("CORS") || error.message.includes("Failed to fetch") 
+                        ? "Unable to connect to the data server. This might be due to server maintenance or connection issues. Please try again later."
+                        : `Failed to load data: ${error.message}`;
+                    showError(errorMessage);
+                    document.getElementById("preloader").style.display = "none";
                 }
             }
         }
