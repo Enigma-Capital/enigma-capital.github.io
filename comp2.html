@@ -107,15 +107,15 @@
 
     <!-- Dropdown for selecting the comparison target -->
     <select id="dropdown" onchange="updateData()">
-        <option value="ETHUSDT">T-25 Capy vs ETHUSDT (BINANCE)</option>
-        <option value="ARKB">T-25 Capy vs ARKB (CBOE)</option>
-        <option value="BTCO">T-25 Capy vs BTCO (CBOE)</option>
-        <option value="BITB">T-25 Capy vs BITB (Arca)</option>
-        <option value="CTBX">T-25 Capy vs CTBX (CBOE)</option>
-        <option value="WGMI">T-25 Capy vs WGMI (NASDAQ)</option>
-        <option value="SPY">T-25 Capy vs SPY (PYTH)</option>
-        <option value="NIFTY">T-25 Capy vs NIFTY (NSE)</option>
-        <option value="BTCUSDT">T-25 Capy vs BTCUSDT (BINANCE)</option>
+        <option value='{"ticker":"ETHUSDT","exchange":"BINANCE"}'>T-25 Capy vs ETHUSDT (BINANCE)</option>
+        <option value='{"ticker":"ARKB","exchange":"CBOE"}'>T-25 Capy vs ARKB (CBOE)</option>
+        <option value='{"ticker":"BTCO","exchange":"CBOE"}'>T-25 Capy vs BTCO (CBOE)</option>
+        <option value='{"ticker":"BITB","exchange":"Arca"}'>T-25 Capy vs BITB (Arca)</option>
+        <option value='{"ticker":"CTBX","exchange":"CBOE"}'>T-25 Capy vs CTBX (CBOE)</option>
+        <option value='{"ticker":"WGMI","exchange":"NASDAQ"}'>T-25 Capy vs WGMI (NASDAQ)</option>
+        <option value='{"ticker":"SPY","exchange":"PYTH"}'>T-25 Capy vs SPY (PYTH)</option>
+        <option value='{"ticker":"NIFTY","exchange":"NSE"}'>T-25 Capy vs NIFTY (NSE)</option>
+        <option value='{"ticker":"BTCUSDT","exchange":"BINANCE"}'>T-25 Capy vs BTCUSDT (BINANCE)</option>
     </select>
     
     <canvas id="myChart"></canvas>
@@ -123,11 +123,12 @@
 
     <script>
         const baseUrls = [
-            "https://dynamic-guides-tba-mats.trycloudflare.com",
+            "https://years-reporters-yemen-communicate.trycloudflare.com",
             "https://extra-backends.onrender.com"
         ];
 
         let baseUrl = baseUrls[0]; // Default to localhost
+        let selectedOption = JSON.parse(document.getElementById('dropdown').value); // Default to first option
 
         async function selectAvailableServer() {
             const testUrl = "/ping"; // Endpoint to test server reachability
@@ -156,7 +157,6 @@
 
         // Select the first available server on page load
         selectAvailableServer();
-        let selectedOption = "BTC";
         let chart = null;
         
         // Show error message with specific text
@@ -201,8 +201,9 @@
                 const modelDataParsed = modelRaw.map(entry => entry["Profit%"]);
                 const modelLabels = modelRaw.map(entry => new Date(entry["DATETIME"]));
                 
-                // 2. Fetch comparison data (BTC, SPY, or NIFTY)
-                const compareUrl = `${baseUrl}/compare?with=${selectedOption}`;
+                // 2. Fetch comparison data with ticker and exchange
+                const { ticker, exchange } = selectedOption;
+                const compareUrl = `${baseUrl}/compare?ticker=${encodeURIComponent(ticker)}&exchange=${encodeURIComponent(exchange)}`;
                 const compareRes = await fetch(compareUrl, {
                     headers: {
                         'Accept': 'application/json',
@@ -224,7 +225,7 @@
                 // Format dates and prepare data
                 const compareDates = compareData.dates.map(date => new Date(date));
                 const compareReturns = compareData.returns;
-                const compareLabel = compareData.ticker;
+                const compareLabel = `${ticker} (${exchange})`;
                 
                 // 3. Create or update chart
                 const ctx = document.getElementById('myChart').getContext('2d');
@@ -299,7 +300,7 @@
         }
         
         function updateData() {
-            selectedOption = document.getElementById('dropdown').value;
+            selectedOption = JSON.parse(document.getElementById('dropdown').value);
             fetchData();
         }
         
