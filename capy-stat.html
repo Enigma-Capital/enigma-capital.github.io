@@ -153,6 +153,44 @@
       padding-left: 0.6rem;
     }
 
+   
+        /* Responsive tweaks for tablets/phones */
+    @media (max-width: 768px) {
+      .content {
+        flex-direction: column-reverse;  /* title on top */
+        align-items: center;
+        text-align: center;
+      }
+
+      .title {
+        font-size: 2rem;       /* smaller title */
+        letter-spacing: 0.1em;
+        margin: 1rem 0 0 0;
+        white-space: nowrap;   /* keep it on one line */
+        transform: none;       /* center via flex */
+        animation-delay: 2s;   /* adjust timing if desired */
+      }
+
+      /* Force single-line title */
+      .title h1 {
+        display: inline-block;
+        line-height: 1;
+      }
+
+      #statsContent {
+        margin: 1rem 0;
+        max-width: 95%;
+        font-size: 1rem;
+        line-height: 1.3;
+      }
+
+      /* Reduce the loading and link fonts a bit */
+      #statsContent p,
+      #statsContent a {
+        font-size: 1rem;
+      }
+    }
+
     @keyframes fadeIn {
       to {
         opacity: 0.5;
@@ -215,8 +253,8 @@
       const statsHtml = `
         <p><span>Sharpe Ratio:</span> ${data.Sharpe_ratio}</p>
         <p><span>Sortino Ratio:</span> ${data.Sortino_ratio}</p>
-        <p><span>Max Drawdown:</span> ${data.Max_drawdown} %</p>
         <p><span>Max Profit:</span> ${data.Max_profit} %</p>
+        <p><span>Max Drawdown:</span> ${data.Max_drawdown} %</p>
         <p><span>Win Rate:</span> ${data.Win_rate} %</p>
         <p><span>Calmar Ratio:</span> ${data.Calmar_ratio}</p>
         <p><span>Beta:</span> ${data.Beta}</p>
