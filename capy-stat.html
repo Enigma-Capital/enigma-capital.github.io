@@ -33,7 +33,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: url('capybg2.png') no-repeat center center;
+      background: url('capybg2-up.png') no-repeat center center;
       background-size: 65%;
       opacity: 0;
       animation: fadeIn 2s ease forwards;
@@ -75,6 +75,7 @@
 
     #statsContent p span {
       font-weight: 700;
+      color: whitesmoke;
     }
 
     /* Loading animation for Loading stats text */
@@ -89,6 +90,22 @@
     @keyframes pulse {
       0%, 100% { opacity: 0.3; }
       50% { opacity: 1; }
+    }
+
+    #statsContent a {
+      display: inline-block;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #00bfff;
+      text-decoration: none;
+      border-bottom: 2px solid transparent;
+      transition: all 0.3s ease;
+    }
+
+    #statsContent a:hover {
+      color: #33d6a6;
+      border-bottom: 2px solid #33d6a6;
+      text-shadow: 0 0 8px rgba(51, 214, 166, 0.4);
     }
 
     #stats h2 {
@@ -204,6 +221,7 @@
         <p><span>Calmar Ratio:</span> ${data.Calmar_ratio}</p>
         <p><span>Beta:</span> ${data.Beta}</p>
         <p><span>Alpha:</span> ${data.Alpha}</p>
+        <p><a href='graphs.htm'>Cumulative Returns</a></p>
       `;
 
       document.getElementById('statsContent').innerHTML = statsHtml;
