@@ -153,6 +153,30 @@
       padding-left: 0.6rem;
     }
 
+    .outline-button {
+      display: inline-block;
+      box-sizing: border-box;
+      padding: 0.6rem 1.2rem;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #00bfff;
+      background: transparent;
+      border: 2px solid #00bfff;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      margin-top: 1rem;
+      background-color: rgba(0, 191, 255, 0.1);
+    }
+
+    .outline-button:hover {
+      background-color: rgba(0, 191, 255, 0.1);
+      color: #33d6a6;
+      border-color: #33d6a6;
+      text-shadow: 0 0 6px rgba(51, 214, 166, 0.4);
+    }
+
    
         /* Responsive tweaks for tablets/phones */
     @media (max-width: 768px) {
@@ -270,7 +294,7 @@
         <p><span>Calmar Ratio:</span> ${data.Calmar_ratio}</p>
         <p><span>Beta:</span> ${data.Beta}</p>
         <p><span>Alpha:</span> ${data.Alpha}</p>
-        <p><a href='graphs.htm'>Cumulative Returns</a></p>
+        <p><a href="graphs.htm" class="outline-button">Cumulative Returns</a></p>
       `;
 
       document.getElementById('statsContent').innerHTML = statsHtml;
