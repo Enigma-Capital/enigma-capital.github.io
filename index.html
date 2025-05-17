@@ -209,6 +209,21 @@
     margin-left: 10px;
 }
 
+/* At widths ≤ 768px (typical tablet/phone breakpoint) */
+@media (max-width: 500px) {
+  .button-container {
+    flex-direction: column;
+    gap: 10px;           /* reduce gap if you like */
+    width: 45%;         /* let buttons fill the width */
+    padding: 0 1em;      /* optional side padding */
+  }
+  .btn {
+    width: 100%;         /* full‑width buttons */
+    text-align: center;  /* keep the text centered */
+  }
+}
+
+
 @keyframes blink {
     0%, 80%, 100% {
         opacity: 0.2;
