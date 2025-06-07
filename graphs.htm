@@ -8,9 +8,52 @@
 <script defer src="https://cloud.umami.is/script.js" data-website-id="5602ec2b-35ca-418d-8899-53ed35d6853f"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
 <style>
-  /* Your styles here */
-  /* ... (same as before) ... */
+  body {
+    margin: 0;
+    background-color: #111;
+    color: white;
+    font-family: Arial, sans-serif;
+  }
+
+  canvas#myChart {
+    max-width: 100%;
+    height: 500px; /* Fixed height */
+    display: block;
+  }
+
+  #myChart {
+    width: 100%;
+    height: 500px; /* Ensure a fixed height */
+    max-height: 90vh;
+  }
+
+  #preloader {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.8);
+    font-size: 1.5rem;
+  }
+
+  #error-message {
+    color: red;
+    font-weight: bold;
+    margin: 10px;
+  }
+
+  h1 {
+    text-align: center;
+    color: #00facc;
+  }
+
+  p {
+    text-align: center;
+    margin-bottom: 30px;
+  }
 </style>
+
 </head>
 <body>
   <div id="preloader">Loading data...</div>
