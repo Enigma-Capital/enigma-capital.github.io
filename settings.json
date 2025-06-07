@@ -1,11 +1,11 @@
 {
   "baseUrls": [
-    "https://your-api.example.com",
+    "https://r-asian-representatives-guaranteed.trycloudflare.com",
     "http://127.0.0.1:5000"
   ],
 
   "urls": [
-    "https://zope-visible-restaurant-guild.trycloudflare.com/get_data",
+    "https://r-asian-representatives-guaranteed.trycloudflare.com/get_data",
     "https://extra-backends.onrender.com/get_data",
     "http://127.0.0.1:5000/get_data"
   ]
