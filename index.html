@@ -209,6 +209,26 @@
     margin-left: 10px;
 }
 
+/* At widths ≤ 768px (typical tablet/phone breakpoint) */
+@media (max-width: 500px) {
+  .button-container {
+    flex-direction: column;
+    gap: 10px;           /* reduce gap if you like */
+    width: 45%;         /* let buttons fill the width */
+    padding: 0 1em;  
+    margin-right: 3rem;    /* optional side padding */
+  }
+  .btn {
+    width: 100%;         /* full‑width buttons */
+    text-align: center;  /* keep the text centered */
+  }
+
+  h1{
+    margin-bottom: 6rem;
+  }
+}
+
+
 @keyframes blink {
     0%, 80%, 100% {
         opacity: 0.2;
@@ -245,8 +265,8 @@
     
     
     <div class="button-container">
-        <a href="graphs.htm" class="btn">Checkout T-25 Capy</a>
-        <a href="businessplan.html" class="btn" target="_blank">View Business Plan</a>
+        <a href="capy-stat.html" class="btn">Checkout T-25 Capy</a>
+        <a href="businessplan.html" class="btn">View Business Plan</a>
         <a href = "comp2.html" class="btn">Compare</a>
     </div>
         <!-- <h2>Website Under Maintainence... HOLD TIGHT!</h2> -->
@@ -284,7 +304,10 @@
             box-shadow: 0 0 8px rgba(0,255,247,0.2);
             transition: all 0.2s ease-in-out;
         " onmouseover="this.style.boxShadow='0 0 14px #00fff7'; this.style.background='rgba(0,255,247,0.1)';" onmouseout="this.style.boxShadow='0 0 8px rgba(0,255,247,0.2)'; this.style.background='rgba(0,255,247,0.05)';">
-          <img src="https://abs.twimg.com/icons/apple-touch-icon-192x192.png" alt="X" style="width: 20px; height: 20px; filter: drop-shadow(0 0 3px #00fff7);">
+         <img src="titterlogo.png" 
+            alt="X" 
+            style="width: 20px; height: 20px; filter: drop-shadow(0 0 3px #00fff7);" />
+
           @enigmacaptech
         </a>
       </footer>

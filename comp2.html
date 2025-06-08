@@ -107,201 +107,219 @@
 
     <!-- Dropdown for selecting the comparison target -->
     <select id="dropdown" onchange="updateData()">
-        <option value="ETHUSDT">T-25 Capy vs ETHUSDT (BINANCE)</option>
-        <option value="ARKB">T-25 Capy vs ARKB (CBOE)</option>
-        <option value="BTCO">T-25 Capy vs BTCO (CBOE)</option>
-        <option value="BITB">T-25 Capy vs BITB (Arca)</option>
-        <option value="CTBX">T-25 Capy vs CTBX (CBOE)</option>
-        <option value="WGMI">T-25 Capy vs WGMI (NASDAQ)</option>
+        <option value='{"ticker":"ETHUSDT","exchange":"BINANCE"}'>T-25 Capy vs ETHUSDT (BINANCE)</option>
+        <option value='{"ticker":"ARKB","exchange":"CBOE"}'>T-25 Capy vs ARKB (CBOE)</option>
+        <option value='{"ticker":"BTCO","exchange":"CBOE"}'>T-25 Capy vs BTCO (CBOE)</option>
+        <option value='{"ticker":"BITB","exchange":"Arca"}'>T-25 Capy vs BITB (Arca)</option>
+        <option value='{"ticker":"CTBX","exchange":"CBOE"}'>T-25 Capy vs CTBX (CBOE)</option>
+        <option value='{"ticker":"WGMI","exchange":"NASDAQ"}'>T-25 Capy vs WGMI (NASDAQ)</option>
+        <option value='{"ticker":"SPY","exchange":"PYTH"}'>T-25 Capy vs SPY (PYTH)</option>
+        <option value='{"ticker":"NIFTY","exchange":"NSE"}'>T-25 Capy vs NIFTY (NSE)</option>
+        <option value='{"ticker":"BTCUSDT","exchange":"BINANCE"}'>T-25 Capy vs BTCUSDT (BINANCE)</option>
     </select>
     
     <canvas id="myChart"></canvas>
     <div id="error-message"></div>
 
     <script>
-        const baseUrls = [
-            "https://dynamic-guides-tba-mats.trycloudflare.com",
-            "https://extra-backends.onrender.com"
-        ];
+    let baseUrls = [];
+    let baseUrl = "";
+    let selectedOption = null;
+    let chart = null;
 
-        let baseUrl = baseUrls[0]; // Default to localhost
+    window.addEventListener("DOMContentLoaded", async () => {
+        try {
+            const res = await fetch("settings.json");
+            if (!res.ok) throw new Error("Failed to load settings.json");
 
-        async function selectAvailableServer() {
-            const testUrl = "/ping"; // Endpoint to test server reachability
-
-            for (const url of baseUrls) {
-                try {
-                    const response = await fetch(url + testUrl, {
-                        method: "HEAD",
-                        headers: {
-                            'Accept': 'application/json',
-                            'ngrok-skip-browser-warning': 'true'
-                        }
-                    });
-                    if (response.ok) {
-                        baseUrl = url;
-                        console.log(`Selected available server: ${baseUrl}`);
-                        return;
-                    }
-                } catch (error) {
-                    console.warn(`Server unreachable: ${url}`, error);
-                }
+            const config = await res.json();
+            if (!Array.isArray(config.baseUrls) || config.baseUrls.length === 0) {
+                throw new Error("settings.json missing baseUrls array");
             }
 
-            console.error("No servers are reachable. Defaulting to localhost.");
-        }
+            baseUrls = config.baseUrls;
+            baseUrl = baseUrls[0];
+            console.log("✅ Loaded base URLs:", baseUrls);
 
-        // Select the first available server on page load
-        selectAvailableServer();
-        let selectedOption = "BTC";
-        let chart = null;
-        
-        // Show error message with specific text
-        function showError(message) {
+            // Initialize selected option from dropdown after baseUrl is set
+            selectedOption = JSON.parse(document.getElementById('dropdown').value);
+
+            // Pick an available server before fetching data
+            await selectAvailableServer();
+
+            // Fetch and display data after config is ready and server selected
+            await fetchData();
+
+        } catch (err) {
+            console.error("❌ Could not load settings.json:", err);
             const errorElement = document.getElementById("error-message");
-            errorElement.innerText = message;
+            errorElement.innerText = "Failed to load config. App cannot start.";
             errorElement.style.display = "block";
             document.getElementById("preloader").style.display = "none";
         }
-        
-        // Hide error message
-        function hideError() {
-            document.getElementById("error-message").style.display = "none";
-        }
-        
-        async function fetchData() {
-            // Show loading indicator
-            document.getElementById("preloader").style.display = "flex";
-            hideError();
-            
+    });
+
+    async function selectAvailableServer() {
+        const testUrl = "/ping"; // Endpoint to test server reachability
+
+        for (const url of baseUrls) {
             try {
-                // 1. Fetch model data first (T-25 Capy data)
-                const modelDataRes = await fetch(`${baseUrl}/get_data`, {
+                const response = await fetch(url + testUrl, {
+                    method: "HEAD",
                     headers: {
                         'Accept': 'application/json',
                         'ngrok-skip-browser-warning': 'true'
                     }
                 });
-                
-                if (!modelDataRes.ok) {
-                    throw new Error(`HTTP error fetching model data! Status: ${modelDataRes.status}`);
+                if (response.ok) {
+                    baseUrl = url;
+                    console.log(`Selected available server: ${baseUrl}`);
+                    return;
                 }
-                
-                const modelRaw = await modelDataRes.json();
-                
-                // Check if model data is valid array
-                if (!Array.isArray(modelRaw)) {
-                    throw new Error('Invalid data format from model endpoint - expected array');
-                }
-                
-                // Extract T-25 Capy data
-                const modelDataParsed = modelRaw.map(entry => entry["Profit%"]);
-                const modelLabels = modelRaw.map(entry => new Date(entry["DATETIME"]));
-                
-                // 2. Fetch comparison data (BTC, SPY, or NIFTY)
-                const compareUrl = `${baseUrl}/compare?with=${selectedOption}`;
-                const compareRes = await fetch(compareUrl, {
-                    headers: {
-                        'Accept': 'application/json',
-                        'ngrok-skip-browser-warning': 'true'
-                    }
-                });
-                
-                if (!compareRes.ok) {
-                    throw new Error(`HTTP error fetching comparison data! Status: ${compareRes.status}`);
-                }
-                
-                const compareData = await compareRes.json();
-                
-                // Ensure the comparison data is valid
-                if (!compareData || !Array.isArray(compareData.returns) || !Array.isArray(compareData.dates)) {
-                    throw new Error('Invalid data format from compare endpoint');
-                }
-                
-                // Format dates and prepare data
-                const compareDates = compareData.dates.map(date => new Date(date));
-                const compareReturns = compareData.returns;
-                const compareLabel = compareData.ticker;
-                
-                // 3. Create or update chart
-                const ctx = document.getElementById('myChart').getContext('2d');
-                
-                // Destroy existing chart if there is one
-                if (chart) {
-                    chart.destroy();
-                }
-                
-                // Create new chart
-                chart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: modelLabels,
-                        datasets: [
-                            {
-                                label: 'T-25 Capy cumulative returns (%)',
-                                data: modelDataParsed,
-                                borderColor: '#00ffcc',
-                                backgroundColor: 'rgba(0, 255, 204, 0.2)',
-                                borderWidth: 2,
-                                tension: 0.4
-                            },
-                            {
-                                label: `${compareLabel} cumulative returns (%)`,
-                                data: compareReturns,
-                                borderColor: '#FFD700',
-                                backgroundColor: 'rgba(255, 215, 0, 0.2)',
-                                borderWidth: 2,
-                                tension: 0.4
-                            }
-                        ]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            x: {
-                                type: 'time',
-                                time: { unit: 'day' },
-                                ticks: { color: '#fff' },
-                                title: {
-                                    display: true,
-                                    text: 'Trading Days',
-                                    color: '#00facc',
-                                    font: { size: 20 },
-                                }
-                            },
-                            y: {
-                                ticks: { color: '#fff' },
-                                title: {
-                                    display: true,
-                                    text: '% Change',
-                                    color: '#00facc',
-                                    font: { size: 20 }
-                                }
-                            }
-                        },
-                        plugins: {
-                            legend: { labels: { color: '#fff' } }
-                        }
-                    }
-                });
-                
-                // Hide loading indicator
-                document.getElementById("preloader").style.display = "none";
-                
             } catch (error) {
-                console.error(`Error:`, error);
-                showError(`Failed to load data: ${error.message}`);
+                console.warn(`Server unreachable: ${url}`, error);
             }
         }
-        
-        function updateData() {
-            selectedOption = document.getElementById('dropdown').value;
-            fetchData();
+
+        console.error("No servers are reachable. Defaulting to first URL.");
+        baseUrl = baseUrls[0];
+    }
+
+    function showError(message) {
+        const errorElement = document.getElementById("error-message");
+        errorElement.innerText = message;
+        errorElement.style.display = "block";
+        document.getElementById("preloader").style.display = "none";
+    }
+
+    function hideError() {
+        document.getElementById("error-message").style.display = "none";
+    }
+
+    async function fetchData() {
+        document.getElementById("preloader").style.display = "flex";
+        hideError();
+
+        try {
+            // 1. Fetch T-25 Capy model data
+            const modelDataRes = await fetch(`${baseUrl}/get_data`, {
+                headers: {
+                    'Accept': 'application/json',
+                    'ngrok-skip-browser-warning': 'true'
+                }
+            });
+
+            if (!modelDataRes.ok) {
+                throw new Error(`HTTP error fetching model data! Status: ${modelDataRes.status}`);
+            }
+
+            const modelRaw = await modelDataRes.json();
+
+            if (!Array.isArray(modelRaw)) {
+                throw new Error('Invalid data format from model endpoint - expected array');
+            }
+
+            const modelDataParsed = modelRaw.map(entry => entry["Profit%"]);
+            const modelLabels = modelRaw.map(entry => new Date(entry["DATETIME"]));
+
+            // 2. Fetch comparison data
+            const { ticker, exchange } = selectedOption;
+            const compareUrl = `${baseUrl}/compare?ticker=${encodeURIComponent(ticker)}&exchange=${encodeURIComponent(exchange)}`;
+
+            const compareRes = await fetch(compareUrl, {
+                headers: {
+                    'Accept': 'application/json',
+                    'ngrok-skip-browser-warning': 'true'
+                }
+            });
+
+            if (!compareRes.ok) {
+                throw new Error(`HTTP error fetching comparison data! Status: ${compareRes.status}`);
+            }
+
+            const compareData = await compareRes.json();
+
+            if (!compareData || !Array.isArray(compareData.returns) || !Array.isArray(compareData.dates)) {
+                throw new Error('Invalid data format from compare endpoint');
+            }
+
+            const compareDates = compareData.dates.map(date => new Date(date));
+            const compareReturns = compareData.returns;
+            const compareLabel = `${ticker} (${exchange})`;
+
+            const ctx = document.getElementById('myChart').getContext('2d');
+
+            if (chart) {
+                chart.destroy();
+            }
+
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: modelLabels,
+                    datasets: [
+                        {
+                            label: 'T-25 Capy cumulative returns (%)',
+                            data: modelDataParsed,
+                            borderColor: '#00ffcc',
+                            backgroundColor: 'rgba(0, 255, 204, 0.2)',
+                            borderWidth: 2,
+                            tension: 0.4
+                        },
+                        {
+                            label: `${compareLabel} cumulative returns (%)`,
+                            data: compareReturns,
+                            borderColor: '#FFD700',
+                            backgroundColor: 'rgba(255, 215, 0, 0.2)',
+                            borderWidth: 2,
+                            tension: 0.4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: { unit: 'day' },
+                            ticks: { color: '#fff' },
+                            title: {
+                                display: true,
+                                text: 'Trading Days',
+                                color: '#00facc',
+                                font: { size: 20 },
+                            }
+                        },
+                        y: {
+                            ticks: { color: '#fff' },
+                            title: {
+                                display: true,
+                                text: '% Change',
+                                color: '#00facc',
+                                font: { size: 20 }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: { labels: { color: '#fff' } }
+                    }
+                }
+            });
+
+            document.getElementById("preloader").style.display = "none";
+
+        } catch (error) {
+            console.error(`Error:`, error);
+            showError(`Failed to load data: ${error.message}`);
         }
-        
-        // Initial data load
+    }
+
+    function updateData() {
+        selectedOption = JSON.parse(document.getElementById('dropdown').value);
         fetchData();
-    </script>
+    }
+</script>
+
 </body>
 </html>

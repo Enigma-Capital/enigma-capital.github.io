@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Capy T-25 Stats</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      color: white;
+      background-color: black;
+      overflow: hidden;
+    }
+
+    .container {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    .background-image {
+      background-size: 120%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('capybg2-up.png') no-repeat center center;
+      background-size: 65%;
+      opacity: 0;
+      animation: fadeIn 2s ease forwards;
+    }
+
+    .content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 95vw; /* Increased width to push content to edges */
+      opacity: 0;
+      animation: fadeInFull 2.5s ease 2s forwards;
+    }
+
+    #statsContent, .title {
+      font-size: 1.5rem;
+      position: static;
+      white-space: nowrap;
+      color: rgba(255, 255, 255, 0.85);
+      font-weight: 400;
+    }
+
+    #statsContent {
+      margin-left: 2rem;
+      max-width: 350px;
+      line-height: 1.4;
+    }
+
+    #statsContent p {
+      margin-left: 2rem;
+      margin-bottom: 0.7rem;
+      font-weight: 400;
+      font-size: 1.2rem;
+    }
+
+    #statsContent p span {
+      font-weight: 700;
+      color: whitesmoke;
+    }
+
+    /* Loading animation for Loading stats text */
+    #statsContent p.loading {
+      color: #33d6a6;
+      font-weight: 600;
+      animation: pulse 1.5s infinite;
+      margin-left: 2rem;
+      font-size: 1.3rem;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+
+    #statsContent a {
+      display: inline-block;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #00bfff;
+      text-decoration: none;
+      border-bottom: 2px solid transparent;
+      transition: all 0.3s ease;
+    }
+
+    #statsContent a:hover {
+      color: #33d6a6;
+      border-bottom: 2px solid #33d6a6;
+      text-shadow: 0 0 8px rgba(51, 214, 166, 0.4);
+    }
+
+    #stats h2 {
+      margin-bottom: 1rem;
+      margin-left: 3.8rem;
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: #33d6a6;
+      text-transform: uppercase;
+      text-shadow: 0 0 8px rgba(0, 191, 255, 0.25);
+      letter-spacing: 1px;
+    }
+
+    .title {
+      margin-left: 2rem;
+      font-size: 4rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.6);
+      color: rgb(113, 112, 112);
+      animation: fadeInTitle 4s ease 4s forwards;
+    }
+
+    .title::after {
+      content: "";
+      display: block;
+      width: 50px;
+      height: 4px;
+      background: linear-gradient(90deg, #33d6a6, #33d6a6);
+      margin-top: 8px;
+      border-radius: 2px;
+      opacity: 0.7;
+    }
+
+    .live-title {
+      font-size: 2rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      color: #33d6a6;
+      margin-bottom: 1rem;
+      text-shadow: 0 0 10px rgba(0, 191, 255, 0.3);
+      letter-spacing: 2px;
+      border-left: 4px solid #33d6a6;
+      padding-left: 0.6rem;
+    }
+
+    .outline-button {
+      display: inline-block;
+      box-sizing: border-box;
+      padding: 0.6rem 1.2rem;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #00bfff;
+      background: transparent;
+      border: 2px solid #00bfff;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      margin-top: 1rem;
+      background-color: rgba(0, 191, 255, 0.1);
+    }
+
+    .outline-button:hover {
+      background-color: rgba(0, 191, 255, 0.1);
+      color: #33d6a6;
+      border-color: #33d6a6;
+      text-shadow: 0 0 6px rgba(51, 214, 166, 0.4);
+    }
+
+   
+        /* Responsive tweaks for tablets/phones */
+    @media (max-width: 768px) {
+      .content {
+        flex-direction: column-reverse;  /* title on top */
+        align-items: center;
+        text-align: center;
+      }
+
+      .title {
+        font-size: 1.8rem;       /* smaller title */
+        margin-bottom: 3.5rem;
+        letter-spacing: 0.1em;
+        margin: 1rem 0 0 0;
+        white-space: nowrap;   /* keep it on one line */
+        transform: none;       /* center via flex */
+        animation-delay: 2s;   /* adjust timing if desired */
+      }
+
+      /* Force single-line title */
+      .title h1 {
+        display: inline-block;
+        line-height: 1;
+        margin-bottom: 7rem;
+      }
+
+      #statsContent {
+        margin: 1rem 0;
+        max-width: 95%;
+        font-size: 1rem;
+        line-height: 1.3;
+        margin-bottom: 7rem;
+      }
+
+      #stats h2{
+        width: 100%;                 /* take full width */
+        max-width: 350px;            /* but don’t get too wide */
+        margin: 0;                   /* reset any old margins */
+      }
+
+
+      /* Reduce the loading and link fonts a bit */
+      #statsContent p,
+      #statsContent a {
+        font-size: 1rem;
+        
+      }
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 0.5;
+      }
+    }
+
+    @keyframes fadeInFull {
+      to {
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+  
+<div class="container">
+  <div class="background-image"></div>
+  <div class="content">
+    <div id="stats">
+      <h2 class="loadingtitle"><span style="color:#33d6a6;">|</span> <span style="color: #33d6a6;">LIVE STATS</span></h2>
+      <div id="statsContent"></div>
+    </div>
+    <div class="title">
+      <h1>T-25<br>CAPY</h1>
+    </div>
+  </div>
+</div>
+
+<script>
+  const statsUrls = [
+    'https://clone-ronald-damaged-slots.trycloudflare.com/capystats',
+    'https://extra-backends.onrender.com/capystats' // fallback URL
+  ];
+
+  function showStatsError(message) {
+    document.getElementById("statsContent").innerHTML = `<p style="color: red;">${message}</p>`;
+  }
+
+  function showLoadingStats() {
+    document.getElementById("statsContent").innerHTML = "<p class='loading'>Loading stats...</p>";
+  }
+
+  async function fetchStats(urlIndex = 0) {
+    try {
+      showLoadingStats();
+
+      const response = await fetch(statsUrls[urlIndex], {
+        headers: {
+          'Accept': 'application/json',
+          'ngrok-skip-browser-warning': 'true'
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      const statsHtml = `
+        <p><span>Sharpe Ratio:</span> ${data.Sharpe_ratio}</p>
+        <p><span>Sortino Ratio:</span> ${data.Sortino_ratio}</p>
+        <p><span>Max Profit:</span> ${data.Max_profit} %</p>
+        <p><span>Max Drawdown:</span> ${data.Max_drawdown} %</p>
+        <p><span>Win Rate:</span> ${data.Win_rate} %</p>
+        <p><span>Calmar Ratio:</span> ${data.Calmar_ratio}</p>
+        <p><span>Beta:</span> ${data.Beta}</p>
+        <p><span>Alpha:</span> ${data.Alpha}</p>
+        <p><a href="graphs.htm" class="outline-button">Cumulative Returns</a></p>
+      `;
+
+      document.getElementById('statsContent').innerHTML = statsHtml;
+
+    } catch (error) {
+      console.error(`Error with ${statsUrls[urlIndex]}:`, error);
+      if (urlIndex + 1 < statsUrls.length) {
+        console.log("Trying fallback stats URL...");
+        fetchStats(urlIndex + 1);
+      } else {
+        const errorMessage = error.message.includes("CORS") || error.message.includes("Failed to fetch")
+          ? "Unable to connect to stats server. Please try again later."
+          : `Failed to load stats: ${error.message}`;
+        showStatsError(errorMessage);
+      }
+    }
+  }
+
+  fetchStats();
+</script>
+
+</body>
+</html>
