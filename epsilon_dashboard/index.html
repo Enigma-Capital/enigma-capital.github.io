@@ -260,7 +260,7 @@
 
   async function fetchData() {
     try {
-      const res = await fetch('http://localhost:5000/api/data');
+      const res = await fetch('http://localhost:6969/api/data');
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
       updateUI(data);
