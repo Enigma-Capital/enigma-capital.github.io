@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Enhanced Trading Analyzer</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* reset + base */
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0; padding: 20px;
+      background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+      color: #c9d1d9;
+      font-family: 'JetBrains Mono', monospace;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      color: #58a6ff;
+      text-shadow:
+        0 0 8px #58a6ff88,
+        0 0 20px #58a6ff66;
+      margin-bottom: 10px;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    h2 {
+      font-size: 1.4rem;
+      color: #58a6ff;
+      margin-bottom: 12px;
+      text-shadow: 0 0 6px #58a6ff88;
+      border-bottom: 1px solid #30363d;
+      padding-bottom: 6px;
+      user-select: none;
+    }
+
+    .card {
+      background: #161b22;
+      padding: 22px 28px;
+      border-radius: 12px;
+      box-shadow:
+        0 4px 10px rgb(21 32 43 / 0.8),
+        inset 0 0 8px #21262d;
+      transition: box-shadow 0.3s ease;
+    }
+    .card:hover {
+      box-shadow:
+        0 6px 20px #58a6ffaa,
+        inset 0 0 12px #58a6ff66;
+    }
+
+    #last-updated {
+      font-size: 0.85rem;
+      color: #8b949e;
+      margin-bottom: 14px;
+      user-select: none;
+      font-style: italic;
+      text-align: right;
+    }
+
+    p {
+      font-size: 1rem;
+      margin: 6px 0;
+      color: #adbac7;
+    }
+    p b {
+      color: #58a6ff;
+    }
+
+    /* charts */
+    canvas {
+      width: 100% !important;
+      height: 400px !important;
+      border-radius: 8px;
+      background: #0d1117;
+      box-shadow: inset 0 0 15px #222;
+    }
+
+    /* news */
+    .news-article {
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #30363d;
+      color: #adbac7;
+      user-select: text;
+      transition: background 0.2s ease;
+      cursor: default;
+      border-radius: 4px;
+    }
+    .news-article:hover {
+      background: #21262d;
+    }
+    .news-article strong {
+      font-weight: 700;
+      color: #58a6ff;
+      user-select: text;
+    }
+    .news-article small {
+      color: #8b949e;
+      user-select: text;
+      font-style: italic;
+    }
+    .news-article p {
+      margin-top: 6px;
+      font-size: 0.95rem;
+      color: #cdd9e5;
+    }
+
+    /* raw json */
+    #raw-json {
+      max-height: 320px;
+      overflow-y: auto;
+      background: #0b1016;
+      color: #39d353;
+      padding: 14px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      box-shadow: inset 0 0 20px #0f292f;
+      user-select: text;
+      font-family: 'JetBrains Mono', monospace;
+      line-height: 1.3;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    /* random image */
+    #random-image-card {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    #random-image {
+      max-width: 100%;
+      max-height: 320px;
+      border-radius: 12px;
+      box-shadow:
+        0 4px 16px rgb(88 166 255 / 0.6);
+      transition: transform 0.3s ease;
+    }
+    #random-image:hover {
+      transform: scale(1.05);
+    }
+
+    /* responsive */
+    @media (max-width: 720px) {
+      body {
+        padding: 12px;
+      }
+      .card {
+        padding: 16px 20px;
+      }
+      h1 {
+        font-size: 2rem;
+      }
+      h2 {
+        font-size: 1.2rem;
+      }
+      canvas {
+        height: 300px !important;
+      }
+      #random-image {
+        max-height: 200px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🧠 Enhanced Trading Analyzer</h1>
+    <div id="last-updated">last sync: never</div>
+
+    <div class="card">
+      <h2>Recommendation</h2>
+      <p><b>Signal:</b> <span id="signal">—</span></p>
+      <p><b>Reason:</b> <span id="reason">—</span></p>
+      <p><b>Time:</b> <span id="time">—</span></p>
+    </div>
+
+    <div class="card" id="random-image-card">
+      <img id="random-image" src="" alt="random pic" />
+    </div>
+
+    <div class="card">
+      <h2>Live Chart (Close + SMA + EMA)</h2>
+      <canvas id="priceChart"></canvas>
+    </div>
+
+    <div class="card">
+      <h2>Backtest (Current)</h2>
+      <canvas id="backtestChart"></canvas>
+    </div>
+
+    <div class="card">
+      <h2>Backtest (Historical)</h2>
+      <canvas id="historicalChart"></canvas>
+    </div>
+
+    <div class="card">
+      <h2>Portfolio</h2>
+      <p><b>Value:</b> $<span id="portfolio-value">—</span></p>
+      <p><b>Trades:</b> <span id="trades-count">—</span></p>
+      <p><b>Position:</b> <span id="position">—</span></p>
+    </div>
+
+    <div class="card">
+      <h2>News</h2>
+      <div id="news-feed">No news yet.</div>
+    </div>
+  </div>
+
+  <div class="card" style="max-width:1100px; margin: 20px auto;">
+    <h2>Raw JSON Data</h2>
+    <pre id="raw-json"></pre>
+  </div>
+
+
+<script>
+  let priceChart, backtestChart, historicalChart;
+  const imgs = [
+    'https://i.pinimg.com/736x/98/f2/86/98f286d57bf383e7dafa0859107b8bd9.jpg',
+    'https://i.pinimg.com/736x/39/ea/d9/39ead9992660fa481e4651add89a4bb2.jpg',
+    'https://i.pinimg.com/736x/09/69/10/0969104c607c4514920994b11c9491e7.jpg',
+    'https://i.pinimg.com/736x/4b/19/55/4b19556c59af3e6368e9d87978d4f076.jpg'
+  ];
+  // preload images to reduce jitter
+  imgs.forEach(src => {
+    const img = new Image();
+    img.src = src;
+  });
+
+  const el = {
+    signal: document.getElementById("signal"),
+    reason: document.getElementById("reason"),
+    time: document.getElementById("time"),
+    portfolioValue: document.getElementById("portfolio-value"),
+    tradesCount: document.getElementById("trades-count"),
+    position: document.getElementById("position"),
+    lastUpdated: document.getElementById("last-updated"),
+    newsFeed: document.getElementById("news-feed"),
+    rawJson: document.getElementById('raw-json'),
+    randomImage: document.getElementById('random-image'),
+  };
+
+  async function fetchData() {
+    try {
+      const res = await fetch('http://localhost:5000/api/data');
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      updateUI(data);
+    } catch (e) {
+      console.error("API error:", e);
+    }
+  }
+
+  function updateUI(data) {
+    const rec = data.recommendation || data.current_recommendation || {};
+    const perf = data.performance_data || {};
+
+    el.signal.textContent = rec.signal || "—";
+    el.reason.textContent = rec.reason || "—";
+    el.time.textContent = rec.time ? new Date(rec.time).toLocaleString() : "—";
+
+    el.portfolioValue.textContent = perf.portfolio_value?.toFixed(2) || "—";
+    el.tradesCount.textContent = perf.trades_count ?? "—";
+    el.position.textContent = perf.position || "—";
+
+    el.lastUpdated.textContent = "last sync: " + new Date().toLocaleTimeString();
+
+    renderPriceChart(data.chart_data || []);
+    renderBacktestChart(data.backtest_results || []);
+    renderHistoricalChart(data.historical_backtest_results || []);
+    renderNews(data.news_data || []);
+
+    el.rawJson.textContent = JSON.stringify(data, null, 2);
+
+    // random image every update
+    el.randomImage.src = imgs[Math.floor(Math.random() * imgs.length)];
+  }
+
+  // helper to update existing charts without full destroy/create unless necessary
+  function updateOrCreateChart(chartInstance, ctx, config) {
+    if (chartInstance) {
+      chartInstance.data = config.data;
+      chartInstance.options = config.options;
+      chartInstance.update();
+      return chartInstance;
+    }
+    return new Chart(ctx, config);
+  }
+
+  function renderPriceChart(data) {
+    if (!data.length) return;
+    const labels = data.map(d => new Date(d.timestamp).toLocaleTimeString());
+    const close = data.map(d => d.close);
+    const sma = data.map(d => d.sma);
+    const ema = data.map(d => d.ema);
+
+    const ctx = document.getElementById("priceChart").getContext('2d');
+    priceChart = updateOrCreateChart(priceChart, ctx, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [
+          { label: 'Close', data: close, borderColor: '#58a6ff', borderWidth: 2, fill:false },
+          { label: 'SMA', data: sma, borderColor: '#34d399', borderDash: [5,5], borderWidth: 1, fill:false },
+          { label: 'EMA', data: ema, borderColor: '#facc15', borderDash: [2,2], borderWidth: 1, fill:false }
+        ]
+      },
+      options: chartOptions()
+    });
+  }
+
+  function renderBacktestChart(data) {
+    if (!data?.length) return;
+    const labels = data.map(d => new Date(d.time).toLocaleTimeString());
+    const values = data.map(d => d.portfolio_value);
+
+    const ctx = document.getElementById("backtestChart").getContext('2d');
+    backtestChart = updateOrCreateChart(backtestChart, ctx, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          label: 'Portfolio Value (Current Backtest)',
+          data: values,
+          borderColor: '#84cc16',
+          tension: 0.1,
+          fill: false
+        }]
+      },
+      options: backtestHistoricalChartOptions()
+    });
+  }
+
+  function renderHistoricalChart(data) {
+    if (!data?.length) return;
+    const labels = data.map(d => new Date(d.timestamp).toLocaleTimeString());
+    const values = data.map(d => d.portfolio_value);
+
+    const ctx = document.getElementById("historicalChart").getContext('2d');
+    historicalChart = updateOrCreateChart(historicalChart, ctx, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          label: 'Portfolio Value (Historical)',
+          data: values,
+          borderColor: '#0ea5e9',
+          tension: 0.1,
+          fill: false
+        }]
+      },
+      options: backtestHistoricalChartOptions()
+    });
+  }
+
+  function renderNews(news) {
+    if (!Array.isArray(news)) return;
+    if (!news.length) {
+      el.newsFeed.innerHTML = "No news yet.";
+      return;
+    }
+
+    // batch DOM update using fragment
+    const frag = document.createDocumentFragment();
+    news.forEach(n => {
+      const div = document.createElement("div");
+      div.className = "news-article";
+      div.innerHTML = `
+        <strong>${n.title}</strong><br>
+        <small>${n.source} – ${new Date(n.timestamp).toLocaleString()}</small>
+        <p>${n.content}</p>
+      `;
+      frag.appendChild(div);
+    });
+    el.newsFeed.innerHTML = "";
+    el.newsFeed.appendChild(frag);
+  }
+
+  function chartOptions() {
+    return {
+      responsive: true,
+      plugins: { legend: { labels: { color: '#ccc' } } },
+      scales: {
+        x: { ticks: { color: '#888' } },
+        y: { ticks: { color: '#888' } }
+      }
+    };
+  }
+
+  function backtestHistoricalChartOptions() {
+    return {
+      responsive: true,
+      plugins: { legend: { labels: { color: '#ccc' } } },
+      scales: {
+        x: { ticks: { color: '#888' } },
+        y: { ticks: { color: '#888' }, beginAtZero: true }
+      }
+    };
+  }
+
+  fetchData();
+  setInterval(fetchData, 30000);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,48 @@
+body {
+  margin: 0;
+  font-family: 'Fira Code', monospace;
+  background: #0d1117;
+  color: #c9d1d9;
+}
+
+.container {
+  max-width: 1000px;
+  margin: auto;
+  padding: 2rem;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #30363d;
+  margin-bottom: 2rem;
+}
+
+.card {
+  background: #161b22;
+  border: 1px solid #30363d;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+}
+
+.card h2 {
+  margin-top: 0;
+  color: #58a6ff;
+}
+
+.news-article {
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px dashed #444c56;
+}
+
+pre {
+  background: #0e1117;
+  padding: 1rem;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-size: 0.85rem;
+  color: #8b949e;
+}
