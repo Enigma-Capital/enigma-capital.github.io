@@ -294,7 +294,15 @@ async function fetchStats() {
     };
   }
 
-  const statsUrls = settings.statsUrls;
+const statsUrls = settings.statsUrls;
+if (!Array.isArray(statsUrls) || statsUrls.length === 0) {
+  console.warn("statsUrls missing or invalid, using fallback defaults.");
+  statsUrls = [
+    'https://projects-denial-suite-marina.trycloudflare.com/capystats',
+    'https://extra-backends.onrender.com/capystats'
+  ];
+}
+
 
   function showStatsError(message) {
     document.getElementById("statsContent").innerHTML = `<p style="color: red;">${message}</p>`;
