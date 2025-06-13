@@ -255,6 +255,30 @@
 </div>
 
 <script>
+function initQuantumCore() {
+  const art = `
+     ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣤⣶⣿⣿⣿⣷⣶⣤⣀
+     ⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣶⣿⡿⠛⠉⠙⠛⢿⣿⣿⣿⣷⣄
+     ⠀⠀⠀⠀⠀⠀⠀⣠⣾⣿⡿⠋⠀⠀⠀⠀⠀⠀⠙⠻⣿⣿⣿⣦
+     ⠀⠀⠀⠀⠀⠀⣼⣿⣿⠏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⣿⣿⣿
+     ⠀⠀⠀⠀⠀⠀⣿⣿⡇⠀⠀⠀⠀⣀⣤⣤⣄⠀⠀⠀⠀⢹⣿⣿
+     ⠀⠀⠀⠀⠀⠀⣿⣿⣷⣶⣶⣾⣿⠿⠿⠿⠿⠿⠷⠀⠀⢸⣿⡇
+     ⠀⠀⠀⠀⠀⠀⠈⠻⣿⣿⣿⣿⣷⣶⣤⣄⡀⠀⠀⠀⠀⢸⣿⡇
+     ⠀⠀⠀⠀⠀⠀⠀⠀⠉⠙⠻⠿⣿⣿⣿⣿⣿⣿⣦⣄⡀⢸⣿⠇
+     ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠉⠛⠿⣿⣿⣿⣿⣿⠃
+
+    [CapyBot v0.25] boot sequence initialized.
+    tampering with quantum core will disrupt stats protocol.
+  `;
+
+  console.log(`%c${art}`, 'color: #33d6a6; font-family: monospace; font-size: 11px;');
+
+  return true;
+}
+
+if (!initQuantumCore()) throw new Error("Quantum core initialization failed.");
+
+
 async function fetchStats() {
   let settings;
   try {
@@ -262,10 +286,12 @@ async function fetchStats() {
     settings = await response.json();
   } catch (error) {
     console.error("Failed to load settings.json, falling back to default URLs:", error);
-    settings = { statsUrls: [
+    settings = {
+      statsUrls: [
         'https://projects-denial-suite-marina.trycloudflare.com/capystats',
         'https://extra-backends.onrender.com/capystats'
-      ] };
+      ]
+    };
   }
 
   const statsUrls = settings.statsUrls;
@@ -278,7 +304,7 @@ async function fetchStats() {
     document.getElementById("statsContent").innerHTML = "<p class='loading'>Loading stats...</p>";
   }
 
-  async function fetchStats(urlIndex = 0) {
+  async function loadStats(urlIndex = 0) {
     try {
       showLoadingStats();
 
@@ -289,11 +315,11 @@ async function fetchStats() {
         }
       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
+      if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 
       const data = await response.json();
+
+      if (!data || typeof data !== 'object') throw new Error('Invalid stats data');
 
       const statsHtml = `
         <p><span>Sharpe Ratio:</span> ${data.Sharpe_ratio}</p>
@@ -308,12 +334,12 @@ async function fetchStats() {
       `;
 
       document.getElementById('statsContent').innerHTML = statsHtml;
-
+  
     } catch (error) {
       console.error(`Error with ${statsUrls[urlIndex]}:`, error);
       if (urlIndex + 1 < statsUrls.length) {
         console.log("Trying fallback stats URL...");
-        fetchStats(urlIndex + 1);
+        loadStats(urlIndex + 1);
       } else {
         const errorMessage = error.message.includes("CORS") || error.message.includes("Failed to fetch")
           ? "Unable to connect to stats server. Please try again later."
@@ -323,7 +349,12 @@ async function fetchStats() {
     }
   }
 
-  fetchStats();
+  loadStats();
+}
+
+fetchStats();
+</script>
+
 </script>
 
 </body>
