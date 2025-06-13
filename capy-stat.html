@@ -270,52 +270,48 @@ function initQuantumCore() {
     [CapyBot v0.25] boot sequence initialized.
     tampering with quantum core will disrupt stats protocol.
   `;
-
   console.log(`%c${art}`, 'color: #33d6a6; font-family: monospace; font-size: 11px;');
-
   return true;
 }
 
 if (!initQuantumCore()) throw new Error("Quantum core initialization failed.");
 
-
 async function fetchStats() {
-  let settings;
+  let statsUrls = [];
+
   try {
     const response = await fetch('settings.json');
-    settings = await response.json();
+    const settings = await response.json();
+    if (!Array.isArray(settings.statsUrls)) throw new Error("Invalid or missing statsUrls array.");
+    statsUrls = settings.statsUrls;
   } catch (error) {
-    console.error("Failed to load settings.json, falling back to default URLs:", error);
-    settings = {
-      statsUrls: [
-        'https://projects-denial-suite-marina.trycloudflare.com/capystats',
-        'https://extra-backends.onrender.com/capystats'
-      ]
-    };
+    console.warn("⚠️ Failed to load or parse settings.json, using fallback URLs.");
+    console.error(error);
+    statsUrls = [
+      'https://projects-denial-suite-marina.trycloudflare.com/capystats',
+      'https://extra-backends.onrender.com/capystats'
+    ];
   }
 
-const statsUrls = settings.statsUrls;
-if (!Array.isArray(statsUrls) || statsUrls.length === 0) {
-  console.warn("statsUrls missing or invalid, using fallback defaults.");
-  statsUrls = [
-    'https://projects-denial-suite-marina.trycloudflare.com/capystats',
-    'https://extra-backends.onrender.com/capystats'
-  ];
-}
-
-
   function showStatsError(message) {
-    document.getElementById("statsContent").innerHTML = `<p style="color: red;">${message}</p>`;
+    document.getElementById("statsContent").innerHTML =
+      `<p style="color: red;">${message}</p>`;
   }
 
   function showLoadingStats() {
-    document.getElementById("statsContent").innerHTML = "<p class='loading'>Loading stats...</p>";
+    document.getElementById("statsContent").innerHTML =
+      `<p class='loading'>Loading stats...</p>`;
   }
 
   async function loadStats(urlIndex = 0) {
-    try {
-      showLoadingStats();
+    if (urlIndex >= statsUrls.length) {
+      showStatsError("All stats servers failed. Check your backend or network.");
+      return;
+    }
 
+    showLoadingStats();
+
+    try {
       const response = await fetch(statsUrls[urlIndex], {
         headers: {
           'Accept': 'application/json',
@@ -323,11 +319,11 @@ if (!Array.isArray(statsUrls) || statsUrls.length === 0) {
         }
       });
 
-      if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
       const data = await response.json();
 
-      if (!data || typeof data !== 'object') throw new Error('Invalid stats data');
+      if (!data || typeof data !== 'object') throw new Error("Malformed stats data");
 
       const statsHtml = `
         <p><span>Sharpe Ratio:</span> ${data.Sharpe_ratio}</p>
@@ -341,19 +337,11 @@ if (!Array.isArray(statsUrls) || statsUrls.length === 0) {
         <p><a href="graphs.htm" class="outline-button">Cumulative Returns</a></p>
       `;
 
-      document.getElementById('statsContent').innerHTML = statsHtml;
-  
-    } catch (error) {
-      console.error(`Error with ${statsUrls[urlIndex]}:`, error);
-      if (urlIndex + 1 < statsUrls.length) {
-        console.log("Trying fallback stats URL...");
-        loadStats(urlIndex + 1);
-      } else {
-        const errorMessage = error.message.includes("CORS") || error.message.includes("Failed to fetch")
-          ? "Unable to connect to stats server. Please try again later."
-          : `Failed to load stats: ${error.message}`;
-        showStatsError(errorMessage);
-      }
+      document.getElementById("statsContent").innerHTML = statsHtml;
+
+    } catch (err) {
+      console.warn(`⚠️ Error fetching from ${statsUrls[urlIndex]}: ${err.message}`);
+      loadStats(urlIndex + 1);
     }
   }
 
