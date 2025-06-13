@@ -255,10 +255,20 @@
 </div>
 
 <script>
-  const statsUrls = [
-    'https://projects-denial-suite-marina.trycloudflare.com/capystats',
-    'https://extra-backends.onrender.com/capystats' // fallback URL
-  ];
+async function fetchStats() {
+  let settings;
+  try {
+    const response = await fetch('settings.json');
+    settings = await response.json();
+  } catch (error) {
+    console.error("Failed to load settings.json, falling back to default URLs:", error);
+    settings = { statsUrls: [
+        'https://projects-denial-suite-marina.trycloudflare.com/capystats',
+        'https://extra-backends.onrender.com/capystats'
+      ] };
+  }
+
+  const statsUrls = settings.statsUrls;
 
   function showStatsError(message) {
     document.getElementById("statsContent").innerHTML = `<p style="color: red;">${message}</p>`;
