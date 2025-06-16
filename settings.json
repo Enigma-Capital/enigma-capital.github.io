@@ -1,15 +1,15 @@
 {
   "baseUrls": [
-    "https://projects-denial-suite-marina.trycloudflare.com",
+    "https://hot-else-dining-wishes.trycloudflare.com",
     "http://127.0.0.1:5000"
   ],
   "urls": [
-    " https://projects-denial-suite-marina.trycloudflare.com/get_data",
+    "https://hot-else-dining-wishes.trycloudflare.com/get_data",
     "https://extra-backends.onrender.com/get_data",
     "http://127.0.0.1:5000/get_data"
   ],
   "statsUrls": [
-    "https://projects-denial-suite-marina.trycloudflare.com/capystats",
+    "https://hot-else-dining-wishes.trycloudflare.com/capystats",
     "https://extra-backends.onrender.com/capystats"
   ]
 }
