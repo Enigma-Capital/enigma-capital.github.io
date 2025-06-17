@@ -4,17 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>T-25 Capy v/s IBIT v/s BTCUSDT:BINANCE % Returns</title>
-  
-  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- Annotation plugin -->
-  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@1.4.0"></script>
-  <!-- Date adapter -->
   <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
-
-  <!-- Umami tracking (optional) -->
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@1.4.0"></script>
   <script defer src="https://cloud.umami.is/script.js" data-website-id="5602ec2b-35ca-418d-8899-53ed35d6853f"></script>
-
   <style>
     body {
       margin: 0;
@@ -62,11 +55,10 @@
     }
   </style>
 </head>
-
 <body>
   <div id="preloader">Loading data...</div>
 
-  <h1><span class='pstag'>Live Performance Comparison: </span>T-25 Capy <span class='vs'>v/s</span> <span class="ibit">IBIT</span> <span class='vs'>v/s</span> <span class="btcusdt">BTC/USDT</span></h1>
+  <h1>Live Performance Comparison: <span style="color:#00facc;">T-25 Capy</span> v/s <span style="color:#ff5733;">IBIT</span> v/s <span style="color:#FFD700;">BTC/USDT</span></h1>
   <p>The graph below represents a live cumulative returns comparison between our model T-25 Capy against Blackrock's IBIT ETF and Bitcoin Itself</p>
 
   <div id="error-message"></div>
@@ -122,7 +114,8 @@
                 borderColor: '#00ffcc',
                 backgroundColor: 'rgba(0, 255, 204, 0.2)',
                 borderWidth: 2,
-                tension: 0.4
+                tension: 0.4,
+                pointRadius: 2
               },
               {
                 label: 'IBIT cumulative returns (%)',
@@ -130,7 +123,8 @@
                 borderColor: '#ff5733',
                 backgroundColor: 'rgba(255, 87, 51, 0.2)',
                 borderWidth: 2,
-                tension: 0.4
+                tension: 0.4,
+                pointRadius: 2
               },
               {
                 label: 'BTCUSDT cumulative returns (%)',
@@ -138,7 +132,8 @@
                 borderColor: '#FFD700',
                 backgroundColor: 'rgba(255, 215, 0, 0.2)',
                 borderWidth: 2,
-                tension: 0.4
+                tension: 0.4,
+                pointRadius: 2
               }
             ]
           },
@@ -148,66 +143,73 @@
             scales: {
               x: {
                 type: 'time',
-                time: { unit: 'day' },
-                ticks: { color: '#fff' },
+                time: {
+                  unit: 'day'
+                },
+                ticks: {
+                  color: '#fff'
+                },
                 title: {
                   display: true,
                   text: 'Trading Days',
                   color: '#00facc',
-                  font: { size: 20 }
+                  font: {
+                    size: 20
+                  }
                 }
               },
               y: {
-                ticks: { color: '#fff' },
+                ticks: {
+                  color: '#fff'
+                },
                 title: {
                   display: true,
                   text: '% Change',
                   color: '#00facc',
-                  font: { size: 20 }
+                  font: {
+                    size: 20
+                  }
                 }
               }
             },
             plugins: {
               legend: {
-                labels: { color: '#fff' }
+                labels: {
+                  color: '#fff'
+                }
               },
               annotation: {
-  annotations: {
-    sturmCapyDeploy: {
-      type: 'line',
-      scaleID: 'x',
-      value: '2025-06-12',
-      borderColor: '#00facc',
-      borderWidth: 2,
-      borderDash: [6, 6],
-      label: {
-        enabled: true,
-        content: '🚀 SturmCapy Deployed',
-        position: 'end',
-        xAdjust: 10,
-        yAdjust: -60,
-        backgroundColor: '#00facc',
-        borderRadius: 6,
-        padding: 8,
-        font: {
-          size: 14,
-          weight: 'bold',
-          family: 'Arial'
-        },
-        color: '#000'
-      }
-    }
-  }
-}
-
-              
-               
+                annotations: {
+                  sturmCapyDeploy: {
+                    type: 'line',
+                    scaleID: 'x',
+                    value: '2025-06-12',
+                    borderColor: '#00facc',
+                    borderWidth: 2,
+                    borderDash: [6, 6],
+                    label: {
+                      enabled: true,
+                      content: '🚀 SturmCapy Deployed',
+                      position: 'end',
+                      xAdjust: 10,
+                      yAdjust: -60,
+                      backgroundColor: '#00facc',
+                      borderRadius: 6,
+                      padding: 8,
+                      font: {
+                        size: 14,
+                        weight: 'bold',
+                        family: 'Arial'
+                      },
+                      color: '#000'
+                    }
+                  }
+                }
               }
             }
           },
           plugins: [Chart.registry.getPlugin('annotation')]
         });
-
       } catch (error) {
         console.error(`Error with ${urls[urlIndex]}:`, error);
         if (urlIndex + 1 < urls.length) {
