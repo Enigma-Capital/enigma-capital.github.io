@@ -172,27 +172,36 @@
                 labels: { color: '#fff' }
               },
               annotation: {
-                annotations: {
-                  sturmCapyDeploy: {
-                    type: 'line',
-                    scaleID: 'x',
-                    value: '2025-06-12',
-                    borderColor: 'cyan',
-                    borderWidth: 2,
-                    borderDash: [6, 6],
-                    label: {
-                      enabled: true,
-                      content: 'SturmCapy deployed',
-                      position: 'start',
-                      yAdjust: -20,
-                      backgroundColor: 'rgba(0, 255, 204, 0.8)',
-                      color: '#000',
-                      font: {
-                        style: 'bold'
-                      }
-                    }
-                  }
-                }
+  annotations: {
+    sturmCapyDeploy: {
+      type: 'line',
+      scaleID: 'x',
+      value: '2025-06-12',
+      borderColor: '#00facc',
+      borderWidth: 2,
+      borderDash: [6, 6],
+      label: {
+        enabled: true,
+        content: '🚀 SturmCapy Deployed',
+        position: 'end',
+        xAdjust: 10,
+        yAdjust: -60,
+        backgroundColor: '#00facc',
+        borderRadius: 6,
+        padding: 8,
+        font: {
+          size: 14,
+          weight: 'bold',
+          family: 'Arial'
+        },
+        color: '#000'
+      }
+    }
+  }
+}
+
+              
+               
               }
             }
           },
