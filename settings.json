@@ -9,8 +9,9 @@
     "http://127.0.0.1:5000/get_data"
   ],
   "statsUrls": [
-    "https://hot-else-dining-wishes.trycloudflare.com/capystats",
     "https://hot-else-dining-wishes.trycloudflare.com/sturmcapy",
-    "https://extra-backends.onrender.com/capystats"
+    "https://hot-else-dining-wishes.trycloudflare.com/capystats",
+    "https://extra-backends.onrender.com/capystats",
+    "https://extra-backends.onrender.com/sturmcapy"
   ]
 }
