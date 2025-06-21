@@ -277,22 +277,10 @@ function initQuantumCore() {
 if (!initQuantumCore()) throw new Error("Quantum core initialization failed.");
 
 async function fetchStats() {
-  let statsUrls = [];
-
-  try {
-    const response = await fetch('settings.json');
-    const settings = await response.json();
-    if (!Array.isArray(settings.statsUrls)) throw new Error("Invalid or missing statsUrls array.");
-    statsUrls = settings.statsUrls;
-  } catch (error) {
-    console.warn("⚠️ Failed to load or parse settings.json, using fallback URLs.");
-    console.error(error);
-    statsUrls = [
-      'https://hot-else-dining-wishes.trycloudflare.com/sturmcapy',
-      'https://extra-backends.onrender.com/sturmcapy'
-    ];
-  }
-
+  const statsUrls = [
+  'https://hot-else-dining-wishes.trycloudflare.com/sturmcapy',
+  'https://extra-backends.onrender.com/sturmcapy'
+];
   function showStatsError(message) {
     document.getElementById("statsContent").innerHTML =
       `<p style="color: red;">${message}</p>`;
