@@ -98,6 +98,42 @@
         height: 420px;
       }
     }
+            /* Special Glow and Pulse for SturmCapy */
+        .sturm-card {
+        border: 2px solid #00facc;
+        animation: pulseGlow 2.5s infinite ease-in-out;
+        box-shadow: 0 0 20px rgba(0, 250, 204, 0.6);
+        position: relative;
+        }
+
+        @keyframes pulseGlow {
+        0% {
+            box-shadow: 0 0 10px rgba(0, 250, 204, 0.5);
+        }
+        50% {
+            box-shadow: 0 0 30px rgba(0, 250, 204, 0.9);
+        }
+        100% {
+            box-shadow: 0 0 10px rgba(0, 250, 204, 0.5);
+        }
+        }
+
+        /* NEW Badge */
+        .card-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: #00facc;
+        color: #000;
+        font-weight: bold;
+        font-size: 0.75rem;
+        padding: 5px 10px;
+        border-radius: 20px;
+        box-shadow: 0 0 8px rgba(0, 250, 204, 0.7);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        }
+
   </style>
 </head>
 <body>
@@ -115,15 +151,15 @@
     </a>
 
     <a href="sturmcapy.html">
-    <div class="card" style="background-image: url('sturmcapylogo.png');">
-      <div class="card-overlay">
-        <div class="card-title">SturmCapy</div>
-        <div class="card-description">
-          A leveled-up version of T-25 — Efficient, stable, and ready for the next market cycle.
+    <div class="card sturm-card" style="background-image: url('sturmcapylogo.png');">
+        <div class="card-badge">NEW</div>
+        <div class="card-overlay">
+            <div class="card-title">SturmCapy</div>
+            <div class="card-description">
+            A leveled-up version of T-25 — Efficient, stable, and ready for the next market cycle.
+            </div>
         </div>
-      </div>
     </div>
-  </div>
   </a>
 
 </body>
