@@ -100,9 +100,10 @@
         const data = await response.json();
         document.getElementById("preloader").style.display = "none";
 
-        const labels = data.map(entry => new Date(entry.DATETIME));
+        const labels = data.map(entry => new Date(entry["STURMCAPY DATES"]));
         const ibitData = data.map(entry => entry.IBIT);
-        const profitData = data.map(entry => entry["Profit%"]);
+        const profitData = data.map(entry => entry["STURMCAPY"]);
+        console.log(profitData)
         const btcusdtData = data.map(entry => entry.BTCUSDT);
 
         const ctx = document.getElementById('myChart').getContext('2d');
@@ -112,7 +113,7 @@
             labels: labels,
             datasets: [
               {
-                label: 'T-25 Capy cumulative returns (%)',
+                label: 'SturmCapy cumulative returns (%)',
                 data: profitData,
                 borderColor: '#00ffcc',
                 backgroundColor: 'rgba(0, 255, 204, 0.2)',
