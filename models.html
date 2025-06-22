@@ -14,102 +14,111 @@
 
     body {
       font-family: 'Montserrat', sans-serif;
-      background-color: #0f0f0f;
+      background: linear-gradient(135deg, #0f0f0f, #1a1a1a);
       color: #ffffff;
       min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 2rem;
+      padding: 3rem 1rem;
     }
 
     .container {
       display: flex;
-      flex-direction: row;
-      gap: 2rem;
       flex-wrap: wrap;
+      gap: 2.5rem;
+      justify-content: center;
       max-width: 1200px;
       width: 100%;
-      justify-content: center;
     }
 
     .card {
       position: relative;
-      width: 350px;
-      height: 480px;
+      width: 400px;
+      height: 500px;
       border-radius: 20px;
       overflow: hidden;
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      background-color: rgba(255, 255, 255, 0.03);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
       display: flex;
       align-items: flex-end;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+      backdrop-filter: blur(3px);
     }
 
     .card:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 15px 25px rgba(0, 0, 0, 0.8);
+      transform: scale(1.03);
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.75);
     }
 
     .card-overlay {
-      background: rgba(0, 0, 0, 0.6);
+      background: rgba(0, 0, 0, 0.65);
       padding: 1.5rem;
       width: 100%;
-      backdrop-filter: blur(5px);
+      backdrop-filter: blur(4px);
     }
 
     .card-title {
-      font-size: 1.5rem;
+      font-size: 1.6rem;
       font-weight: 700;
       margin-bottom: 0.5rem;
     }
 
     .card-description {
-      font-size: 0.95rem;
+      font-size: 1rem;
       line-height: 1.5;
+      color: #e0e0e0;
     }
-    a .card * {
-        color: inherit;
-        }
 
     a {
-        text-decoration: none;
-        color: inherit;
-        }
+      text-decoration: none;
+      color: inherit;
+    }
 
-        a:visited {
-        color: inherit;
-        }
+    a:visited {
+      color: inherit;
+    }
+
+    a .card * {
+      color: inherit;
+    }
 
     @media screen and (max-width: 768px) {
+      .container {
+        flex-direction: column;
+        align-items: center;
+      }
+
       .card {
         width: 90%;
-        height: 400px;
+        height: 420px;
       }
     }
   </style>
 </head>
 <body>
 
-  <a href="capy-stat.html" style="text-decoration: none;">
-  <div class="card" style="background-image: url('capybg2-up.png');">
-    <div class="card-overlay">
-      <div class="card-title">T-25 Capy</div>
-      <div class="card-description">
-        Our first shot at a self-learning BTC trading model. Built to adapt, react, and survive the chaos.
+  <div class="container">
+    <a href="capy-stat.html">
+      <div class="card" style="background-image: url('capybg2-up.png');">
+        <div class="card-overlay">
+          <div class="card-title">T-25 Capy</div>
+          <div class="card-description">
+            Our first shot at a self-learning BTC trading model. Built to adapt, react, and survive the chaos.
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-</a>
-
+    </a>
 
     <div class="card" style="background-image: url('sturmcapylogo.png');">
       <div class="card-overlay">
         <div class="card-title">SturmCapy (Coming Soon!)</div>
         <div class="card-description">
-          A leveled-up version of T-25 — Efficient and Stable.
+          A leveled-up version of T-25 — Efficient, stable, and ready for the next market cycle.
         </div>
       </div>
     </div>
