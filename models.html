@@ -28,6 +28,7 @@
       flex-wrap: wrap;
       gap: 2.5rem;
       justify-content: center;
+      align-items: center;
       max-width: 1200px;
       width: 100%;
     }
@@ -97,43 +98,48 @@
         width: 90%;
         height: 420px;
       }
+
+      .card + .card {
+        margin-top: 1.5rem;
+      }
     }
-            /* Special Glow and Pulse for SturmCapy */
-        .sturm-card {
-        border: 2px solid #00facc;
-        animation: pulseGlow 2.5s infinite ease-in-out;
-        box-shadow: 0 0 20px rgba(0, 250, 204, 0.6);
-        position: relative;
-        }
 
-        @keyframes pulseGlow {
-        0% {
-            box-shadow: 0 0 10px rgba(0, 250, 204, 0.5);
-        }
-        50% {
-            box-shadow: 0 0 30px rgba(0, 250, 204, 0.9);
-        }
-        100% {
-            box-shadow: 0 0 10px rgba(0, 250, 204, 0.5);
-        }
-        }
+    /* Special Glow and Pulse for SturmCapy */
+    .sturm-card {
+      border: 2px solid #00facc;
+      animation: pulseGlow 2.5s infinite ease-in-out;
+      box-shadow: 0 0 20px rgba(0, 250, 204, 0.6);
+      position: relative;
+    }
 
-        /* NEW Badge */
-        .card-badge {
-        position: absolute;
-        top: 15px;
-        right: 15px;
-        background: #00facc;
-        color: #000;
-        font-weight: bold;
-        font-size: 0.75rem;
-        padding: 5px 10px;
-        border-radius: 20px;
-        box-shadow: 0 0 8px rgba(0, 250, 204, 0.7);
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        }
+    @keyframes pulseGlow {
+      0% {
+        box-shadow: 0 0 10px rgba(0, 250, 204, 0.5);
+      }
+      50% {
+        box-shadow: 0 0 30px rgba(0, 250, 204, 0.9);
+      }
+      100% {
+        box-shadow: 0 0 10px rgba(0, 250, 204, 0.5);
+      }
+    }
 
+    /* NEW Badge */
+    .card-badge {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: #00facc;
+      color: #000;
+      font-weight: bold;
+      font-size: 0.75rem;
+      padding: 5px 10px;
+      border-radius: 20px;
+      box-shadow: 0 0 8px rgba(0, 250, 204, 0.7);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      z-index: 10;
+    }
   </style>
 </head>
 <body>
@@ -151,16 +157,17 @@
     </a>
 
     <a href="sturmcapy.html">
-    <div class="card sturm-card" style="background-image: url('sturmcapylogo.png');">
+      <div class="card sturm-card" style="background-image: url('sturmcapylogo.png');">
         <div class="card-badge">NEW</div>
         <div class="card-overlay">
-            <div class="card-title">SturmCapy</div>
-            <div class="card-description">
+          <div class="card-title">SturmCapy</div>
+          <div class="card-description">
             A leveled-up version of T-25 — Efficient, stable, and ready for the next market cycle.
-            </div>
+          </div>
         </div>
-    </div>
-  </a>
+      </div>
+    </a>
+  </div>
 
 </body>
 </html>
