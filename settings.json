@@ -6,7 +6,10 @@
   "urls": [
     "https://hot-else-dining-wishes.trycloudflare.com/get_data",
     "https://extra-backends.onrender.com/get_data",
-    "http://127.0.0.1:5000/get_data"
+    "http://127.0.0.1:5000/get_data",
+    "https://hot-else-dining-wishes.trycloudflare.com/get_sturm_data",
+    "https://extra-backends.onrender.com/get_sturm_data",
+    "http://127.0.0.1:5000/get_sturm_data"
   ],
   "statsUrls": [
     "https://hot-else-dining-wishes.trycloudflare.com/sturmcapy",

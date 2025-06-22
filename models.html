@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Model Overview - Enigma Capital</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: #0f0f0f;
+      color: #ffffff;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: row;
+      gap: 2rem;
+      flex-wrap: wrap;
+      max-width: 1200px;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .card {
+      position: relative;
+      width: 350px;
+      height: 480px;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      display: flex;
+      align-items: flex-end;
+    }
+
+    .card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 25px rgba(0, 0, 0, 0.8);
+    }
+
+    .card-overlay {
+      background: rgba(0, 0, 0, 0.6);
+      padding: 1.5rem;
+      width: 100%;
+      backdrop-filter: blur(5px);
+    }
+
+    .card-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .card-description {
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+    a .card * {
+        color: inherit;
+        }
+
+    a {
+        text-decoration: none;
+        color: inherit;
+        }
+
+        a:visited {
+        color: inherit;
+        }
+
+    @media screen and (max-width: 768px) {
+      .card {
+        width: 90%;
+        height: 400px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <a href="capy-stat.html" style="text-decoration: none;">
+  <div class="card" style="background-image: url('capybg2-up.png');">
+    <div class="card-overlay">
+      <div class="card-title">T-25 Capy</div>
+      <div class="card-description">
+        Our first shot at a self-learning BTC trading model. Built to adapt, react, and survive the chaos.
+      </div>
+    </div>
+  </div>
+</a>
+
+
+    <div class="card" style="background-image: url('sturmcapylogo.png');">
+      <div class="card-overlay">
+        <div class="card-title">SturmCapy (Coming Soon!)</div>
+        <div class="card-description">
+          A leveled-up version of T-25 — Efficient and Stable.
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
