@@ -129,6 +129,19 @@
       z-index: 10;
     }
 
+    .trade-tag {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #00fff7;
+        background-color: rgba(0, 255, 247, 0.1);
+        padding: 4px 10px;
+        border-radius: 12px;
+        display: inline-block;
+        margin-bottom: 0.75rem;
+        margin-top: -0.25rem;
+        
+        }
+
     @media screen and (max-width: 768px) {
       .container {
         flex-direction: column;
@@ -143,6 +156,9 @@
       .card + .card {
         margin-top: 1.5rem;
       }
+
+      
+
     }
   </style>
 </head>
@@ -154,6 +170,7 @@
       <div class="card capy-card" style="background-image: url('capybg2-up.png');">
         <div class="card-overlay">
           <div class="card-title">T-25 Capy</div>
+          <div class="trade-tag">BTC Model</div>
           <div class="card-description">
             Our first shot at a self-learning BTC trading model. Built to adapt, react, and survive the chaos.
           </div>
@@ -165,7 +182,8 @@
       <div class="card sturm-card" style="background-image: url('sturmcapylogo.png');">
         <div class="card-badge">NEW</div>
         <div class="card-overlay">
-          <div class="card-title">SturmCapy</div>
+            <div class="card-title">SturmCapy</div>
+            <div class="trade-tag">ETH Model</div>
           <div class="card-description">
             A leveled-up version of T-25 — Efficient, stable, and ready for the next market cycle.
           </div>
