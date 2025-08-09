@@ -1,19 +1,19 @@
 {
   "baseUrls": [
-    "https://affects-often-usc-vii.trycloudflare.com",
+    "https://canadian-plate-comp-some.trycloudflare.com",
     "http://127.0.0.1:5000"
   ],
   "urls": [
-    "https://affects-often-usc-vii.trycloudflare.com/get_data",
+    "https://canadian-plate-comp-some.trycloudflare.com/get_data",
     "https://extra-backends.onrender.com/get_data",
     "http://127.0.0.1:5000/get_data",
-    "https://affects-often-usc-vii.trycloudflare.com/get_sturm_data",
+    "https://canadian-plate-comp-some.trycloudflare.com/get_sturm_data",
     "https://extra-backends.onrender.com/get_sturm_data",
     "http://127.0.0.1:5000/get_sturm_data"
   ],
   "statsUrls": [
-    "https://affects-often-usc-vii.trycloudflare.com/sturmcapy",
-    "https://affects-often-usc-vii.trycloudflare.com/capystats",
+    "https://canadian-plate-comp-some.trycloudflare.com/sturmcapy",
+    "https://canadian-plate-comp-some.trycloudflare.com/capystats",
     "https://extra-backends.onrender.com/capystats",
     "https://extra-backends.onrender.com/sturmcapy"
   ]
