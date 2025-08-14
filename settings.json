@@ -1,19 +1,19 @@
 {
   "baseUrls": [
-    "https://canadian-plate-comp-some.trycloudflare.com",
+    "https://div-associated-soldiers-presentations.trycloudflare.com",
     "http://127.0.0.1:5000"
   ],
   "urls": [
-    "https://canadian-plate-comp-some.trycloudflare.com/get_data",
+    "https://div-associated-soldiers-presentations.trycloudflare.com/get_data",
     "https://extra-backends.onrender.com/get_data",
     "http://127.0.0.1:5000/get_data",
-    "https://canadian-plate-comp-some.trycloudflare.com/get_sturm_data",
+    "https://div-associated-soldiers-presentations.trycloudflare.com/get_sturm_data",
     "https://extra-backends.onrender.com/get_sturm_data",
     "http://127.0.0.1:5000/get_sturm_data"
   ],
   "statsUrls": [
-    "https://canadian-plate-comp-some.trycloudflare.com/sturmcapy",
-    "https://canadian-plate-comp-some.trycloudflare.com/capystats",
+    "https://div-associated-soldiers-presentations.trycloudflare.com/sturmcapy",
+    "https://div-associated-soldiers-presentations.trycloudflare.com/capystats",
     "https://extra-backends.onrender.com/capystats",
     "https://extra-backends.onrender.com/sturmcapy"
   ]
