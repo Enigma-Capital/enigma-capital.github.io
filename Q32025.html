@@ -24,22 +24,21 @@
       max-width: 800px;
       padding: 20px;
       border: 2px solid #00facc;
-      border-radius: 24px; /* rounder edges */
-      box-shadow: 0 0 30px rgba(0,250,204,0.6), inset 0 0 15px rgba(0,250,204,0.2);
-      background: transparent; /* ❌ remove separate bg */
+      border-radius: 24px;
+      box-shadow: 0 0 15px rgba(0,250,204,0.4), inset 0 0 8px rgba(0,250,204,0.1);
+      background: transparent;
       position: relative;
       transition: transform 0.2s ease;
-      backdrop-filter: blur(10px); /* adds subtle blend glassy effect */
+      backdrop-filter: blur(10px);
     }
 
     #chart-container:hover {
       transform: scale(1.02);
-      box-shadow: 0 0 45px rgba(0,250,204,0.9), inset 0 0 20px rgba(0,250,204,0.3);
+      box-shadow: 0 0 20px rgba(0,250,204,0.6), inset 0 0 12px rgba(0,250,204,0.2);
     }
 
     canvas {
-      filter: drop-shadow(0 0 8px #00facc);
-      background: transparent !important; /* ✅ chart canvas transparent */
+      background: transparent !important;
     }
 
     /* Cursor animation glow */
@@ -138,21 +137,60 @@
       const ibitValue = data.ibit || 0;
       const sturmcapyValue = data.sturmcapy || 0;
       
-      // Animate bars progressively for smooth effect
+      // Animate bars and labels progressively for smooth effect
       setTimeout(() => {
         chart.data.datasets[0].data[0] = btcusdtValue;
         chart.update('active');
+        // Animate BTCUSDT label
+        animateLabel(0, "BTCUSDT:BINANCE", "#FFD700");
       }, 0);
       
       setTimeout(() => {
         chart.data.datasets[0].data[1] = ibitValue;
         chart.update('active');
-      }, 300);
+        // Animate IBIT label
+        animateLabel(1, "BLACKROCK's IBIT", "#ff5733");
+      }, 400);
       
       setTimeout(() => {
         chart.data.datasets[0].data[2] = sturmcapyValue;
         chart.update('active');
-      }, 600);
+        // Animate SturmCapy label
+        animateLabel(2, "ENIGMACAPITAL's STURMCAPY", "#00facc");
+      }, 800);
+    }
+
+    // Function to animate individual labels
+    function animateLabel(index, text, color) {
+      const ctx = chart.ctx;
+      const xAxis = chart.scales.x;
+      const tick = xAxis.ticks[index];
+      
+      if (tick) {
+        // Animate label opacity and position
+        let opacity = 0;
+        let yOffset = 20;
+        const targetY = tick.y;
+        
+        const animate = () => {
+          opacity += 0.05;
+          yOffset -= 1;
+          
+          ctx.save();
+          ctx.globalAlpha = opacity;
+          ctx.fillStyle = color;
+          ctx.font = 'bold 12px Arial';
+          ctx.textAlign = 'center';
+          ctx.fillText(text, tick.x, targetY + yOffset);
+          ctx.restore();
+          
+          if (opacity < 1 && yOffset > 0) {
+            requestAnimationFrame(animate);
+          }
+        };
+        
+        animate();
+      }
     }
 
     // Chart data - start with 0 values, will be updated by API
@@ -172,6 +210,18 @@
     const options = {
       responsive: true,
       maintainAspectRatio: false,
+      animation: {
+        duration: 2000,
+        easing: "easeOutExpo"
+      },
+      transitions: {
+        active: {
+          animation: {
+            duration: 1500,
+            easing: 'easeOutQuart'
+          }
+        }
+      },
       plugins: {
         legend: { display: false },
         tooltip: {
@@ -194,22 +244,24 @@
       scales: {
         x: {
           grid: { color: "rgba(0,250,204,0.2)" },
-          ticks: { color: "#00facc", font: { weight: "bold" } }
+          ticks: { 
+            color: function(context) {
+              const colors = ["#FFD700", "#ff5733", "#00facc"];
+              return colors[context.index] || "#00facc";
+            },
+            font: { weight: "bold", size: 12 }
+          },
+          animation: {
+            duration: 2000,
+            easing: 'easeOutExpo'
+          }
         },
         y: {
           grid: { color: "rgba(0,250,204,0.15)" },
-          ticks: { color: "#00facc" }
-        }
-      },
-      animation: {
-        duration: 2000,
-        easing: "easeOutExpo"
-      },
-      transitions: {
-        active: {
+          ticks: { color: "#00facc" },
           animation: {
-            duration: 1500,
-            easing: 'easeOutQuart'
+            duration: 2000,
+            easing: 'easeOutExpo'
           }
         }
       }
