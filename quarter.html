@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Q3 2025 Performance</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: radial-gradient(circle at center, #0a0f1f, #000); /* main bg */
+      font-family: 'Inter', sans-serif;
+      color: #00facc;
+      overflow: hidden;
+    }
+
+    #chart-container {
+      width: 65%;
+      height: 75vh;
+      max-width: 800px;
+      padding: 20px;
+      border: 2px solid #00facc;
+      border-radius: 24px; /* rounder edges */
+      box-shadow: 0 0 30px rgba(0,250,204,0.6), inset 0 0 15px rgba(0,250,204,0.2);
+      background: transparent; /* ❌ remove separate bg */
+      position: relative;
+      transition: transform 0.2s ease;
+      backdrop-filter: blur(10px); /* adds subtle blend glassy effect */
+    }
+
+    #chart-container:hover {
+      transform: scale(1.02);
+      box-shadow: 0 0 45px rgba(0,250,204,0.9), inset 0 0 20px rgba(0,250,204,0.3);
+    }
+
+    canvas {
+      filter: drop-shadow(0 0 8px #00facc);
+      background: transparent !important; /* ✅ chart canvas transparent */
+    }
+
+    /* Cursor animation glow */
+    body {
+      cursor: none;
+    }
+
+    .cursor {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: rgba(0, 250, 204, 0.8);
+      box-shadow: 0 0 15px rgba(0, 250, 204, 0.9), 0 0 25px rgba(0, 250, 204, 0.6);
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      transition: width 0.15s ease, height 0.15s ease, background 0.2s ease;
+      z-index: 9999;
+    }
+
+    .cursor.active {
+      width: 40px;
+      height: 40px;
+      background: rgba(0, 250, 204, 0.4);
+    }
+  </style>
+</head>
+<body>
+  <div id="chart-container">
+    <canvas id="myChart"></canvas>
+  </div>
+
+  <!-- Neon cursor -->
+  <div class="cursor" id="cursor"></div>
+
+  <script>
+    // Chart data
+    const ctx = document.getElementById('myChart').getContext('2d');
+    const data = {
+      labels: ["BTCUSDT:BINANCE", "BLACKROCK's IBIT", "ENIGMACAPITAL's STURMCAPY"],
+      datasets: [{
+        label: "Return (%)",
+        data: [9.51, 9.68, 24.92],
+        backgroundColor: "transparent", // hollow
+        borderWidth: 4,
+        borderColor: ["#FFD700", "#ff5733", "#00facc"],
+        barThickness: 40
+      }]
+    };
+
+    const options = {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: "rgba(0, 0, 0, 0.85)",
+          borderColor: "#00facc",
+          borderWidth: 1,
+          titleColor: "#00facc",
+          bodyColor: "#fff",
+          cornerRadius: 8,
+          boxPadding: 6,
+        },
+        title: {
+          display: true,
+          text: "Q3 2025 Performance",
+          color: "#00facc",
+          font: { size: 22, weight: "bold" },
+          padding: { bottom: 20 }
+        }
+      },
+      scales: {
+        x: {
+          grid: { color: "rgba(0,250,204,0.2)" },
+          ticks: { color: "#00facc", font: { weight: "bold" } }
+        },
+        y: {
+          grid: { color: "rgba(0,250,204,0.15)" },
+          ticks: { color: "#00facc" }
+        }
+      },
+      animation: {
+        duration: 2000,
+        easing: "easeOutExpo"
+      }
+    };
+
+    new Chart(ctx, {
+      type: "bar",
+      data: data,
+      options: options
+    });
+
+    // Neon cursor script
+    const cursor = document.getElementById("cursor");
+    document.addEventListener("mousemove", e => {
+      cursor.style.top = e.clientY + "px";
+      cursor.style.left = e.clientX + "px";
+    });
+    document.addEventListener("mousedown", () => cursor.classList.add("active"));
+    document.addEventListener("mouseup", () => cursor.classList.remove("active"));
+  </script>
+</body>
+</html>
