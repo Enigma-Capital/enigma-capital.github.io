@@ -78,13 +78,90 @@
   <div class="cursor" id="cursor"></div>
 
   <script>
-    // Chart data
+    const urls = [
+      'https://anaheim-swedish-metro-subscriptions.trycloudflare.com/Q3results',
+      'https://extra-backends.onrender.com/Q3results'
+    ];
+    
+    function showError(message) {
+      console.error('Error:', message);
+    }
+
+    function hideError() {
+      // Clear any previous errors
+    }
+
+    // Function to fetch Q3 results from API
+    async function fetchQ3Results(urlIndex = 0) {
+      try {
+        hideError();
+        
+        const response = await fetch(urls[urlIndex], {
+          headers: {
+            'Accept': 'application/json',
+            'ngrok-skip-browser-warning': 'true'
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('Q3 Results:', data);
+        
+        // Update the chart with fetched data
+        updateChartWithData(data);
+        
+      } catch (error) {
+        console.error(`Error with ${urls[urlIndex]}:`, error);
+        if (urlIndex + 1 < urls.length) {
+          console.log("Switching to alternate URL...");
+          await fetchQ3Results(urlIndex + 1);
+        } else {
+          console.error('All URLs failed, using fallback data');
+          // Fallback to static data if all APIs fail
+          const fallbackData = {
+            btcusdt: 0,
+            ibit: 0,
+            sturmcapy: 0
+          };
+          updateChartWithData(fallbackData);
+        }
+      }
+    }
+
+    // Function to update chart with fetched data
+    function updateChartWithData(data) {
+      // Extract values from the data object
+      const btcusdtValue = data.btcusdt || 0;
+      const ibitValue = data.ibit || 0;
+      const sturmcapyValue = data.sturmcapy || 0;
+      
+      // Animate bars progressively for smooth effect
+      setTimeout(() => {
+        chart.data.datasets[0].data[0] = btcusdtValue;
+        chart.update('active');
+      }, 0);
+      
+      setTimeout(() => {
+        chart.data.datasets[0].data[1] = ibitValue;
+        chart.update('active');
+      }, 300);
+      
+      setTimeout(() => {
+        chart.data.datasets[0].data[2] = sturmcapyValue;
+        chart.update('active');
+      }, 600);
+    }
+
+    // Chart data - start with 0 values, will be updated by API
     const ctx = document.getElementById('myChart').getContext('2d');
     const data = {
       labels: ["BTCUSDT:BINANCE", "BLACKROCK's IBIT", "ENIGMACAPITAL's STURMCAPY"],
       datasets: [{
         label: "Return (%)",
-        data: [9.51, 9.68, 24.92],
+        data: [0, 0, 0], // Start with 0, will be updated by API
         backgroundColor: "transparent", // hollow
         borderWidth: 4,
         borderColor: ["#FFD700", "#ff5733", "#00facc"],
@@ -127,14 +204,26 @@
       animation: {
         duration: 2000,
         easing: "easeOutExpo"
+      },
+      transitions: {
+        active: {
+          animation: {
+            duration: 1500,
+            easing: 'easeOutQuart'
+          }
+        }
       }
     };
 
-    new Chart(ctx, {
+    // Create chart and store reference
+    const chart = new Chart(ctx, {
       type: "bar",
       data: data,
       options: options
     });
+
+    // Fetch data when page loads
+    fetchQ3Results();
 
     // Neon cursor script
     const cursor = document.getElementById("cursor");

@@ -100,7 +100,113 @@
             white-space: nowrap;
             text-overflow: ellipsis;
             max-width: 100%;
+        }
 
+        /* Dropdown Styles */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: block;
+            position: absolute;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            min-width: 160px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-glow);
+            border-radius: 8px;
+            z-index: 1001;
+            top: 100%;
+            left: 0;
+            margin-top: 0.5rem;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .dropdown:hover .dropdown-content {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-content a {
+            color: var(--text-light);
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-bottom: 1px solid rgba(0, 255, 247, 0.1);
+        }
+
+        .dropdown-content a:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-content a:hover {
+            background: rgba(0, 255, 247, 0.1);
+            color: var(--primary-cyan);
+            transform: translateX(5px);
+        }
+
+        /* Nested Dropdown */
+        .nested-dropdown {
+            position: relative;
+        }
+
+        .nested-dropdown-content {
+            display: block;
+            position: absolute;
+            left: 100%;
+            top: 0;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            min-width: 120px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-glow);
+            border-radius: 8px;
+            z-index: 1002;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateX(-10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nested-dropdown:hover .nested-dropdown-content {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(0);
+        }
+
+        .nested-dropdown-content a {
+            color: var(--text-light);
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-bottom: 1px solid rgba(0, 255, 247, 0.1);
+        }
+
+        .nested-dropdown-content a:last-child {
+            border-bottom: none;
+        }
+
+        .nested-dropdown-content a:hover {
+            background: rgba(0, 255, 247, 0.1);
+            color: var(--primary-cyan);
+            transform: translateX(5px);
+        }
+
+        .dropdown-arrow {
+            margin-left: 5px;
+            transition: transform 0.3s ease;
+        }
+
+        .dropdown:hover .dropdown-arrow {
+            transform: rotate(180deg);
         }
 
         .nav-link:hover {
@@ -376,6 +482,44 @@
                 visibility: visible;
             }
 
+            /* Mobile dropdown styles */
+            .dropdown-content {
+                position: static;
+                opacity: 1;
+                visibility: visible;
+                transform: none;
+                margin-top: 0;
+                margin-left: 2rem;
+                box-shadow: none;
+                border: none;
+                background: transparent;
+                backdrop-filter: none;
+            }
+
+            .nested-dropdown-content {
+                position: static;
+                opacity: 1;
+                visibility: visible;
+                transform: none;
+                margin-left: 2rem;
+                box-shadow: none;
+                border: none;
+                background: transparent;
+                backdrop-filter: none;
+            }
+
+            .dropdown-content a,
+            .nested-dropdown-content a {
+                padding: 8px 16px;
+                border-bottom: none;
+            }
+
+            .dropdown-content a:hover,
+            .nested-dropdown-content a:hover {
+                transform: none;
+                background: rgba(0, 255, 247, 0.05);
+            }
+
             .mobile-menu-toggle {
                 display: flex;
             }
@@ -423,7 +567,19 @@
         <ul class="nav-menu" id="navMenu">
             <li><a href="models.html" class="nav-link">Models</a></li>
             <!-- <li><a href="sturmcapy.html" class="nav-link">SturmCapy (coming soon!)</a></li> -->
-            <li><a href="#" class="nav-link">Quarterly Performance (coming soon!)</a></li>
+            <li class="dropdown">
+                <a href="#" class="nav-link">Quarterly Performance</a>
+                <div class="dropdown-content">
+                    <div class="nested-dropdown">
+                        <a href="#">2025</a>
+                        <div class="nested-dropdown-content">
+                            <a href="#" style="opacity: 0.6; cursor: not-allowed;">Q1 (coming soon)</a>
+                            <a href="#" style="opacity: 0.6; cursor: not-allowed;">Q2 (coming soon)</a>
+                            <a href="Q32025.html">Q3</a>
+                        </div>
+                    </div>
+                </div>
+            </li>
             <li><a href="comp2.html" class="nav-link">Compare</a></li>
             <li><a href="businessplan.html" class="nav-link">Business Plan</a></li>
         </ul>
@@ -471,8 +627,8 @@
                 <h3 class="feature-title">Lightning Speed</h3>
                 <p class="feature-description">Microsecond execution times with ultra-low latency infrastructure for maximum trading efficiency.</p>
             </div>
-        </section>
-    </main> -->
+        </section> -->
+    </main>
 
     <!-- Footer -->
     <footer class="footer">
