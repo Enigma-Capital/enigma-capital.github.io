@@ -1,19 +1,19 @@
 {
   "baseUrls": [
-    "https://div-associated-soldiers-presentations.trycloudflare.com",
+    "https://certification-shake-privileges-conviction.trycloudflare.com",
     "http://127.0.0.1:5000"
   ],
   "urls": [
-    "https://div-associated-soldiers-presentations.trycloudflare.com/get_data",
+    "https://certification-shake-privileges-conviction.trycloudflare.com/get_data",
     "https://extra-backends.onrender.com/get_data",
     "http://127.0.0.1:5000/get_data",
-    "https://div-associated-soldiers-presentations.trycloudflare.com/get_sturm_data",
+    "https://certification-shake-privileges-conviction.trycloudflare.com/get_sturm_data",
     "https://extra-backends.onrender.com/get_sturm_data",
     "http://127.0.0.1:5000/get_sturm_data"
   ],
   "statsUrls": [
-    "https://div-associated-soldiers-presentations.trycloudflare.com/sturmcapy",
-    "https://div-associated-soldiers-presentations.trycloudflare.com/capystats",
+    "https://certification-shake-privileges-conviction.trycloudflare.com/sturmcapy",
+    "https://certification-shake-privileges-conviction.trycloudflare.com/capystats",
     "https://extra-backends.onrender.com/capystats",
     "https://extra-backends.onrender.com/sturmcapy"
   ]
