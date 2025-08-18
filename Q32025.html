@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Q3 2025 Performance</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
   <style>
     body {
       margin: 0;
@@ -12,10 +13,11 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      background: radial-gradient(circle at center, #0a0f1f, #000); /* main bg */
+      background: radial-gradient(circle at center, #0a0f1f, #000);
       font-family: 'Inter', sans-serif;
       color: #00facc;
       overflow: hidden;
+      cursor: none; /* neon cursor */
     }
 
     #chart-container {
@@ -30,6 +32,9 @@
       position: relative;
       transition: transform 0.2s ease;
       backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     #chart-container:hover {
@@ -37,21 +42,39 @@
       box-shadow: 0 0 20px rgba(0,250,204,0.6), inset 0 0 12px rgba(0,250,204,0.2);
     }
 
-    canvas {
-      background: transparent !important;
-    }
+    canvas { background: transparent !important; opacity: 0; transition: opacity .4s ease; }
 
-    /* Cursor animation glow */
-    body {
-      cursor: none;
+    /* Loading overlay */
+    #loading {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      z-index: 10;
+      background: rgba(0,0,0,0.25);
+      backdrop-filter: blur(2px);
+      text-align: center;
+      padding: 12px;
+      border-radius: 16px;
     }
+    .spinner {
+      width: 42px; height: 42px; border-radius: 50%;
+      border: 3px solid rgba(0,250,204,0.25);
+      border-top-color: #00facc;
+      animation: spin 1s linear infinite, glow 1.6s ease-in-out infinite;
+      box-shadow: 0 0 12px rgba(0,250,204,0.6);
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes glow { 0%,100%{ box-shadow:0 0 10px rgba(0,250,204,.3)} 50%{ box-shadow:0 0 24px rgba(0,250,204,.8)} }
 
+    /* Neon cursor */
     .cursor {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 20px;
-      height: 20px;
+      top: 0; left: 0;
+      width: 20px; height: 20px;
       border-radius: 50%;
       background: rgba(0, 250, 204, 0.8);
       box-shadow: 0 0 15px rgba(0, 250, 204, 0.9), 0 0 25px rgba(0, 250, 204, 0.6);
@@ -60,20 +83,18 @@
       transition: width 0.15s ease, height 0.15s ease, background 0.2s ease;
       z-index: 9999;
     }
-
-    .cursor.active {
-      width: 40px;
-      height: 40px;
-      background: rgba(0, 250, 204, 0.4);
-    }
+    .cursor.active { width: 40px; height: 40px; background: rgba(0, 250, 204, 0.4); }
   </style>
 </head>
 <body>
   <div id="chart-container">
     <canvas id="myChart"></canvas>
+    <div id="loading">
+      <div class="spinner"></div>
+      <div>Loading data…</div>
+    </div>
   </div>
 
-  <!-- Neon cursor -->
   <div class="cursor" id="cursor"></div>
 
   <script>
@@ -81,203 +102,139 @@
       'https://certification-shake-privileges-conviction.trycloudflare.com/Q3results',
       'https://extra-backends.onrender.com/Q3results'
     ];
-    
-    function showError(message) {
-      console.error('Error:', message);
+
+    let chart = null;
+
+    const labels = ["BTCUSDT:BINANCE", "BLACKROCK's IBIT", "ENIGMACAPITAL's STURMCAPY"];
+    const barColors = ["#FFD700", "#ff5733", "#00facc"];
+
+    function showLoading(msg = "Loading data…") {
+      const loading = document.getElementById("loading");
+      loading.style.display = "flex";
+      loading.querySelector('div:last-child').textContent = msg;
+    }
+    function hideLoading() {
+      document.getElementById("loading").style.display = "none";
     }
 
-    function hideError() {
-      // Clear any previous errors
-    }
-
-    // Function to fetch Q3 results from API
     async function fetchQ3Results(urlIndex = 0) {
       try {
-        hideError();
-        
+        showLoading();
         const response = await fetch(urls[urlIndex], {
-          headers: {
-            'Accept': 'application/json',
-            'ngrok-skip-browser-warning': 'true'
-          }
+          headers: { 'Accept': 'application/json', 'ngrok-skip-browser-warning': 'true' }
         });
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const data = await response.json();
-        console.log('Q3 Results:', data);
-        
-        // Update the chart with fetched data
-        updateChartWithData(data);
-        
-      } catch (error) {
-        console.error(`Error with ${urls[urlIndex]}:`, error);
+
+        // Prepare values
+        const values = [
+          Number(data.btcusdt) || 0,
+          Number(data.ibit) || 0,
+          Number(data.sturmcapy) || 0
+        ];
+
+        createChartWithData(values); // create AFTER data is ready (so nothing shows before)
+        hideLoading();
+        document.getElementById('myChart').style.opacity = 1; // fade canvas in
+      } catch (err) {
+        console.error(`Error with ${urls[urlIndex]}:`, err);
         if (urlIndex + 1 < urls.length) {
-          console.log("Switching to alternate URL...");
           await fetchQ3Results(urlIndex + 1);
         } else {
-          console.error('All URLs failed, using fallback data');
-          // Fallback to static data if all APIs fail
-          const fallbackData = {
-            btcusdt: 0,
-            ibit: 0,
-            sturmcapy: 0
-          };
-          updateChartWithData(fallbackData);
+          // keep the overlay visible with error text; chart stays empty
+          showLoading("Failed to load data. Please try again later.");
         }
       }
     }
 
-    // Function to update chart with fetched data
-    function updateChartWithData(data) {
-      // Extract values from the data object
-      const btcusdtValue = data.btcusdt || 0;
-      const ibitValue = data.ibit || 0;
-      const sturmcapyValue = data.sturmcapy || 0;
-      
-      // Animate bars and labels progressively for smooth effect
-      setTimeout(() => {
-        chart.data.datasets[0].data[0] = btcusdtValue;
-        chart.update('active');
-        // Animate BTCUSDT label
-        animateLabel(0, "BTCUSDT:BINANCE", "#FFD700");
-      }, 0);
-      
-      setTimeout(() => {
-        chart.data.datasets[0].data[1] = ibitValue;
-        chart.update('active');
-        // Animate IBIT label
-        animateLabel(1, "BLACKROCK's IBIT", "#ff5733");
-      }, 400);
-      
-      setTimeout(() => {
-        chart.data.datasets[0].data[2] = sturmcapyValue;
-        chart.update('active');
-        // Animate SturmCapy label
-        animateLabel(2, "ENIGMACAPITAL's STURMCAPY", "#00facc");
-      }, 800);
-    }
+    function createChartWithData(values) {
+      const ctx = document.getElementById('myChart').getContext('2d');
 
-    // Function to animate individual labels
-    function animateLabel(index, text, color) {
-      const ctx = chart.ctx;
-      const xAxis = chart.scales.x;
-      const tick = xAxis.ticks[index];
-      
-      if (tick) {
-        // Animate label opacity and position
-        let opacity = 0;
-        let yOffset = 20;
-        const targetY = tick.y;
-        
-        const animate = () => {
-          opacity += 0.05;
-          yOffset -= 1;
-          
-          ctx.save();
-          ctx.globalAlpha = opacity;
-          ctx.fillStyle = color;
-          ctx.font = 'bold 12px Arial';
-          ctx.textAlign = 'center';
-          ctx.fillText(text, tick.x, targetY + yOffset);
-          ctx.restore();
-          
-          if (opacity < 1 && yOffset > 0) {
-            requestAnimationFrame(animate);
-          }
-        };
-        
-        animate();
-      }
-    }
+      // destroy any previous chart to avoid conflicting animations
+      if (chart) { chart.destroy(); }
 
-    // Chart data - start with 0 values, will be updated by API
-    const ctx = document.getElementById('myChart').getContext('2d');
-    const data = {
-      labels: ["BTCUSDT:BINANCE", "BLACKROCK's IBIT", "ENIGMACAPITAL's STURMCAPY"],
-      datasets: [{
-        label: "Return (%)",
-        data: [0, 0, 0], // Start with 0, will be updated by API
-        backgroundColor: "transparent", // hollow
-        borderWidth: 4,
-        borderColor: ["#FFD700", "#ff5733", "#00facc"],
-        barThickness: 40
-      }]
-    };
-
-    const options = {
-      responsive: true,
-      maintainAspectRatio: false,
-      animation: {
-        duration: 2000,
-        easing: "easeOutExpo"
-      },
-      transitions: {
-        active: {
-          animation: {
-            duration: 1500,
-            easing: 'easeOutQuart'
-          }
-        }
-      },
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          backgroundColor: "rgba(0, 0, 0, 0.85)",
-          borderColor: "#00facc",
-          borderWidth: 1,
-          titleColor: "#00facc",
-          bodyColor: "#fff",
-          cornerRadius: 8,
-          boxPadding: 6,
+      chart = new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels,
+          datasets: [{
+            label: "Return (%)",
+            data: values,
+            backgroundColor: "transparent",
+            borderWidth: 4,
+            borderColor: barColors,
+            barThickness: 40
+          }]
         },
-        title: {
-          display: true,
-          text: "Q3 2025 Performance",
-          color: "#00facc",
-          font: { size: 22, weight: "bold" },
-          padding: { bottom: 20 }
-        }
-      },
-      scales: {
-        x: {
-          grid: { color: "rgba(0,250,204,0.2)" },
-          ticks: { 
-            color: function(context) {
-              const colors = ["#FFD700", "#ff5733", "#00facc"];
-              return colors[context.index] || "#00facc";
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+
+          // Slow, sequential rise from 0 → value
+        
+        animation: {
+          y: {
+            from: (ctx) => ctx.chart.scales.y.getPixelForValue(0), // baseline
+            duration: 2000,
+            easing: "easeOutCubic",
+            delay: (ctx) => ctx.dataIndex * 300 // bars one by one
+          }
+        },
+
+
+
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: "rgba(0, 0, 0, 0.85)",
+              borderColor: "#00facc",
+              borderWidth: 1,
+              titleColor: "#00facc",
+              bodyColor: "#fff",
+              cornerRadius: 8,
+              boxPadding: 6,
             },
-            font: { weight: "bold", size: 12 }
+            title: {
+              display: true,
+              text: "Q3 2025 Performance",
+              color: "#00facc",
+              font: { size: 22, weight: "bold" },
+              padding: { bottom: 20 }
+            },
+            // Numbers on top of each bar
+            datalabels: {
+              color: "#fff",
+              anchor: "end",
+              align: "end",
+              offset: 4,
+              font: { weight: "bold", size: 12 },
+              formatter: (v) => `${Number(v).toFixed(2)}%`,
+              display: (ctx) => Number(ctx.dataset.data[ctx.dataIndex]) !== 0
+            }
           },
-          animation: {
-            duration: 2000,
-            easing: 'easeOutExpo'
+          scales: {
+            x: {
+              grid: { color: "rgba(0,250,204,0.2)" },
+              ticks: {
+                color: (context) => barColors[context.index] || "#00facc",
+                font: { weight: "bold", size: 12 }
+              }
+            },
+            y: {
+              beginAtZero: true,
+              grid: { color: "rgba(0,250,204,0.15)" },
+              ticks: { color: "#00facc" }
+            }
           }
         },
-        y: {
-          grid: { color: "rgba(0,250,204,0.15)" },
-          ticks: { color: "#00facc" },
-          animation: {
-            duration: 2000,
-            easing: 'easeOutExpo'
-          }
-        }
-      }
-    };
+        plugins: [ChartDataLabels]
+      });
+    }
 
-    // Create chart and store reference
-    const chart = new Chart(ctx, {
-      type: "bar",
-      data: data,
-      options: options
-    });
-
-    // Fetch data when page loads
+    // Kick off (chart is NOT created until data is ready)
     fetchQ3Results();
 
-    // Neon cursor script
+    // Neon cursor
     const cursor = document.getElementById("cursor");
     document.addEventListener("mousemove", e => {
       cursor.style.top = e.clientY + "px";
