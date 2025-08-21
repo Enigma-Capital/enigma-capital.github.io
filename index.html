@@ -1,85 +1,816 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3DLVKMZF6"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-Y3DLVKMZF6');
-  </script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y3DLVKMZF6"></script>
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="5602ec2b-35ca-418d-8899-53ed35d6853f"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-Y3DLVKMZF6');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enigma Capital - Coming Soon</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+        
+        :root {
+            --primary-cyan: #00fff7;
+            --primary-dark: #0d0d0d;
+            --text-light: #d4d4d4;
+            --text-muted: #999;
+            --glass-bg: rgba(13, 13, 13, 0.8);
+            --border-glow: rgba(0, 255, 247, 0.3);
+        }
 
-  <!-- Umami Analytics -->
-  <script defer src="https://cloud.umami.is/script.js" data-website-id="5602ec2b-35ca-418d-8899-53ed35d6853f"></script>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: var(--primary-dark);
+            color: var(--text-light);
+            font-family: 'Montserrat', sans-serif;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
 
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SturmCapy</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Courier New', monospace;
-      background-color: #000;
-      color: #0ff;
-      overflow-x: hidden;
-    }
-    .hero {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      text-align: center;
-      flex-direction: column;
-    }
-    .hero-title {
-      font-size: 4rem;
-      text-transform: uppercase;
-      letter-spacing: 4px;
-      color: #0ff;
-      text-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
-      margin-bottom: 20px;
-    }
-    .hero-subtitle {
-      font-size: 1.5rem;
-      color: #0ff;
-      min-height: 2rem;
-    }
-    .cursor {
-      display: inline-block;
-      width: 10px;
-      background-color: #0ff;
-      margin-left: 5px;
-      animation: blink 0.8s infinite;
-    }
-    @keyframes blink {
-      0%, 50% { opacity: 1; }
-      50.01%, 100% { opacity: 0; }
-    }
-  </style>
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+        /* Header Styles */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 1rem 2rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-glow);
+            transition: all 0.3s ease;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 0 auto;
+            width: 100%;
+            padding: 0;
+        }
+
+        .logo {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-cyan);
+            text-decoration: none;
+            letter-spacing: 0.05em;
+            text-shadow: 0 0 10px var(--primary-cyan);
+            margin-right: 5rem;
+        }
+
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            max-width: 100%;
+        }
+
+        /* Dropdown Styles */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: block;
+            position: absolute;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            min-width: 160px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-glow);
+            border-radius: 8px;
+            z-index: 1001;
+            top: 100%;
+            left: 0;
+            margin-top: 0.5rem;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .dropdown:hover .dropdown-content {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-content a {
+            color: var(--text-light);
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-bottom: 1px solid rgba(0, 255, 247, 0.1);
+        }
+
+        .dropdown-content a:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-content a:hover {
+            background: rgba(0, 255, 247, 0.1);
+            color: var(--primary-cyan);
+            transform: translateX(5px);
+        }
+
+        /* Nested Dropdown */
+        .nested-dropdown {
+            position: relative;
+        }
+
+        .nested-dropdown-content {
+            display: block;
+            position: absolute;
+            left: 100%;
+            top: 0;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            min-width: 120px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-glow);
+            border-radius: 8px;
+            z-index: 1002;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateX(-10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nested-dropdown:hover .nested-dropdown-content {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(0);
+        }
+
+        .nested-dropdown-content a {
+            color: var(--text-light);
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-bottom: 1px solid rgba(0, 255, 247, 0.1);
+        }
+
+        .nested-dropdown-content a:last-child {
+            border-bottom: none;
+        }
+
+        .nested-dropdown-content a:hover {
+            background: rgba(0, 255, 247, 0.1);
+            color: var(--primary-cyan);
+            transform: translateX(5px);
+        }
+
+        .dropdown-arrow {
+            margin-left: 5px;
+            transition: transform 0.3s ease;
+        }
+
+        .dropdown:hover .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+
+        .nav-link:hover {
+            color: var(--primary-cyan);
+            background: rgba(0, 255, 247, 0.1);
+            box-shadow: 0 0 15px rgba(0, 255, 247, 0.2);
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--primary-cyan);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-link:hover::before {
+            width: 80%;
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .mobile-menu-toggle span {
+            width: 25px;
+            height: 3px;
+            background: var(--text-light);
+            margin: 3px 0;
+            transition: 0.3s;
+        }
+
+        /* Main Content */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+            padding: 8rem 2rem 4rem;
+        }
+
+        .hero-section {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(45deg, var(--text-light), var(--primary-cyan));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: glow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { filter: drop-shadow(0 0 20px rgba(0, 255, 247, 0.3)); }
+            to { filter: drop-shadow(0 0 30px rgba(0, 255, 247, 0.6)); }
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            line-height: 1.6;
+            opacity: 0.9;
+            margin-bottom: 3rem;
+            font-weight: 400;
+        }
+
+        .status-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 4rem;
+            padding: 1rem 2rem;
+            background: rgba(0, 255, 247, 0.05);
+            border: 1px solid rgba(0, 255, 247, 0.2);
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            background: var(--primary-cyan);
+            border-radius: 50%;
+            animation: pulse 1.5s infinite ease-in-out;
+            box-shadow: 0 0 15px var(--primary-cyan);
+        }
+
+        .dot:nth-child(2) { animation-delay: 0.3s; }
+        .dot:nth-child(3) { animation-delay: 0.6s; }
+
+        @keyframes pulse {
+            0%, 80%, 100% {
+                opacity: 0.3;
+                transform: scale(0.8);
+            }
+            40% {
+                opacity: 1;
+                transform: scale(1.2);
+            }
+        }
+
+        .status-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--primary-cyan);
+            font-family: monospace;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            margin-top: 2rem;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: transparent;
+            color: var(--primary-cyan);
+            border: 2px solid var(--primary-cyan);
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, var(--primary-cyan), transparent);
+            transition: all 0.6s ease;
+        }
+
+        .cta-button:hover::before {
+            left: 100%;
+        }
+
+        .cta-button:hover {
+            background: var(--primary-cyan);
+            color: var(--primary-dark);
+            box-shadow: 0 0 30px rgba(0, 255, 247, 0.5);
+            transform: translateY(-2px);
+        }
+
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 6rem;
+            max-width: 1000px;
+        }
+
+        .feature-card {
+            padding: 2rem;
+            background: var(--glass-bg);
+            border: 1px solid rgba(0, 255, 247, 0.2);
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-cyan);
+            box-shadow: 0 10px 30px rgba(0, 255, 247, 0.2);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-cyan);
+        }
+
+        .feature-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-light);
+        }
+
+        .feature-description {
+            opacity: 0.8;
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 6rem;
+            padding: 3rem 2rem 2rem;
+            border-top: 1px solid rgba(0, 255, 247, 0.2);
+            text-align: center;
+        }
+
+        .social-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--primary-cyan);
+            text-decoration: none;
+            font-family: monospace;
+            font-size: 1rem;
+            padding: 0.75rem 1.5rem;
+            border: 1px solid rgba(0, 255, 247, 0.3);
+            border-radius: 12px;
+            background: rgba(0, 255, 247, 0.05);
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .social-link:hover {
+            background: rgba(0, 255, 247, 0.15);
+            box-shadow: 0 0 20px rgba(0, 255, 247, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .social-icon {
+            width: 24px;
+            height: 24px;
+            filter: drop-shadow(0 0 5px var(--primary-cyan));
+        }
+
+        /* Mobile Styles */
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem;
+            }
+
+            .nav-menu {
+                position: fixed;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: var(--glass-bg);
+                backdrop-filter: blur(20px);
+                flex-direction: column;
+                padding: 2rem 0;
+                border-top: 1px solid var(--border-glow);
+                transform: translateY(-100%);
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.3s ease;
+            }
+
+            .nav-menu.active {
+                transform: translateY(0);
+                opacity: 1;
+                visibility: visible;
+            }
+
+            /* Mobile dropdown styles */
+            .dropdown-content {
+                position: static;
+                opacity: 1;
+                visibility: visible;
+                transform: none;
+                margin-top: 0;
+                margin-left: 2rem;
+                box-shadow: none;
+                border: none;
+                background: transparent;
+                backdrop-filter: none;
+            }
+
+            .nested-dropdown-content {
+                position: static;
+                opacity: 1;
+                visibility: visible;
+                transform: none;
+                margin-left: 2rem;
+                box-shadow: none;
+                border: none;
+                background: transparent;
+                backdrop-filter: none;
+            }
+
+            .dropdown-content a,
+            .nested-dropdown-content a {
+                padding: 8px 16px;
+                border-bottom: none;
+            }
+
+            .dropdown-content a:hover,
+            .nested-dropdown-content a:hover {
+                transform: none;
+                background: rgba(0, 255, 247, 0.05);
+            }
+
+            .mobile-menu-toggle {
+                display: flex;
+            }
+
+            .mobile-menu-toggle.active span:nth-child(1) {
+                transform: rotate(-45deg) translate(-6px, 6px);
+            }
+
+            .mobile-menu-toggle.active span:nth-child(2) {
+                opacity: 0;
+            }
+
+            .mobile-menu-toggle.active span:nth-child(3) {
+                transform: rotate(45deg) translate(-6px, -6px);
+            }
+
+            .main-content {
+                padding: 6rem 1rem 2rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+                margin-top: 4rem;
+            }
+
+            .status-container {
+                flex-direction: column;
+                gap: 10px;
+                padding: 1.5rem 1rem;
+            }
+
+            .status-text {
+                font-size: 1rem;
+            }
+        }
+    </style>
 </head>
 <body>
-  <section class="hero">
-    <h1 class="hero-title">SturmCapy</h1>
-    <p class="hero-subtitle" id="typewriter"></p><span class="cursor"></span>
-  </section>
+    <canvas id="shader"></canvas>
+    
+    <!-- Header -->
+    <header class="header">
+    <nav class="nav-container">
+        <a href="#" class="logo">Enigmacapital</a>
+        <ul class="nav-menu" id="navMenu">
+            <li><a href="models.html" class="nav-link">Models</a></li>
+            <!-- <li><a href="sturmcapy.html" class="nav-link">SturmCapy (coming soon!)</a></li> -->
+            <li class="dropdown">
+                <a href="#" class="nav-link">Quarterly Performance</a>
+                <div class="dropdown-content">
+                    <div class="nested-dropdown">
+                        <a href="#">2025</a>
+                        <div class="nested-dropdown-content">
+                            <!-- <a href="Q12025.html">Q1</a> -->
+                            <!-- <a href="#" style="opacity: 0.6; cursor: not-allowed;">Q2 (coming soon)</a> -->
+                            <a href="Q32025.html">Q3</a>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li><a href="comp2.html" class="nav-link">Compare</a></li>
+            <li><a href="businessplan.html" class="nav-link">Business Plan</a></li>
+        </ul>
+        <div class="mobile-menu-toggle" id="mobileToggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+</header>
 
-  <script>
-    window.addEventListener("DOMContentLoaded", () => {
-      const text = "Building cool models to trade markets efficiently...";
-      const element = document.getElementById("typewriter");
-      let i = 0;
+    <!-- Main Content -->
+    <main class="main-content">
+        <section class="hero-section">
+            <h1 class="hero-title">Enigmacapital</h1>
+            <p class="hero-subtitle">Building cool models to trade markets efficiently...</p>
+             <!-- <p class="hero-subtitle">We build cool models to trade</p> -->
+            
+            <!-- <div class="status-container">
+                <span class="dot"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+                <span class="status-text">Launching Soon</span>
+            </div> -->
 
-      function typeWriter() {
-        if (i < text.length) {
-          element.textContent += text.charAt(i);
-          i++;
-          setTimeout(typeWriter, 50); // typing speed
+            <div class="cta-section">
+                <a href="models.html" class="cta-button">Checkout Our Models</a>
+            </div>
+        </section>
+
+        <!-- Features Grid -->
+        <!-- <section class="features-grid" id="features">
+            <div class="feature-card">
+                <div class="feature-icon">🚀</div>
+                <h3 class="feature-title">T-25 Capy Model</h3>
+                <p class="feature-description">Advanced algorithmic trading system with machine learning capabilities for optimal market entry and exit points.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3 class="feature-title">Real-time Analytics</h3>
+                <p class="feature-description">Comprehensive market analysis with predictive insights and risk assessment tools powered by cutting-edge AI.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3 class="feature-title">Lightning Speed</h3>
+                <p class="feature-description">Microsecond execution times with ultra-low latency infrastructure for maximum trading efficiency.</p>
+            </div>
+        </section> -->
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p style="margin-bottom: 1rem; opacity: 0.7;">&copy; 2025 Enigma Capital. Revolutionizing the financial landscape.</p>
+        <a href="https://x.com/enigmacaptech" target="_blank" class="social-link">
+            <img src="titterlogo.png" alt="X" class="social-icon" />
+            @enigmacaptech
+        </a>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const mobileToggle = document.getElementById('mobileToggle');
+        const navMenu = document.getElementById('navMenu');
+
+        mobileToggle.addEventListener('click', () => {
+            mobileToggle.classList.toggle('active');
+            navMenu.classList.toggle('active');
+        });
+
+        // Close mobile menu when clicking on a link
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileToggle.classList.remove('active');
+                navMenu.classList.remove('active');
+            });
+        });
+
+        // Smooth scrolling for internal links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Header scroll effect
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('.header');
+            if (window.scrollY > 100) {
+                header.style.background = 'rgba(13, 13, 13, 0.95)';
+            } else {
+                header.style.background = 'rgba(13, 13, 13, 0.8)';
+            }
+        });
+
+        // WebGL Shader Animation (same as original)
+        const canvas = document.getElementById('shader');
+        const gl = canvas.getContext('webgl');
+
+        if (!gl) {
+            console.error('WebGL not supported');
+        } else {
+            const vertexShaderSource = `
+                attribute vec4 a_position;
+                void main() {
+                    gl_Position = a_position;
+                }
+            `;
+
+            const fragmentShaderSource = `
+                precision highp float;
+                uniform vec2 u_resolution;
+                uniform float u_time;
+
+                float random(vec2 st) {
+                    return fract(sin(dot(st.xy, vec2(12.9898,78.233))) * 43758.5453123);
+                }
+
+                vec2 voronoi(vec2 x) {
+                    vec2 n = floor(x);
+                    vec2 f = fract(x);
+                    vec2 mg = vec2(0.0);
+                    
+                    for(int j = -1; j <= 1; j++) {
+                        for(int i = -1; i <= 1; i++) {
+                            vec2 g = vec2(float(i), float(j));
+                            vec2 o = random(n + g);
+                            o = 0.5 + 0.5 * sin(u_time * 0.5 + 6.2831 * o);
+                            vec2 r = g + o - f;
+                            float d = dot(r, r);
+                            if(d < dot(mg, mg)) mg = r;
+                        }
+                    }
+                    return mg;
+                }
+
+                void main() {
+                    vec2 st = gl_FragCoord.xy/u_resolution.xy;
+                    st.x *= u_resolution.x/u_resolution.y;
+                    
+                    vec2 pos = st * 4.0;
+                    pos.y += u_time * 0.2;
+                    
+                    vec2 v = voronoi(pos);
+                    float pattern = length(v);
+                    
+                    float lines = sin(st.y * 50.0 + u_time + pattern * 3.0) * 0.5 + 0.5;
+                    
+                    float theta = u_time * 0.5;
+                    float r = pow(2.71828, 0.306349 * theta);
+                    vec2 spiral = vec2(r * cos(theta), r * sin(theta));
+                    float spiralPattern = length(st - 0.5 - spiral * 0.1);
+                    
+                    float final = pattern * 0.5 + lines * 0.2 + (1.0 - smoothstep(0.0, 0.1, spiralPattern)) * 0.3;
+                    
+                    float vignette = length(st - 0.5);
+                    final *= 1.0 - vignette * 0.5;
+                    
+                    vec3 color = vec3(final);
+                    
+                    gl_FragColor = vec4(color, 1.0);
+                }
+            `;
+
+            function createShader(gl, type, source) {
+                const shader = gl.createShader(type);
+                gl.shaderSource(shader, source);
+                gl.compileShader(shader);
+                return shader;
+            }
+
+            const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
+            const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
+
+            const program = gl.createProgram();
+            gl.attachShader(program, vertexShader);
+            gl.attachShader(program, fragmentShader);
+            gl.linkProgram(program);
+
+            const positionBuffer = gl.createBuffer();
+            const positions = new Float32Array([
+                -1, -1,
+                1, -1,
+                -1, 1,
+                1, 1,
+            ]);
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+            gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
+
+            const positionLocation = gl.getAttribLocation(program, 'a_position');
+            const resolutionLocation = gl.getUniformLocation(program, 'u_resolution');
+            const timeLocation = gl.getUniformLocation(program, 'u_time');
+
+            function resize() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                gl.viewport(0, 0, canvas.width, canvas.height);
+            }
+
+            window.addEventListener('resize', resize);
+            resize();
+
+            let startTime = Date.now();
+
+            function render() {
+                const time = (Date.now() - startTime) * 0.001;
+
+                gl.clearColor(0, 0, 0, 1);
+                gl.clear(gl.COLOR_BUFFER_BIT);
+
+                gl.useProgram(program);
+                gl.enableVertexAttribArray(positionLocation);
+                gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+                gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+
+                gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
+                gl.uniform1f(timeLocation, time);
+
+                gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+                requestAnimationFrame(render);
+            }
+
+            render();
         }
-      }
-
-      setTimeout(typeWriter, 500); // delay before typing starts
-    });
-  </script>
+    </script>
 </body>
 </html>
