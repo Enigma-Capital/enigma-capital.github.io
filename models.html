@@ -45,14 +45,22 @@
       background-repeat: no-repeat;
       display: flex;
       align-items: flex-end;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      transition: transform 1s ease, box-shadow 0.3s ease, opacity 1s ease;
       cursor: pointer;
       backdrop-filter: blur(3px);
       margin-left: 1.3rem;
+      opacity: 0;
+      transform: translateY(12px);
     }
 
     .card:hover {
       transform: scale(1.03);
+    }
+
+    /* In-view entrance state */
+    .card.in-view {
+      opacity: 1;
+      transform: translateY(0);
     }
 
     .card-overlay {
@@ -167,6 +175,12 @@
       
 
     }
+
+    /* Respect reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      .card { opacity: 1; transform: none; }
+      .card.in-view { opacity: 1; transform: none; }
+    }
   </style>
 </head>
 <body>
@@ -200,6 +214,35 @@
     </a>
 
   </div>
+
+  <script>
+    (function () {
+      function initInViewCards() {
+        var cards = document.querySelectorAll('.card');
+        if (!cards.length) return;
+        if (!('IntersectionObserver' in window)) {
+          cards.forEach(function (c) { c.classList.add('in-view'); });
+          return;
+        }
+        var observer = new IntersectionObserver(function (entries, obs) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('in-view');
+              obs.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.2 });
+
+        cards.forEach(function (card) { observer.observe(card); });
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initInViewCards);
+      } else {
+        initInViewCards();
+      }
+    })();
+  </script>
 
 </body>
 </html>
