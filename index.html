@@ -280,11 +280,29 @@
         }
 
         .hero-subtitle {
-            font-size: 1.3rem;
+            font-size: 1.5rem;
             line-height: 1.6;
-            opacity: 0.9;
+            opacity: 0;
             margin-bottom: 3rem;
             font-weight: 400;
+            transform: translateY(6px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .hero-subtitle.show {
+            opacity: 0.9;
+            transform: translateY(0);
+        }
+
+        /* Typewriter effect */
+        .hero-subtitle.typing {
+            border-right: 2px solid var(--primary-cyan);
+            animation: blink-caret 0.8s step-end infinite;
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent; }
+            50% { border-color: var(--primary-cyan); }
         }
 
         .status-container {
@@ -335,6 +353,16 @@
         /* CTA Section */
         .cta-section {
             margin-top: 2rem;
+            opacity: 0;
+            transform: translateY(8px);
+            pointer-events: none;
+            transition: opacity 0.7s ease, transform 0.6s ease;
+        }
+
+        .cta-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
         }
 
         .cta-button {
@@ -595,7 +623,7 @@
     <main class="main-content">
         <section class="hero-section">
             <h1 class="hero-title">Enigmacapital</h1>
-            <p class="hero-subtitle">Revolutionary AI-powered trading models that decode market mysteries and unlock unprecedented alpha generation.</p>
+            <p class="hero-subtitle">Building cool models to trade markets effectively...</p>
              <!-- <p class="hero-subtitle">We build cool models to trade</p> -->
             
             <!-- <div class="status-container">
@@ -670,6 +698,43 @@
                 }
             });
         });
+
+        // Typewriter effect for hero subtitle
+        (function () {
+            function initTypewriter() {
+                const subtitleEl = document.querySelector('.hero-subtitle');
+                const ctaSection = document.querySelector('.cta-section');
+                if (!subtitleEl) return;
+                const fullText = subtitleEl.textContent.trim();
+                subtitleEl.textContent = '';
+                // Fade-in the subtitle smoothly
+                requestAnimationFrame(() => subtitleEl.classList.add('show'));
+                subtitleEl.classList.add('typing');
+                let index = 0;
+                const typingSpeedMs = 80; // lower is faster
+                const startDelayMs = 300;
+
+                function typeNextCharacter() {
+                    if (index <= fullText.length) {
+                        subtitleEl.textContent = fullText.slice(0, index);
+                        index++;
+                        setTimeout(typeNextCharacter, typingSpeedMs);
+                    } else {
+                        subtitleEl.classList.remove('typing');
+                        const revealDelayMs = 200; // delay before button appears
+                        if (ctaSection) setTimeout(() => ctaSection.classList.add('visible'), revealDelayMs);
+                    }
+                }
+
+                setTimeout(typeNextCharacter, startDelayMs);
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initTypewriter);
+            } else {
+                initTypewriter();
+            }
+        })();
 
         // Header scroll effect
         window.addEventListener('scroll', () => {
