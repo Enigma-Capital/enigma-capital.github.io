@@ -1,19 +1,23 @@
 {
   "baseUrls": [
-    "https://certification-shake-privileges-conviction.trycloudflare.com",
+    "https://greek-thinks-crazy-officer.trycloudflare.com",
     "http://127.0.0.1:5000"
   ],
   "urls": [
-    "https://certification-shake-privileges-conviction.trycloudflare.com/get_data",
+    "https://greek-thinks-crazy-officer.trycloudflare.com/get_data",
     "https://extra-backends.onrender.com/get_data",
     "http://127.0.0.1:5000/get_data",
-    "https://certification-shake-privileges-conviction.trycloudflare.com/get_sturm_data",
+
+    "https://greek-thinks-crazy-officer.trycloudflare.com/get_sturm_data",
     "https://extra-backends.onrender.com/get_sturm_data",
     "http://127.0.0.1:5000/get_sturm_data"
+
+
+
   ],
   "statsUrls": [
-    "https://certification-shake-privileges-conviction.trycloudflare.com/sturmcapy",
-    "https://certification-shake-privileges-conviction.trycloudflare.com/capystats",
+    "https://greek-thinks-crazy-officer.trycloudflare.com/sturmcapy",
+    "https://greek-thinks-crazy-officer.trycloudflare.com/capystats",
     "https://extra-backends.onrender.com/capystats",
     "https://extra-backends.onrender.com/sturmcapy"
   ]

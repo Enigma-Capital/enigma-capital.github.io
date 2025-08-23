@@ -99,8 +99,7 @@
 
   <script>
     const urls = [
-      'https://certification-shake-privileges-conviction.trycloudflare.com/Q3results',
-      'https://extra-backends.onrender.com/Q3results'
+      'https://greek-thinks-crazy-officer.trycloudflare.com/Q3results',
     ];
 
     let chart = null;
@@ -235,13 +234,16 @@
     fetchQ3Results();
 
     // Neon cursor
-    const cursor = document.getElementById("cursor");
+    // const cursor = document.getElementById("cursor");
     document.addEventListener("mousemove", e => {
       cursor.style.top = e.clientY + "px";
       cursor.style.left = e.clientX + "px";
     });
     document.addEventListener("mousedown", () => cursor.classList.add("active"));
     document.addEventListener("mouseup", () => cursor.classList.remove("active"));
+
+
+   
   </script>
 </body>
 </html>
