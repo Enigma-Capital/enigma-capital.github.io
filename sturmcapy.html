@@ -25,7 +25,7 @@
       justify-content: center;
     }
 
-    /* 🔹 Background logo fade-in + responsive scaling */
+    /* 🔹 Background logo fade-in */
     .background-image {
       position: absolute;
       top: 0; left: 0;
@@ -52,7 +52,7 @@
       max-width: 1200px;
       opacity: 0;
       animation: fadeInContent 2s ease forwards;
-      animation-delay: 2.2s; /* ⏳ after logo */
+      animation-delay: 2.2s; /* after logo */
       text-align: center;
     }
 
@@ -84,13 +84,11 @@
       max-width: 900px;
     }
 
-    /* 📱 Force stacking on narrow screens */
     @media (max-width: 600px) {
-      .stats-grid {
-        grid-template-columns: 1fr;
-      }
+      .stats-grid { grid-template-columns: 1fr; }
     }
 
+    /* Data card animation */
     .stat-card {
       background: rgba(0, 0, 0, 0.6);
       border-radius: 15px;
@@ -98,9 +96,25 @@
       text-align: center;
       box-shadow: 0 0 12px rgba(51, 214, 166, 0.25);
       border: 1px solid rgba(51, 214, 166, 0.4);
-      transition: transform 0.4s ease, box-shadow 0.4s ease;
+      transition: transform 0.1s ease, box-shadow 0.4s ease;
       position: relative;
       overflow: hidden;
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeInBox 0.9s ease forwards;
+    }
+
+    .stat-card:nth-child(1) { animation-delay: 3.2s; }
+    .stat-card:nth-child(2) { animation-delay: 3.6s; }
+    .stat-card:nth-child(3) { animation-delay: 4.0s; }
+    .stat-card:nth-child(4) { animation-delay: 4.4s; }
+    .stat-card:nth-child(5) { animation-delay: 4.8s; }
+    .stat-card:nth-child(6) { animation-delay: 5.2s; }
+    .stat-card:nth-child(7) { animation-delay: 5.6s; }
+    .stat-card:nth-child(8) { animation-delay: 6.0s; }
+
+    @keyframes fadeInBox {
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .stat-card::before {
@@ -136,29 +150,54 @@
       transition: all 0.5s ease;
     }
 
-    /* Buttons */
-    .outline-button {
-      display: inline-block;
-      margin-top: 1rem;
-      padding: 0.6rem 1.2rem;
-      font-size: 1rem;
-      font-weight: 600;
-      color: #00bfff;
-      border: 2px solid #00bfff;
-      border-radius: 8px;
-      text-decoration: none;
-      transition: all 0.3s ease;
-      background: rgba(0, 191, 255, 0.1);
+    /* 🚀 New Neon Buttons */
+    .button-group {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 1.5rem;
     }
 
-    .outline-button:hover {
-      color: #33d6a6;
-      border-color: #33d6a6;
-      box-shadow: 0 0 12px rgba(51, 214, 166, 0.6);
+    .neon-button {
+      padding: 0.75rem 1.6rem;
+      font-size: 1rem;
+      font-weight: 700;
+      border: 2px solid #00ffe7;
+      color: #00ffe7;
+      background: transparent;
+      border-radius: 12px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.35s ease;
+      text-decoration: none;
+      display: inline-block;
+      box-shadow: 0 0 8px rgba(0, 255, 231, 0.3);
+    }
+
+    .neon-button::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #00ffe7, #33d6a6);
+      transform: translateX(-100%);
+      transition: transform 0.4s ease;
+      z-index: -1;
+    }
+
+    .neon-button:hover::before {
+      transform: translateX(0);
+    }
+
+    .neon-button:hover {
+      color: #0d0d0d;
+      box-shadow: 0 0 20px rgba(0,255,231,0.8), 0 0 40px rgba(51,214,166,0.6);
     }
 
     /* 🔹 Clean animated STURMCAPY */
     .title h1 {
+      left: 15rem;
       font-size: clamp(2.5rem, 7vw, 5rem);
       font-weight: 900;
       text-transform: uppercase;
@@ -171,7 +210,7 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       animation: fadeInUp 1.8s ease-out forwards, gradientShift 6s infinite linear;
-      animation-delay: 2.8s; /* ⏳ after content */
+      animation-delay: 2.8s;
     }
 
     @keyframes fadeInUp {
@@ -184,12 +223,11 @@
       100% { background-position: 100% 50%; }
     }
 
-    /* 📱 Mobile tweaks */
     @media (max-width: 768px) {
       .content { gap: 1.2rem; }
-      .outline-button { padding: 0.5rem 1rem; font-size: 0.9rem; }
       .stat-card { padding: 0.8rem; }
       .stat-value { font-size: 1.2rem; }
+      .neon-button { padding: 0.6rem 1.2rem; font-size: 0.9rem; }
     }
   </style>
 </head>
@@ -200,9 +238,14 @@
     <div id="stats">
       <h2>| LIVE STATS</h2>
       <div id="statsContent" class="stats-grid"></div>
-      <a href="sturmcapygraph.html" class="outline-button">📈 Cumulative Returns</a>
-      <a href="Q32025.html" class="outline-button">📊 Q3 2025 Report</a>
+
+      <!-- 🔥 Neon Buttons -->
+      <div class="button-group">
+        <a href="sturmcapygraph.html" class="neon-button">📈 Cumulative Returns</a>
+        <a href="Q32025.html" class="neon-button">📊 Q3 2025 Report</a>
+      </div>
     </div>
+
     <div class="title"><h1>STURMCAPY</h1></div>
   </div>
 </div>
@@ -267,7 +310,6 @@ async function fetchStats() {
     }
   }
 
-  // delay stats fetching until after logo/text visible
   setTimeout(() => loadStats(), 3000);
 }
 
