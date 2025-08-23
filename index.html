@@ -188,32 +188,92 @@
     .trend.up{ color:var(--success); border-color:rgba(62,233,138,.35) }
     .trend.down{ color:var(--danger); border-color:rgba(255,92,138,.35) }
 
-    /* Timeline */
-    .section{padding:80px 20px}
-    .section .title{
-      max-width:1100px;margin:0 auto 18px;font-weight:800;font-size:1.6rem;letter-spacing:.02em
+    /* ===== Quarterly Performance ===== */
+    .section#timeline {
+    padding: 80px 20px;
     }
-    .timeline{
-      max-width:1100px;margin:0 auto;padding:16px;border-radius:18px;
-      background:var(--panel);border:1px solid var(--border);backdrop-filter:blur(10px)
+
+    .section {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 0 16px; /* optional side padding to match timeline */
     }
-    .nodes{
-      display:flex;gap:22px;overflow-x:auto;padding:6px;scroll-snap-type:x mandatory
+
+    
+
+    .section#timeline .title {
+    max-width: 1100px;
+    margin: 0 auto 18px;
+    font-weight: 800;
+    font-size: 1.6rem;
+    letter-spacing: .02em;
     }
-    .node{
-      min-width:180px;scroll-snap-align:center;
-      border:1px solid rgba(0,255,247,.25);border-radius:16px;padding:14px 14px 12px;
-      background:linear-gradient(180deg, rgba(0,255,247,.07), rgba(124,92,255,.045));
-      transition:.2s ease; cursor:pointer
+
+    .timeline {
+    max-width: 1100px;
+    margin: 0 auto 40px; /* center + give 40px bottom margin */
+    padding: 16px;
+    border-radius: 18px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    backdrop-filter: blur(10px);
     }
-    .node:hover{ transform:translateY(-2px); box-shadow:0 10px 28px rgba(0,0,0,.35) }
-    .node .q{font-weight:800;color:#e8f4ff}
-    .node .y{font-size:.85rem;color:var(--muted)}
-    .node .badge{
-      margin-top:8px;font-family:"JetBrains Mono",monospace;font-size:.8rem;
-      color:#cfe9ff;opacity:.9
+
+    .nodes {
+    display: flex;
+    gap: 22px;
+    padding: 14px 20px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    backdrop-filter: blur(10px);
+    width: max-content;       /* auto-shrink to fit nodes */
+    max-width: 100%;          /* but never overflow container */
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
     }
-    .node a{ text-decoration:none; color:inherit; }
+
+    .node {
+    min-width: 180px;
+    scroll-snap-align: center;
+    border: 1px solid rgba(0,255,247,.25);
+    border-radius: 16px;
+    padding: 14px 14px 12px;
+    background: linear-gradient(180deg, rgba(0,255,247,.07), rgba(124,92,255,.045));
+    transition: .2s ease;
+    cursor: pointer;
+    flex: 0 0 auto;           /* don’t stretch */
+    }
+
+    .node:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px rgba(0,0,0,.35);
+    }
+
+    .node .q {
+    font-weight: 800;
+    color: #e8f4ff;
+    }
+
+    .node .y {
+    font-size: .85rem;
+    color: var(--muted);
+    }
+
+    .node .badge {
+    margin-top: 8px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: .8rem;
+    color: #cfe9ff;
+    opacity: .9;
+    }
+
+    .node a {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    }
+
 
     /* Features */
     .features{
@@ -236,6 +296,10 @@
       display:grid;place-items:center;font-size:22px;
       background:linear-gradient(135deg, rgba(0,255,247,.18), rgba(124,92,255,.18));
       border:1px solid rgba(255,255,255,.1)
+    }
+
+    .title{
+        margin-bottom: 1rem;
     }
 
     /* Footer */
@@ -457,30 +521,51 @@ loadMetrics();
   </main>
 
   <!-- PERFORMANCE TIMELINE -->
-  <section class="section" id="timeline">
-    <h2 class="title">Quarterly Performance</h2>
-    <div class="timeline">
-      <div class="nodes" id="timelineNodes">
-        <!-- Example nodes (extend as you add quarters) -->
-        <div class="node">
-          <a href="Q32025.html" aria-label="Open Q3 2025 performance">
-            <div class="q">Q3</div>
-            <div class="y">2025</div>
-            <div class="badge">Live</div>
-          </a>
-        </div>
-        <div class="node" tabindex="0" aria-label="Q2 2025 coming soon">
-          <div class="q">Q2</div><div class="y">2025</div><div class="badge">Coming soon</div>
-        </div>
-        <div class="node" tabindex="0" aria-label="Q1 2025 coming soon">
-          <div class="q">Q1</div><div class="y">2025</div><div class="badge">Coming soon</div>
-        </div>
+<section class="section" id="timeline">
+  <h2 class="title">Quarterly Performance</h2>
+  <div class="timeline">
+    <div class="nodes">
+      <!-- Add nodes manually, panel auto-adjusts -->
+      <div class="node">
+        <a href="Q32025.html" aria-label="Open Q3 2025 performance">
+          <div class="q">Q3</div>
+          <div class="y">2025</div>
+          <div class="badge">Live</div>
+        </a>
       </div>
+      <!-- Just copy-paste more .node divs when needed -->
+      
+      <div class="node">
+        <div class="q">Q4</div>
+        <div class="y">2025</div>
+        <div class="badge">Coming soon</div>
+      </div>
+      
+      <div class="node">
+        <div class="q">Q1</div>
+        <div class="y">2026</div>
+        <div class="badge">Coming soon</div>
+      </div>
+
+      <div class="node">
+        <div class="q">Q2</div>
+        <div class="y">2026</div>
+        <div class="badge">Coming soon</div>
+      </div>
+
+      <div class="node">
+        <div class="q">Q3</div>
+        <div class="y">2026</div>
+        <div class="badge">Coming soon</div>
+      </div>
+      
     </div>
-  </section>
+  </div>
+</section>
+
 
   <!-- FEATURES -->
-  <section class="section" id="features">
+  <!-- <section class="section" id="features">
     <h2 class="title">What Powers Our Edge</h2>
     <div class="features">
       <div class="feature tilt">
@@ -505,7 +590,7 @@ loadMetrics();
         </div>
       </div>
     </div>
-  </section>
+  </section> -->
 
   <!-- FOOTER -->
   <footer class="footer">
