@@ -35,18 +35,19 @@
   <style>
     
     :root{
-      --bg:#0a0b0c;
-      --panel:rgba(14,16,20,.5);
-      --glass:rgba(16,20,24,.55);
-      --text:#e6f1ff;
-      --muted:#9fb0c3;
-      --accent:#00fff7;
-      --accent-2:#7c5cff;
-      --border:rgba(0,255,247,.25);
-      --success:#3ee98a;
-      --danger:#ff5c8a;
-      --shadow:0 10px 30px rgba(0,0,0,.45);
+    --bg:#02050b; /* Very dark blue-black background */
+    --panel:rgba(4, 10, 20, .6);
+    --glass:rgba(6, 15, 30, .7);
+    --text:#c9d9f5; /* A subtle, cool off-white */
+    --muted:#7d94b3;
+    --accent:#3e92ff; /* A bright, deep blue */
+    --accent-2:#00fff7; /* An electric cyan for a vibrant blend */
+    --border:rgba(62, 146, 255, .25);
+    --success:#5dff9e; /* A contrasting green for success */
+    --danger:#ff5c8a; /* A vibrant pink for danger */
+    --shadow:0 10px 30px rgba(0,0,0,.6);
     }
+
     *{box-sizing:border-box;margin:0;padding:0}
     html,body{height:100%}
     body{
@@ -442,13 +443,13 @@
     <div class="metric-box">
         <h4>Win Rate</h4>
         <div class="value">
-        <span id="win-rate" class="count loading"></span>
+        <span id="win-rate" class="count loading">--</span>
         </div>
     </div>
     <div class="metric-box">
         <h4>Sharpe Ratio</h4>
         <div class="value">
-        <span id="sharpe-ratio" class="count loading"></span>
+        <span id="sharpe-ratio" class="count loading">--</span>
         </div>
     </div>
     </div>
@@ -457,57 +458,79 @@
  
    
 <script>
-const URL = "https://greek-thinks-crazy-officer.trycloudflare.com/get_metrics";
+    const URL = "https://greek-thinks-crazy-officer.trycloudflare.com/get_metrics";
+    const winEl = document.getElementById("win-rate");
+    const sharpeEl = document.getElementById("sharpe-ratio");
 
-const winEl = document.getElementById("win-rate");
-const sharpeEl = document.getElementById("sharpe-ratio");
-const trendEl = document.getElementById("trend");
-
-// leave the spinner until valid value is set
-function setIfValid(el, raw, formatFn) {
-  if (!el) return;
-  const num = parseFloat(raw);
-  if (!isNaN(num)) {
-    el.textContent = formatFn(num);
-    el.classList.remove("loading"); // stop spinner only if valid
-  }
-}
-
-async function loadMetrics() {
-  try {
-    const res = await fetch(URL, { 
-      headers: { 
-        'Accept': 'application/json', 
-        'ngrok-skip-browser-warning': 'true' 
-      }
-    });
-    const data = await res.json();
-    console.log(data);
-
-    // numbers
-    setIfValid(winEl, data.win_rate, n => n.toFixed(2) + "%");
-    setIfValid(sharpeEl, data.sharpe_ratio, n => n.toFixed(2));
-
-    // trend
-    if (trendEl && typeof data.trend === "string") {
-      if (data.trend === "up") {
-        trendEl.textContent = "↑";
-        trendEl.classList.add("up");
-        trendEl.classList.remove("down", "loading");
-      } else if (data.trend === "down") {
-        trendEl.textContent = "↓";
-        trendEl.classList.add("down");
-        trendEl.classList.remove("up", "loading");
-      }
+    // This function sets the element's text content only if the value is a valid number.
+    function setIfValid(el, raw, formatFn) {
+        if (!el) return;
+        const num = parseFloat(raw);
+        if (!isNaN(num) && raw !== null && raw !== undefined) {
+            el.textContent = formatFn(num);
+            el.classList.remove("loading");
+        } else {
+            el.textContent = "--";
+        }
     }
-  } catch (err) {
-    console.error("Error fetching metrics:", err);
-    // keep spinner if error
-  }
-}
 
-loadMetrics();
+    // This is the main function to fetch and update all metrics.
+    async function fetchAndUpdateMetrics() {
+        try {
+            
+            // Immediately start a loading state on all metrics
+            if (winEl) {
+                winEl.classList.add("loading");
+            }
+            if (sharpeEl) {
+                sharpeEl.classList.add("loading");
+            }
+            
+
+            const res = await fetch(URL, {
+                headers: {
+                    'Accept': 'application/json',
+                    'ngrok-skip-browser-warning': 'true'
+                }
+            });
+
+            // Check if the response is valid JSON
+            if (res.ok) {
+                const data = await res.json();
+                console.log("Metrics fetched successfully:", data);
+
+                // Update the Win Rate
+                setIfValid(winEl, data.win_rate, n => n.toFixed(2) + "%");
+
+                // Update the Sharpe Ratio
+                setIfValid(sharpeEl, data.sharpe_ratio, n => n.toFixed(2));
+            } else {
+                console.error("Server responded with a non-OK status:", res.status);
+                throw new Error("Invalid response from server");
+                
+            }
+
+        } catch (err) {
+            console.error("Error fetching or processing metrics:", err);
+            // On error, display the placeholder for both metrics.
+            if (winEl) {
+                winEl.textContent = "--";
+                winEl.classList.remove("loading");
+            }
+            if (sharpeEl) {
+                sharpeEl.textContent = "--";
+                sharpeEl.classList.remove("loading");
+            }
+        }
+    }
+
+    // Immediately fetch and update on page load.
+    fetchAndUpdateMetrics();
+
+    // Set up a timer to continuously fetch and update the metrics every 30 seconds.
+    setInterval(fetchAndUpdateMetrics, 10000);
 </script>
+
 
 
 
@@ -693,38 +716,43 @@ loadMetrics();
         attribute vec4 a_position;
         void main(){ gl_Position = a_position; }
       `;
-      const fSrc = `
-        precision highp float;
-        uniform vec2 u_resolution;
-        uniform float u_time;
+    const fSrc = `
+  precision highp float;
+  uniform vec2 u_resolution;
+  uniform float u_time;
 
-        float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1,311.7))) * 43758.5453123); }
+  float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1,311.7))) * 43758.5453123); }
 
-        float noise(vec2 p){
-          vec2 i=floor(p), f=fract(p);
-          float a=hash(i), b=hash(i+vec2(1.,0.)), c=hash(i+vec2(0.,1.)), d=hash(i+vec2(1.,1.));
-          vec2 u=f*f*(3.-2.*f);
-          return mix(a,b,u.x)+ (c-a)*u.y*(1.-u.x) + (d-b)*u.x*u.y;
-        }
+  float noise(vec2 p){
+    vec2 i=floor(p), f=fract(p);
+    float a=hash(i), b=hash(i+vec2(1.,0.)), c=hash(i+vec2(0.,1.)), d=hash(i+vec2(1.,1.));
+    vec2 u=f*f*(3.-2.*f);
+    return mix(a,b,u.x)+ (c-a)*u.y*(1.-u.x) + (d-b)*u.x*u.y;
+  }
 
-        void main(){
-          vec2 st = gl_FragCoord.xy / u_resolution.xy;
-          st.x *= u_resolution.x / u_resolution.y;
+  void main(){
+    vec2 st = gl_FragCoord.xy / u_resolution.xy;
+    st.x *= u_resolution.x / u_resolution.y;
 
-          float t = u_time * .2;
-          float n = noise(st*3.0 + vec2(t, -t))*0.6 + noise(st*8.0 - t)*0.25;
+    float t = u_time * 0.1;
+    float n = noise(st*2.0 + vec2(t, -t))*0.5 + noise(st*7.0 - t)*0.3;
 
-          float grid = smoothstep(.49,.5, abs(fract(st.x*10.)-.5)) * .08 +
-                       smoothstep(.49,.5, abs(fract(st.y*10.)-.5)) * .08;
+    float grid = smoothstep(.49,.5, abs(fract(st.x*10.)-.5)) * 0.06 +
+                 smoothstep(.49,.5, abs(fract(st.y*10.)-.5)) * 0.06;
 
-          float vignette = smoothstep(1.2,.2, distance(st, vec2(.5)));
+    float vignette = smoothstep(1.2,.3, distance(st, vec2(.5)));
 
-          vec3 c = vec3(n*0.45 + grid*0.7, n*0.35 + grid*0.4, n*0.55);
-          c *= vignette;
+    // Create a predominantly black color with a grey-blue hue
+    vec3 base_color = vec3(n * 0.25); // Lower intensity for darker noise
+    vec3 blue_tint = vec3(0.05, 0.1, 0.2); // A dark, subtle blue tint
+    vec3 final_color = base_color + blue_tint;
 
-          gl_FragColor = vec4(c, 1.0);
-        }
-      `;
+    final_color *= vignette;
+    final_color += vec3(grid * 0.8); // Apply grid on top
+
+    gl_FragColor = vec4(final_color, 1.0);
+  }
+`;
 
       function compile(type, src){
         const s = gl.createShader(type);
