@@ -424,7 +424,7 @@
     <div class="hero-inner">
       <h1 class="glow-title">BUILT TO<span style="background:linear-gradient(90deg,var(--accent),var(--accent-2));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent"> WIN.</span></h1>
       <div class="rotator" aria-live="polite">
-        <span id="rotatingText">AI-driven Quant Strategies</span><span class="cursor" aria-hidden="true"></span>
+        <span id="rotatingText"></span><span class="cursor" aria-hidden="true"></span>
       </div>
       <div class="hero-cta">
         <a class="btn btn-primary" href="models.html">🚀 Explore Our Models</a>
@@ -643,11 +643,11 @@
 
     // ====== Rotating Taglines (type/erase minimal) ======
     const lines = [
-      "AI-driven Quant Strategies",
-      "Beating the Market with Code",
+      "Alpha Engineered.",
+      "Discipline. Data. Dominance.",
       "Research. Risk. Execution.",
-      "Fast. Smart. Adaptive.",
-      "Built to win"
+      "Beating the Market with Code",
+      "Where code meets capital."
     ];
     const rotator = document.getElementById('rotatingText');
     let idx = 0, typing = true, ch = 0, hold = 900, speed = 42;
@@ -737,8 +737,8 @@
     float t = u_time * 0.1;
     float n = noise(st*2.0 + vec2(t, -t))*0.5 + noise(st*7.0 - t)*0.3;
 
-    float grid = smoothstep(.49,.5, abs(fract(st.x*10.)-.5)) * 0.06 +
-                 smoothstep(.49,.5, abs(fract(st.y*10.)-.5)) * 0.06;
+    // float grid = smoothstep(.49,.5, abs(fract(st.x*10.)-.5)) * 0.06 +
+    //              smoothstep(.49,.5, abs(fract(st.y*10.)-.5)) * 0.06;
 
     float vignette = smoothstep(1.2,.3, distance(st, vec2(.5)));
 
