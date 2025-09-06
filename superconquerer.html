@@ -236,9 +236,9 @@
   <div class="background-image"></div>
   <div class="content">
     <div id="stats">
-      <!-- <h2>| LIVE STATS</h2> -->
-      <!-- <div id="statsContent" class="stats-grid"></div> -->
-        <h2>Coming Soon...</h2>
+      <h2>| LIVE STATS</h2>
+      <div id="statsContent" class="stats-grid"></div>
+        <!-- <h2>Coming Soon...</h2> -->
 
       <!-- 🔥 Neon Buttons -->
       <div class="button-group">
@@ -265,8 +265,8 @@ function animateValue(el, start, end, duration) {
 
 async function fetchStats() {
   const statsUrls = [
-    'https://greek-thinks-crazy-officer.trycloudflare.com/sturmcapy',
-    'https://extra-backends.onrender.com/sturmcapy'
+    'https://greek-thinks-crazy-officer.trycloudflare.com/superconquerer',
+    'https://extra-backends.onrender.com/superconquerer'
   ];
 
   async function loadStats(urlIndex = 0) {
@@ -280,7 +280,7 @@ async function fetchStats() {
       const response = await fetch(statsUrls[urlIndex]);
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const data = await response.json();
-
+      console.log(data)
       const statsMap = {
         "Sharpe Ratio": data.Sharpe_ratio,
         "Sortino Ratio": data.Sortino_ratio,
