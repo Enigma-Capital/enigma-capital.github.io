@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AT-BX1 (P) v/s IBIT v/s BTCUSDT:BINANCE % Returns</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@1.4.0"></script>
+  <script defer src="https://cloud.umami.is/script.js" data-website-id="5602ec2b-35ca-418d-8899-53ed35d6853f"></script>
+  <style>
+    body {
+      margin: 0;
+      background-color: #111;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+
+    canvas#myChart {
+      max-width: 100%;
+      height: 500px;
+      display: block;
+    }
+
+    #myChart {
+      width: 100%;
+      height: 500px;
+      max-height: 90vh;
+    }
+
+    #preloader {
+      display: none;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      color: white;
+      background-color: rgba(0, 0, 0, 0.8);
+      font-size: 1.5rem;
+    }
+
+    #error-message {
+      color: red;
+      font-weight: bold;
+      margin: 10px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #00facc;
+    }
+
+    p {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+  </style>
+</head>
+<body>
+  <div id="preloader">Loading data...</div>
+
+  <h1>Live Performance Comparison: <span style="color:#00facc;">AT-BX1 (P)</span> v/s <span style="color:#ff5733;">IBIT</span> v/s <span style="color:#FFD700;">BTC/USDT</span></h1>
+  <p>The graph below represents a live cumulative returns comparison between our model AT-BX1 (P) against Blackrock's IBIT ETF and Bitcoin Itself</p>
+
+  <div id="error-message"></div>
+  <canvas id="myChart"></canvas>
+
+  <script>
+    const urls = [
+      'https://greek-thinks-crazy-officer.trycloudflare.com/get_sq_data',
+      'https://extra-backends.onrender.com/get_sq_data'
+    ];
+
+    function showError(message) {
+      const errorElement = document.getElementById("error-message");
+      errorElement.innerText = message;
+      errorElement.style.display = "block";
+      document.getElementById("preloader").style.display = "none";
+    }
+
+    function hideError() {
+      document.getElementById("error-message").style.display = "none";
+    }
+
+    async function fetchData(urlIndex = 0) {
+      try {
+        hideError();
+        document.getElementById("preloader").style.display = "flex";
+
+        const response = await fetch(urls[urlIndex], {
+          headers: {
+            'Accept': 'application/json',
+            'ngrok-skip-browser-warning': 'true'
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        document.getElementById("preloader").style.display = "none";
+
+        const labels = data.map(entry => new Date(entry["STURMCAPY DATES"]));
+        const ibitData = data.map(entry => entry.IBIT);
+        const profitData = data.map(entry => entry["SUPERCONQUERER"]);
+        console.log(profitData)
+        const btcusdtData = data.map(entry => entry.BTCUSDT);
+
+        const ctx = document.getElementById('myChart').getContext('2d');
+        new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: labels,
+            datasets: [
+              {
+                label: 'AT-BX1 (P) cumulative returns (%)',
+                data: profitData,
+                borderColor: '#00ffcc',
+                backgroundColor: 'rgba(0, 255, 204, 0.2)',
+                borderWidth: 2,
+                tension: 0.4,
+                pointRadius: 2
+              },
+              {
+                label: 'IBIT cumulative returns (%)',
+                data: ibitData,
+                borderColor: '#ff5733',
+                backgroundColor: 'rgba(255, 87, 51, 0.2)',
+                borderWidth: 2,
+                tension: 0.4,
+                pointRadius: 2
+              },
+              {
+                label: 'BTCUSDT cumulative returns (%)',
+                data: btcusdtData,
+                borderColor: '#FFD700',
+                backgroundColor: 'rgba(255, 215, 0, 0.2)',
+                borderWidth: 2,
+                tension: 0.4,
+                pointRadius: 2
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              x: {
+                type: 'time',
+                time: {
+                  unit: 'day'
+                },
+                ticks: {
+                  color: '#fff'
+                },
+                title: {
+                  display: true,
+                  text: 'Trading Days',
+                  color: '#00facc',
+                  font: {
+                    size: 20
+                  }
+                }
+              },
+              y: {
+                ticks: {
+                  color: '#fff'
+                },
+                title: {
+                  display: true,
+                  text: '% Change',
+                  color: '#00facc',
+                  font: {
+                    size: 20
+                  }
+                }
+              }
+            },
+            plugins: {
+              legend: {
+                labels: {
+                  color: '#fff'
+                }
+              }
+            }
+          }
+        });
+      } catch (error) {
+        console.error(`Error with ${urls[urlIndex]}:`, error);
+        if (urlIndex + 1 < urls.length) {
+          console.log("Switching to alternate URL...");
+          await fetchData(urlIndex + 1);
+        } else {
+          const errorMessage = error.message.includes("CORS") || error.message.includes("Failed to fetch")
+            ? "Unable to connect to the data server. This might be due to server maintenance or connection issues. Please try again later."
+            : `Failed to load data: ${error.message}`;
+          showError(errorMessage);
+          document.getElementById("preloader").style.display = "none";
+        }
+      }
+    }
+
+    window.addEventListener("DOMContentLoaded", () => fetchData());
+  </script>
+</body>
+</html>
