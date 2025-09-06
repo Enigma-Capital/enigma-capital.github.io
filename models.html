@@ -48,7 +48,7 @@
       transition: transform 1s ease, box-shadow 0.3s ease, opacity 1s ease;
       cursor: pointer;
       backdrop-filter: blur(3px);
-      margin-left: 1.3rem;
+      /* margin-left: 1.3rem; */
       opacity: 0;
       transform: translateY(12px);
     }
@@ -102,11 +102,105 @@
     }
 
     /* Animated neon glow for SturmCapy */
-    .card.sturm-card {
-      border: 2px solid #00fff7;
-      animation: pulseGlow 2.5s infinite ease-in-out;
-      box-shadow: 0 0 20px rgba(0, 255, 247, 0.5);
-    }
+    /* Ethereum card base */
+.card.sturm-card {
+  position: relative;
+  border: 2px solid #00fff7;
+  animation: pulseGlow 2.5s infinite ease-in-out;
+  box-shadow: 0 0 20px rgba(0, 255, 247, 0.5);
+  background: #0a0a0a url('sturmcapylogo.png') center/cover no-repeat;
+  overflow: hidden;
+}
+
+/* Wireframe grid */
+.card.sturm-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(0, 255, 247, 0.18) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(0,255,247,0.18) 1px, transparent 1px);
+  background-size: 45px 45px;
+  z-index: 2;
+  mix-blend-mode: overlay;   /* key: blends with the bg image */
+  opacity: 0.6;
+  animation: moveGrid 12s linear infinite;
+}
+
+/* Ethereum watermark */
+.card.sturm-card::after {
+  content: url('eth-logo.svg'); /* use an SVG/PNG Ethereum logo */
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 120px;
+  height: 120px;
+  opacity: 0.15;
+  z-index: 3;
+  mix-blend-mode: screen;  /* logo softly glows with bg */
+}
+
+/* Overlay content */
+.card.sturm-card .card-overlay {
+  position: relative;
+  z-index: 4;
+}
+
+/* Animated grid movement */
+@keyframes moveGrid {
+  from { background-position: 0 0, 0 0; }
+  to { background-position: 45px 45px, 45px 45px; }
+}
+
+
+    /* BTC model (SuperConquerer) */
+.card.bitprot-card {
+  position: relative;
+  border: 2px solid #00ffd9;
+  animation: pulseGreen 2.7s infinite ease-in-out;
+  box-shadow: 0 0 25px #00ffd9;
+  background: #0a0a0a;
+  overflow: hidden;
+}
+
+/* Wireframe grid */
+.card.bitprot-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(0, 221, 255, 0.406) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(0, 221, 255, 0.406) 1px, transparent 1px);
+  background-size: 40px 40px; /* tighter grid so it's visible */
+  z-index: 2; /* sits above background */
+}
+
+/* BTC watermark */
+.card.bitprot-card::after {
+  content: "₿";
+  font-size: 180px;
+  font-weight: bold;
+  margin-bottom: 7rem;
+  color: rgba(255, 255, 255, 0.258);
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+}
+
+/* Text/content */
+.card-overlay,
+.card-title,
+.card-description,
+.trade-tag {
+  position: relative;
+  z-index: 4;
+}
+
+
+
 
     @keyframes pulseGlow {
       0% {
@@ -117,6 +211,18 @@
       }
       100% {
         box-shadow: 0 0 12px rgba(0, 255, 247, 0.4);
+      }
+    }
+
+    @keyframes pulseGreen {
+      0% {
+        box-shadow: 0 0 12px #00ffd9;
+      }
+      50% {
+        box-shadow: 0 0 28px #00ffd9;
+      }
+      100% {
+        box-shadow: 0 0 12px #00ffd9;
       }
     }
 
@@ -142,6 +248,12 @@
       background: #ff6b6b;
       color: #fff;
       box-shadow: 0 0 8px rgba(255, 107, 107, 0.7);
+    }
+
+    .card-badge.prototype {
+      background: #00ff7b;
+      color: #fff;
+      box-shadow: 0 0 8px #00ff7b;
     }
 
     .trade-tag {
@@ -181,6 +293,8 @@
       .card { opacity: 1; transform: none; }
       .card.in-view { opacity: 1; transform: none; }
     }
+
+    
   </style>
 </head>
 <body>
@@ -194,7 +308,7 @@
           <div class="card-title">T-25 Capy</div>
           <div class="trade-tag">BTC Model</div>
           <div class="card-description">
-            Our first shot at a self-learning BTC trading model. Built to adapt, react, and survive the chaos.
+            Our first shot at a self-learning BTC trading model. The very Foundation model.
           </div>
         </div>
       </div>
@@ -202,9 +316,9 @@
 
     <a href="sturmcapy.html">
       <div class="card sturm-card" style="background-image: url('sturmcapylogo.png');">
-        <div class="card-badge">NEW</div>
+        <!-- <div class="card-badge">NEW</div> -->
         <div class="card-overlay">
-            <div class="card-title">SturmCapy</div>
+            <div class="card-title">AT-EX1</div>
             <div class="trade-tag">ETH Model</div>
           <div class="card-description">
             A leveled-up version of T-25 — Efficient, stable, and ready for the next market cycle.
@@ -212,6 +326,20 @@
         </div>
       </div>
     </a>
+
+    <a href="superconquerer.html">
+  <div class="card bitprot-card">
+    <div class="card-badge prototype">Prototype</div>
+    <div class="card-overlay">
+        <div class="card-title">AT-BX1 (P)</div>
+        <div class="trade-tag">BTC Model</div>
+        <div class="card-description">
+          Just a friendly prototype deployed live...
+        </div>
+    </div>
+  </div>
+</a>
+
 
   </div>
 
@@ -246,3 +374,4 @@
 
 </body>
 </html>
+
