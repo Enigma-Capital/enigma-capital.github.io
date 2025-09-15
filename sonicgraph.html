@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SONIC vs IBIT vs BTCUSDT — % Returns</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@1.4.0"></script>
+  <script defer src="https://cloud.umami.is/script.js" data-website-id="5602ec2b-35ca-418d-8899-53ed35d6853f"></script>
+
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(160deg,#0b0b0b 0%,#1b1b1b 100%);
+      color: #eaeaea;
+    }
+
+    header {
+      padding: 2rem 1rem 1rem;
+      text-align: center;
+    }
+    header h1 {
+      font-weight: 600;
+      font-size: 2rem;
+      color: #00facc;
+      text-shadow: 0 0 8px rgba(0,250,204,.4);
+    }
+    header p {
+      font-size: 1rem;
+      opacity: .75;
+      margin-top: .5rem;
+    }
+
+    #stats-bar {
+      text-align:center;
+      margin: 0.5rem auto 1rem;
+      font-size:1rem;
+      display:flex;
+      justify-content:center;
+      gap:2rem;
+      font-weight:600;
+    }
+    #range-buttons {
+      text-align:center;
+      margin-bottom:1rem;
+    }
+    #range-buttons button {
+      background:#222;
+      border:1px solid #444;
+      color:#ddd;
+      padding:0.4rem 0.8rem;
+      margin:0 0.25rem;
+      border-radius:6px;
+      cursor:pointer;
+    }
+    #range-buttons button.active {
+      background:#00facc;
+      color:#000;
+    }
+
+    #chart-wrap {
+      width: 95%;
+      max-width: 1200px;
+      height: 70vh;
+      margin: 0 auto 2rem;
+      background: rgba(255,255,255,.04);
+      backdrop-filter: blur(6px);
+      border-radius: 16px;
+      padding: 1rem;
+      box-shadow: 0 0 10px rgba(0,0,0,.6);
+    }
+    canvas { width: 100% !important; height: 100% !important; }
+
+    #preloader {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: rgba(0,0,0,.85);
+      font-size: 1.5rem;
+      color: #00facc;
+      z-index: 99;
+    }
+
+    #error-message {
+      color: #ff4b4b;
+      font-weight: 600;
+      text-align: center;
+      margin: .5rem;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="preloader">loading data…</div>
+
+  <header>
+    <h1>Live Performance: <span style="color:#00facc">SONIC</span> vs <span style="color:#ff5733">IBIT</span> vs <span style="color:#FFD700">BTC/USDT</span></h1>
+    <p>Cumulative returns of our prototype scalping algorithm SCAL-01 “SONIC”</p>
+  </header>
+
+  <div id="stats-bar">
+    <span id="latest">Latest: --%</span>
+    <span id="change">Daily: --%</span>
+    <span id="dd">Max DD: --%</span>
+  </div>
+
+  <div id="range-buttons">
+    <!-- <button data-range="30m">30m</button>
+    <button data-range="2h">2h</button>
+    <button data-range="6h">6h</button> -->
+    <button data-range="1d">Daily</button>
+    <button data-range="all" class="active">ALL</button>
+   </div>
+
+  <div id="error-message"></div>
+  <div id="chart-wrap">
+    <canvas id="myChart"></canvas>
+  </div>
+
+<script>
+const urls = [
+  'https://regard-bones-improving-launches.trycloudflare.com/get_sonic_data',
+  'https://extra-backends.onrender.com/get_sonic_data'
+];
+
+const preloader = document.getElementById("preloader");
+const errorBox = document.getElementById("error-message");
+
+let fullData = [];
+let chart;
+
+function showError(msg){
+  errorBox.textContent = msg;
+  errorBox.style.display = "block";
+  preloader.style.display = "none";
+}
+function hideError(){ errorBox.style.display = "none"; }
+
+function updateStats(data){
+  if(!data.length) return;
+  const last = data[data.length-1]["PnL%"];
+  const today = new Date().toDateString();
+  const firstToday = data.find(d => new Date(d.DATETIME).toDateString() === today);
+  const change = firstToday ? last - firstToday["PnL%"] : 0;
+  const maxDD = Math.min(...data.map(d=>d["PnL%"]));
+  document.getElementById("latest").textContent = `Latest: ${last.toFixed(2)}%`;
+  document.getElementById("change").textContent = `Daily: ${change.toFixed(2)}%`;
+  document.getElementById("dd").textContent = `Max DD: ${maxDD.toFixed(2)}%`;
+}
+
+function applyRange(range, all){
+  if(range==='all') return all;
+  const now = new Date();
+  let cutoff;
+  switch(range){
+    case '30m': cutoff = new Date(now - 30*60*1000); break;
+    case '2h':  cutoff = new Date(now - 2*60*60*1000); break;
+    case '6h':  cutoff = new Date(now - 6*60*60*1000); break;
+    case '1d':  cutoff = new Date(now - 24*60*60*1000); break;
+  }
+  return all.filter(d => new Date(d.DATETIME) >= cutoff);
+}
+
+function getTimeOpts(range){
+  switch(range){
+    case '30m': return {unit:'minute', stepSize:5};
+    case '2h':  return {unit:'minute', stepSize:15};
+    case '6h':  return {unit:'minute', stepSize:30};
+    case '1d':  return {unit:'minute', stepSize:30};
+    default:    return {unit:'day'};
+  }
+}
+
+async function fetchData(i=0){
+  try{
+    hideError(); preloader.style.display="flex";
+    const r = await fetch(urls[i], {
+      headers:{ 'Accept':'application/json', 'ngrok-skip-browser-warning':'true' }
+    });
+    if(!r.ok) throw new Error(`HTTP ${r.status}`);
+    const data = await r.json();
+    preloader.style.display="none";
+    fullData = data;
+
+    const labels = data.map(x=>new Date(x.DATETIME));
+    const sonic = data.map(x=>x["PnL%"]);
+    const ibit  = data.map(x=>x["IBIT"]);
+    const btc   = data.map(x=>x["BTCUSDT"]);
+
+    const ctx = document.getElementById('myChart').getContext('2d');
+    chart = new Chart(ctx,{
+      type:'line',
+      data:{
+        labels,
+        datasets:[
+          {label:'SONIC cumulative returns (%)', data:sonic,
+           borderColor:'#00facc', backgroundColor:'rgba(0,250,204,0.15)',
+           borderWidth:2, tension:.3, pointRadius:0},
+          {label:'IBIT cumulative returns (%)', data:ibit,
+           borderColor:'#ff5733', backgroundColor:'rgba(255,87,51,0.15)',
+           borderWidth:2, tension:.3, pointRadius:0},
+          {label:'BTCUSDT cumulative returns (%)', data:btc,
+           borderColor:'#FFD700', backgroundColor:'rgba(255,215,0,0.15)',
+           borderWidth:2, tension:.3, pointRadius:0}
+        ]
+      },
+      options:{
+        responsive:true,
+        maintainAspectRatio:false,
+        scales:{
+          x:{
+            type:'time',
+            time:getTimeOpts('all'),
+            ticks:{
+              color:'#ccc',
+              autoSkip:true,
+              maxTicksLimit:8,
+              maxRotation:0
+            },
+            grid:{color:'rgba(255,255,255,0.05)'},
+            title:{display:true,text:'Time',color:'#00facc'}
+          },
+          y:{
+            ticks:{color:'#ccc'},
+            grid:{color:'rgba(255,255,255,0.05)'},
+            title:{display:true,text:'% Change',color:'#00facc'}
+          }
+        },
+        plugins:{
+          legend:{labels:{color:'#fff'}}
+        }
+      }
+    });
+
+    updateStats(data);
+
+    document.querySelectorAll('#range-buttons button').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        document.querySelectorAll('#range-buttons button').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        const filtered = applyRange(btn.dataset.range, fullData);
+        chart.data.labels = filtered.map(x=>new Date(x.DATETIME));
+        chart.data.datasets[0].data = filtered.map(x=>x["PnL%"]);
+        chart.data.datasets[1].data = filtered.map(x=>x["IBIT"]);
+        chart.data.datasets[2].data = filtered.map(x=>x["BTCUSDT"]);
+        chart.options.scales.x.time = getTimeOpts(btn.dataset.range);
+        chart.update();
+        updateStats(filtered);
+      });
+    });
+  }catch(err){
+    console.error(err);
+    if(i+1<urls.length) fetchData(i+1);
+    else showError(`Failed to load data: ${err.message}`);
+  }
+}
+
+window.addEventListener("DOMContentLoaded",()=>fetchData());
+</script>
+
+
+</body>
+</html>
