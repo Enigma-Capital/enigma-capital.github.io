@@ -1,380 +1,230 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Model Overview - Enigma Capital</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Enigma Capital – Algorithm Lineup</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    :root{
+      --bg:#0a0b10;
+      --card-bg:rgba(255,255,255,.04);
+      --border:rgba(255,255,255,.06);
+      --accent:#00fff7;
     }
-
-    body {
-      font-family: 'Montserrat', sans-serif;
-      background: linear-gradient(135deg, #0f0f0f, #1a1a1a);
-      color: #ffffff;
-      min-height: 100vh;
-      padding: 3rem 1rem;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{
+      background:var(--bg);
+      font-family:'Inter',sans-serif;
+      color:#fff;
+      line-height:1.6;
     }
-
-    .container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 2.5rem;
-      justify-content: center;
-      align-items: center;
-      max-width: 1200px;
-      width: 100%;
+    header{
+      text-align:center;
+      padding:4rem 2rem 2rem;
     }
-
-    .card {
-      position: relative;
-      width: 360px;
-      height: 500px;
-      border-radius: 20px;
-      overflow: hidden;
-      background-color: rgba(255, 255, 255, 0.03);
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      display: flex;
-      align-items: flex-end;
-      transition: transform 1s ease, box-shadow 0.3s ease, opacity 1s ease;
-      cursor: pointer;
-      backdrop-filter: blur(3px);
-      /* margin-left: 1.3rem; */
-      opacity: 0;
-      transform: translateY(12px);
+    header h1{
+      font-size:3rem;
+      font-weight:700;
+      letter-spacing:-1px;
+      margin-bottom:.5rem;
     }
-
-    .card:hover {
-      transform: scale(1.03);
+    .grid{
+      display:grid;
+      gap:2rem;
+      grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+      padding:3rem 2rem 6rem;
+      max-width:1400px;
+      margin:0 auto;
     }
-
-    /* In-view entrance state */
-    .card.in-view {
-      opacity: 1;
-      transform: translateY(0);
+    a.card-link{
+      text-decoration:none;
+      color:inherit;
+      display:block;
     }
-
-    .card-overlay {
-      background: rgba(0, 0, 0, 0.65);
-      padding: 1.5rem;
-      width: 100%;
-      backdrop-filter: blur(4px);
+    .card{
+      position:relative;
+      padding:2rem;
+      border-radius:20px;
+      background:var(--card-bg);
+      border:1px solid var(--border);
+      backdrop-filter:blur(12px);
+      box-shadow:0 8px 30px rgba(0,0,0,.4);
+      overflow:hidden;
+      transition:transform .4s ease,box-shadow .4s ease;
     }
-
-    .card-title {
-      font-size: 1.6rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
+    .card:hover{
+      transform:translateY(-6px);
+      box-shadow:0 12px 40px rgba(0,0,0,.6);
     }
-
-    .card-description {
-      font-size: 1rem;
-      line-height: 1.5;
-      color: #e0e0e0;
+    .card::before{
+      content:"";
+      position:absolute;
+      top:-40%;
+      left:-40%;
+      width:180%;
+      height:180%;
+      background:radial-gradient(circle at top left,rgba(0,255,247,.08),transparent 70%);
+      transform:rotate(25deg);
     }
-
-    a {
-      text-decoration: none;
-      color: inherit;
+    .badge{
+      display:inline-block;
+      padding:4px 12px;
+      font-size:.7rem;
+      letter-spacing:1px;
+      text-transform:uppercase;
+      color:var(--accent);
+      border:1px solid rgba(0,255,247,.3);
+      border-radius:999px;
+      margin-bottom:1rem;
     }
-
-    a:visited {
-      color: inherit;
+    .title{
+      font-size:1.6rem;
+      font-weight:600;
+      margin-bottom:.5rem;
     }
-
-    a .card * {
-      color: inherit;
+    .type{
+      font-size:.85rem;
+      letter-spacing:.5px;
+      text-transform:uppercase;
+      color:#bbb;
+      margin-bottom:1rem;
     }
-
-    /* Static old-school glow for T-25 Capy */
-    .card.capy-card {
-      border: 2px solid #666;
-      box-shadow: 0 0 12px rgba(100, 100, 100, 0.5);
+    .status{
+      display:inline-block;
+      font-size:.85rem;
+      font-weight:600;
+      margin:0 0 1rem;
+      padding:3px 10px;
+      border-radius:999px;
     }
-
-    /* Animated neon glow for SturmCapy */
-    /* Ethereum card base */
-.card.sturm-card {
-  position: relative;
-  border: 2px solid #00fff7;
-  animation: pulseGlow 2.5s infinite ease-in-out;
-  box-shadow: 0 0 20px rgba(0, 255, 247, 0.5);
-  background: #0a0a0a url('sturmcapylogo.png') center/cover no-repeat;
-  overflow: hidden;
-}
-
-/* Wireframe grid */
-.card.sturm-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(90deg, rgba(0, 255, 247, 0.18) 1px, transparent 1px),
-    linear-gradient(0deg, rgba(0,255,247,0.18) 1px, transparent 1px);
-  background-size: 45px 45px;
-  z-index: 2;
-  mix-blend-mode: overlay;   /* key: blends with the bg image */
-  opacity: 0.6;
-  animation: moveGrid 12s linear infinite;
-}
-
-/* Ethereum watermark */
-.card.sturm-card::after {
-  content: url('eth-logo.svg'); /* use an SVG/PNG Ethereum logo */
-  position: absolute;
-  inset: 0;
-  margin: auto;
-  width: 120px;
-  height: 120px;
-  opacity: 0.15;
-  z-index: 3;
-  mix-blend-mode: screen;  /* logo softly glows with bg */
-}
-
-/* Overlay content */
-.card.sturm-card .card-overlay {
-  position: relative;
-  z-index: 4;
-}
-
-/* Animated grid movement */
-@keyframes moveGrid {
-  from { background-position: 0 0, 0 0; }
-  to { background-position: 45px 45px, 45px 45px; }
-}
-
-
-    /* BTC model (SuperConquerer) */
-.card.bitprot-card {
-  position: relative;
-  border: 2px solid #00ffd9;
-  animation: pulseGreen 2.7s infinite ease-in-out;
-  box-shadow: 0 0 25px #00ffd9;
-  background: #0a0a0a;
-  overflow: hidden;
-}
-
-/* Wireframe grid */
-.card.bitprot-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(90deg, rgba(0, 221, 255, 0.406) 1px, transparent 1px),
-    linear-gradient(0deg, rgba(0, 221, 255, 0.406) 1px, transparent 1px);
-  background-size: 40px 40px; /* tighter grid so it's visible */
-  z-index: 2; /* sits above background */
-}
-
-/* BTC watermark */
-.card.bitprot-card::after {
-  content: "₿";
-  font-size: 180px;
-  font-weight: bold;
-  margin-bottom: 7rem;
-  color: rgba(255, 255, 255, 0.258);
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 3;
-}
-
-/* Text/content */
-.card-overlay,
-.card-title,
-.card-description,
-.trade-tag {
-  position: relative;
-  z-index: 4;
-}
-
-
-
-
-    @keyframes pulseGlow {
-      0% {
-        box-shadow: 0 0 12px rgba(0, 255, 247, 0.4);
-      }
-      50% {
-        box-shadow: 0 0 28px rgba(0, 255, 247, 0.9);
-      }
-      100% {
-        box-shadow: 0 0 12px rgba(0, 255, 247, 0.4);
-      }
-    }
-
-    @keyframes pulseGreen {
-      0% {
-        box-shadow: 0 0 12px #00ffd9;
-      }
-      50% {
-        box-shadow: 0 0 28px #00ffd9;
-      }
-      100% {
-        box-shadow: 0 0 12px #00ffd9;
-      }
-    }
-
-    /* NEW Badge */
-    .card-badge {
-      position: absolute;
-      top: 15px;
-      right: 15px;
-      background: #00fff7;
-      color: #000;
-      font-weight: bold;
-      font-size: 0.75rem;
-      padding: 5px 10px;
-      border-radius: 20px;
-      box-shadow: 0 0 8px rgba(0, 255, 247, 0.7);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      z-index: 10;
-    }
-
-    /* Retired Badge */
-    .card-badge.retired {
-      background: #ff6b6b;
-      color: #fff;
-      box-shadow: 0 0 8px rgba(255, 107, 107, 0.7);
-    }
-
-    .card-badge.prototype {
-      background: #00ff7b;
-      color: #fff;
-      box-shadow: 0 0 8px #00ff7b;
-    }
-
-    .trade-tag {
-        font-size: 0.85rem;
-        font-weight: 600;
-        color: #00fff7;
-        background-color: rgba(0, 255, 247, 0.1);
-        padding: 4px 10px;
-        border-radius: 12px;
-        display: inline-block;
-        margin-bottom: 0.75rem;
-        margin-top: -0.25rem;
-        
-        }
-
-    @media screen and (max-width: 768px) {
-      .container {
-        flex-direction: column;
-        align-items: center;
-      }
-
-      .card {
-        width: 90%;
-        height: 420px;
-        margin-left: 1.3rem;
-
-      }
-
-      .card + .card {
-        margin-top: 1.5rem;
-      }
-
-      
-
-    }
-
-    /* Respect reduced motion */
-    @media (prefers-reduced-motion: reduce) {
-      .card { opacity: 1; transform: none; }
-      .card.in-view { opacity: 1; transform: none; }
-    }
-
-    
+    .status.live{background:rgba(0,255,0,.12);color:#00ff90;}
+    .status.retired{background:rgba(255,0,0,.12);color:#ff5a5a;}
+    .stats{display:flex;gap:1.5rem;margin-bottom:1rem;}
+    .stat label{display:block;font-size:.7rem;color:#aaa;margin-bottom:.2rem;}
+    .stat span{font-size:1rem;font-weight:600;color:#fff;}
+    .roll{display:inline-block;min-width:40px;text-align:right;transition:opacity .3s ease;}
+    .meta{display:flex;justify-content:space-between;font-size:.8rem;color:#888;border-top:1px solid var(--border);padding-top:.8rem;}
   </style>
 </head>
 <body>
 
-  <div class="container">
+<header>
+  <h1>Our Algorithm Lineup</h1>
+</header>
 
- <a href="superconquerer.html">
-  <div class="card bitprot-card">
-    <div class="card-badge prototype">Prototype</div>
-    <div class="card-overlay">
-        <div class="card-title">AT-BX1 (P)</div>
-        <div class="trade-tag">BTC Model</div>
-        <div class="card-description">
-          Just a friendly prototype deployed live...
+<section class="grid">
+
+  <a class="card-link" href="superconquerer.html">
+    <div class="card" id="algo-bx1">
+      <span class="badge">Prototype</span>
+      <div class="title">AT-BX1</div>
+      <div class="type">BTCUSDT</div>
+      <div class="status live" data-field="status">● Live</div>
+      <div class="stats">
+        <div class="stat">
+          <label>Win-rate</label>
+          <span class="roll" data-field="Win_rate">--</span>
         </div>
+        <div class="stat">
+          <label>Sharpe</label>
+          <span class="roll" data-field="Sharpe_ratio">--</span>
+        </div>
+      </div>
+      <div class="meta">
+        <span>Updated: <span data-field="updated">--</span></span>
+        <!-- <span>Accuracy: <span data-field="accuracy">--</span></span> -->
+      </div>
     </div>
-  </div>
-</a>
-    <a href="sturmcapy.html">
-      <div class="card sturm-card" style="background-image: url('sturmcapylogo.png');">
-        <!-- <div class="card-badge">NEW</div> -->
-        <div class="card-overlay">
-            <div class="card-title">AT-EX1</div>
-            <div class="trade-tag">ETH Model</div>
-          <div class="card-description">
-            A leveled-up version of T-25 — Efficient, stable, and ready for the next market cycle.
-          </div>
+  </a>
+
+
+  <a class="card-link" href="sturmcapy.html">
+    <div class="card" id="algo-ex1">
+      <span class="badge">Beta</span>
+      <div class="title">AT-EX1</div>
+      <div class="type">ETHUSDT</div>
+      <div class="status live" data-field="status">● Live</div>
+      <div class="stats">
+        <div class="stat">
+          <label>Win-rate</label>
+          <span class="roll" data-field="Win_rate">--</span>
+        </div>
+        <div class="stat">
+          <label>Sharpe</label>
+          <span class="roll" data-field="Sharpe_ratio">--</span>
         </div>
       </div>
-    </a>
+      <div class="meta">
+        <span>Updated: <span data-field="updated">--</span></span>
+        
+        <!-- <span>Accuracy: <span data-field="accuracy">--</span></span> -->
+      </div>
+    </div>
+  </a>
 
-   
-
-<a href="capy-stat.html">
-      <div class="card capy-card" style="background-image: url('capybg2-up.png');">
-        <div class="card-badge retired">Retired</div>
-        <div class="card-overlay">
-          <div class="card-title">T-25 Capy</div>
-          <div class="trade-tag">BTC Model</div>
-          <div class="card-description">
-            Our first shot at a self-learning BTC trading model. The very Foundation model.
-          </div>
+  <a class="card-link" href="graphs.htm">
+    <div class="card" id="algo-capy">
+      <span class="badge">Retired</span>
+      <div class="title">T-25 CAPY</div>
+      <div class="type">BTCUSDT</div>
+      <div class="status retired" data-field="status">● Retired</div>
+      <div class="stats">
+        <div class="stat">
+          <label>Win-rate</label>
+          <span class="roll" data-field="Win_rate">--</span>
+        </div>
+        <div class="stat">
+          <label>Sharpe</label>
+          <span class="roll" data-field="Sharpe_ratio">--</span>
         </div>
       </div>
-    </a>
+      <div class="meta">
+        <span>Updated: <span data-field="updated">--</span></span>
+        <!-- <span>Win-rate: <span data-field="winrate">--</span></span> -->
+      </div>
+    </div>
+  </a>
 
+</section>
 
-  </div>
+<script>
+async function loadAlgoStats() {
+  try {
+    const res = await fetch('https://favors-fees-paragraphs-brad.trycloudflare.com/getmodelstats'); // change to your URL
+    if (!res.ok) throw new Error('server returned an error');
+    const data = await res.json();
 
-  <script>
-    (function () {
-      function initInViewCards() {
-        var cards = document.querySelectorAll('.card');
-        if (!cards.length) return;
-        if (!('IntersectionObserver' in window)) {
-          cards.forEach(function (c) { c.classList.add('in-view'); });
-          return;
-        }
-        var observer = new IntersectionObserver(function (entries, obs) {
-          entries.forEach(function (entry) {
-            if (entry.isIntersecting) {
-              entry.target.classList.add('in-view');
-              obs.unobserve(entry.target);
-            }
-          });
-        }, { threshold: 0.2 });
+    Object.entries(data).forEach(([algoKey, fields]) => {
+      const card = document.getElementById(`algo-${algoKey}`);
+      if (!card) return;
 
-        cards.forEach(function (card) { observer.observe(card); });
+      // loop over every field from backend
+      Object.entries(fields).forEach(([field, value]) => {
+        const el = card.querySelector(`[data-field="${field}"]`);
+        if (!el) return;
+
+        // if value is null, put a fallback
+        el.textContent = value !== null && value !== undefined ? value : '--';
+      });
+
+      // status badge color update
+      if (fields.status) {
+        const st = card.querySelector('.status');
+        st.classList.remove('live', 'retired');
+        st.classList.add(fields.status.toLowerCase());
+        st.textContent = `● ${fields.status}`;
       }
+    });
+  } catch (e) {
+    console.error('loadAlgoStats failed', e);
+  }
+}
 
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initInViewCards);
-      } else {
-        initInViewCards();
-      }
-    })();
-  </script>
+// first load + auto-refresh
+loadAlgoStats();
+setInterval(loadAlgoStats, 30000);
+</script>
 
 </body>
 </html>
-
