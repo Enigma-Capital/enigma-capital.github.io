@@ -124,18 +124,10 @@
   </div>
 
 <script>
-    
-let urls = [];
-async function loadSettings() {
-  const res = await fetch('/settings.json');
-  const settings = await res.json();
-  urls = [
-    settings.apiBaseUrl + 'get_sonic_data',
-    settings.apiFallbackUrl + 'get_sonic_data'
-  ];
-  fetchData();
-}
-loadSettings();
+const urls = [
+  'https://favors-fees-paragraphs-brad.trycloudflare.com/get_sonic_data',
+  'https://extra-backends.onrender.com/get_sonic_data'
+];
 
 const preloader = document.getElementById("preloader");
 const errorBox = document.getElementById("error-message");
