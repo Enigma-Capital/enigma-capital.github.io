@@ -19,16 +19,8 @@
       color:#fff;
       line-height:1.6;
     }
-    header{
-      text-align:center;
-      padding:4rem 2rem 2rem;
-    }
-    header h1{
-      font-size:3rem;
-      font-weight:700;
-      letter-spacing:-1px;
-      margin-bottom:.5rem;
-    }
+    header{text-align:center;padding:4rem 2rem 2rem;}
+    header h1{font-size:3rem;font-weight:700;letter-spacing:-1px;margin-bottom:.5rem;}
     .grid{
       display:grid;
       gap:2rem;
@@ -37,11 +29,7 @@
       max-width:1400px;
       margin:0 auto;
     }
-    a.card-link{
-      text-decoration:none;
-      color:inherit;
-      display:block;
-    }
+    a.card-link{text-decoration:none;color:inherit;display:block;}
     .card{
       position:relative;
       padding:2rem;
@@ -53,10 +41,7 @@
       overflow:hidden;
       transition:transform .4s ease,box-shadow .4s ease;
     }
-    .card:hover{
-      transform:translateY(-6px);
-      box-shadow:0 12px 40px rgba(0,0,0,.6);
-    }
+    .card:hover{transform:translateY(-6px);box-shadow:0 12px 40px rgba(0,0,0,.6);}
     .card::before{
       content:"";
       position:absolute;
@@ -78,18 +63,8 @@
       border-radius:999px;
       margin-bottom:1rem;
     }
-    .title{
-      font-size:1.6rem;
-      font-weight:600;
-      margin-bottom:.5rem;
-    }
-    .type{
-      font-size:.85rem;
-      letter-spacing:.5px;
-      text-transform:uppercase;
-      color:#bbb;
-      margin-bottom:1rem;
-    }
+    .title{font-size:1.6rem;font-weight:600;margin-bottom:.5rem;}
+    .type{font-size:.85rem;letter-spacing:.5px;text-transform:uppercase;color:#bbb;margin-bottom:1rem;}
     .status{
       display:inline-block;
       font-size:.85rem;
@@ -104,7 +79,26 @@
     .stat label{display:block;font-size:.7rem;color:#aaa;margin-bottom:.2rem;}
     .stat span{font-size:1rem;font-weight:600;color:#fff;}
     .roll{display:inline-block;min-width:40px;text-align:right;transition:opacity .3s ease;}
-    .meta{display:flex;justify-content:space-between;font-size:.8rem;color:#888;border-top:1px solid var(--border);padding-top:.8rem;}
+
+    .roll.loading{
+      position:relative;
+      color:transparent;
+      background:linear-gradient(90deg,rgba(255,255,255,0.05)25%,rgba(255,255,255,0.15)37%,rgba(255,255,255,0.05)63%);
+      background-size:400% 100%;
+      animation:shimmer 1.4s ease infinite;
+      border-radius:4px;
+      min-height:1em;
+    }
+    @keyframes shimmer{0%{background-position:-400% 0;}100%{background-position:400% 0;}}
+
+    .meta{
+      display:flex;
+      justify-content:space-between;
+      font-size:.8rem;
+      color:#888;
+      border-top:1px solid var(--border);
+      padding-top:.8rem;
+    }
   </style>
 </head>
 <body>
@@ -124,41 +118,37 @@
       <div class="stats">
         <div class="stat">
           <label>Win-rate</label>
-          <span class="roll" data-field="Win_rate">--</span>
+          <span class="roll loading" data-field="Win_rate">--</span>
         </div>
         <div class="stat">
           <label>Sharpe</label>
-          <span class="roll" data-field="Sharpe_ratio">--</span>
+          <span class="roll loading" data-field="Sharpe_ratio">--</span>
         </div>
       </div>
       <div class="meta">
-        <span>Updated: <span data-field="updated">--</span></span>
-        <!-- <span>Accuracy: <span data-field="accuracy">--</span></span> -->
+        <span>Updated: <span class="roll loading" data-field="updated">--</span></span>
       </div>
     </div>
   </a>
 
-
   <a class="card-link" href="sturmcapy.html">
     <div class="card" id="algo-ex1">
-      <span class="badge">Beta</span>
+      <span class="badge">BETA</span>
       <div class="title">AT-EX1</div>
       <div class="type">ETHUSDT</div>
       <div class="status live" data-field="status">● Live</div>
       <div class="stats">
         <div class="stat">
           <label>Win-rate</label>
-          <span class="roll" data-field="Win_rate">--</span>
+          <span class="roll loading" data-field="Win_rate">--</span>
         </div>
         <div class="stat">
           <label>Sharpe</label>
-          <span class="roll" data-field="Sharpe_ratio">--</span>
+          <span class="roll loading" data-field="Sharpe_ratio">--</span>
         </div>
       </div>
       <div class="meta">
-        <span>Updated: <span data-field="updated">--</span></span>
-        
-        <!-- <span>Accuracy: <span data-field="accuracy">--</span></span> -->
+        <span>Updated: <span class="roll loading" data-field="updated">--</span></span>
       </div>
     </div>
   </a>
@@ -172,16 +162,15 @@
       <div class="stats">
         <div class="stat">
           <label>Win-rate</label>
-          <span class="roll" data-field="Win_rate">--</span>
+          <span class="roll" data-field="Win_rate">45%</span>
         </div>
         <div class="stat">
           <label>Sharpe</label>
-          <span class="roll" data-field="Sharpe_ratio">--</span>
+          <span class="roll" data-field="Sharpe_ratio">1.06</span>
         </div>
       </div>
       <div class="meta">
-        <span>Updated: <span data-field="updated">--</span></span>
-        <!-- <span>Win-rate: <span data-field="winrate">--</span></span> -->
+        <span>Updated: <span class="roll loading" data-field="updated">--</span></span>
       </div>
     </div>
   </a>
@@ -189,41 +178,58 @@
 </section>
 
 <script>
+const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul",
+                    "Aug","Sep","Oct","Nov","Dec"];
+
+function setUpdatedDate(cardId){
+  const upd = document.querySelector(`#${cardId} [data-field="updated"]`);
+  if(!upd) return;
+  const now = new Date();
+  upd.classList.remove('loading');
+  upd.textContent = `${monthNames[now.getMonth()]}${now.getFullYear()}`;
+}
+
 async function loadAlgoStats() {
   try {
-    const res = await fetch('https://favors-fees-paragraphs-brad.trycloudflare.com/getmodelstats'); // change to your URL
+    const res = await fetch('https://favors-fees-paragraphs-brad.trycloudflare.com/getmodelstats');
     if (!res.ok) throw new Error('server returned an error');
     const data = await res.json();
 
-    Object.entries(data).forEach(([algoKey, fields]) => {
-      const card = document.getElementById(`algo-${algoKey}`);
+    Object.entries(data).forEach(([key, fields]) => {
+      if (key === 'capy') return;   // skip hard-coded card
+      const card = document.getElementById(`algo-${key}`);
       if (!card) return;
 
-      // loop over every field from backend
       Object.entries(fields).forEach(([field, value]) => {
         const el = card.querySelector(`[data-field="${field}"]`);
         if (!el) return;
-
-        // if value is null, put a fallback
-        el.textContent = value !== null && value !== undefined ? value : '--';
+        el.classList.remove('loading');
+        el.textContent = value ?? '--';
       });
 
-      // status badge color update
       if (fields.status) {
         const st = card.querySelector('.status');
-        st.classList.remove('live', 'retired');
-        st.classList.add(fields.status.toLowerCase());
+        st.className = `status ${fields.status.toLowerCase()}`;
         st.textContent = `● ${fields.status}`;
       }
+      setUpdatedDate(`algo-${key}`);
     });
+
+    setUpdatedDate('algo-capy'); // give CAPY its date
   } catch (e) {
     console.error('loadAlgoStats failed', e);
+    setUpdatedDate('algo-capy');
   }
 }
 
-// first load + auto-refresh
-loadAlgoStats();
-setInterval(loadAlgoStats, 30000);
+document.addEventListener('DOMContentLoaded', () => {
+  // only mark as loading if value is "--"
+  document.querySelectorAll('.roll').forEach(el => {
+    if (el.textContent.trim() === '--') el.classList.add('loading');
+  });
+  loadAlgoStats();
+  setInterval(loadAlgoStats, 30000);
+});
 </script>
 
 </body>
