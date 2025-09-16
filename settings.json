@@ -4,7 +4,7 @@
     "http://127.0.0.1:5000"
   ],
   "urls": [
-    "https://favors-fees-paragraphs-brad.trycloudflare.com//get_data",
+    "https://favors-fees-paragraphs-brad.trycloudflare.com/get_data",
     "https://extra-backends.onrender.com/get_data",
     "http://127.0.0.1:5000/get_data",
 

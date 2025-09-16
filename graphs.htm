@@ -225,25 +225,58 @@
       }
     }
 
-    async function loadSettingsAndFetch() {
-      try {
-        const res = await fetch("settings.json");
-        if (!res.ok) throw new Error("Failed to load settings.json");
-        const config = await res.json();
+    async function fetchStats() {
+  const statsUrls = [
+    'https://favors-fees-paragraphs-brad.trycloudflare.com/get_data',
+    'https://extra-backends.onrender.com/get_data'
+  ];
 
-        if (!Array.isArray(config.urls) || config.urls.length === 0) {
-          throw new Error("settings.json missing 'urls' array or empty");
-        }
-
-        urls = config.urls;
-        await fetchData();
-      } catch (err) {
-        console.error(err);
-        showError("Failed to load configuration file. Cannot start application.");
-      }
+  async function loadStats(urlIndex = 0) {
+    if (urlIndex >= statsUrls.length) {
+      document.getElementById("statsContent").innerHTML =
+        `<p style="color: red;">All stats servers failed.</p>`;
+      return;
     }
 
-    window.addEventListener("DOMContentLoaded", loadSettingsAndFetch);
+    try {
+      const response = await fetch(statsUrls[urlIndex]);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const data = await response.json();
+      console.log(data)
+      const statsMap = {
+        "Sharpe Ratio": data.Sharpe_ratio,
+        "Sortino Ratio": data.Sortino_ratio,
+        "Max Profit (%)": data.Max_profit,
+        "Max Drawdown (%)": data.Max_drawdown,
+        "Win Rate (%)": data.Win_rate,
+        "Calmar Ratio": data.Calmar_ratio,
+        "Beta": data.Beta,
+        "Alpha": data.Alpha
+      };
+
+      const statsHtml = Object.entries(statsMap).map(([k,v]) => `
+        <div class="stat-card">
+          <div class="stat-title">${k}</div>
+          <div class="stat-value" data-value="${v}">0</div>
+        </div>
+      `).join("");
+
+      document.getElementById("statsContent").innerHTML = statsHtml;
+
+      document.querySelectorAll(".stat-value").forEach(el => {
+        animateValue(el, 0, parseFloat(el.dataset.value), 1200);
+      });
+
+    } catch (err) {
+      console.warn(`⚠️ Error fetching: ${err.message}`);
+      loadStats(urlIndex + 1);
+    }
+  }
+
+  setTimeout(() => loadStats(), 3000);
+}
+
+    window.addEventListener("DOMContentLoaded", () => fetchData());;
   </script>
 </body>
 </html>
