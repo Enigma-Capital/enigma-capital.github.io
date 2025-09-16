@@ -1,24 +1,4 @@
 {
-  "baseUrls": [
-    "https://chamber-breaks-philips-hotel.trycloudflare.com",
-    "http://127.0.0.1:5000"
-  ],
-  "urls": [
-    "https://chamber-breaks-philips-hotel.trycloudflare.com/get_data",
-    "https://extra-backends.onrender.com/get_data",
-    "http://127.0.0.1:5000/get_data",
-
-    "https://chamber-breaks-philips-hotel.trycloudflare.com/get_sturm_data",
-    "https://extra-backends.onrender.com/get_sturm_data",
-    "http://127.0.0.1:5000/get_sturm_data"
-
-
-
-  ],
-  "statsUrls": [
-    "https://chamber-breaks-philips-hotel.trycloudflare.com/sturmcapy",
-    "https://chamber-breaks-philips-hotel.trycloudflare.com/capystats",
-    "https://extra-backends.onrender.com/capystats",
-    "https://extra-backends.onrender.com/sturmcapy"
-  ]
+  "apiBaseUrl": "https://favors-fees-paragraphs-brad.trycloudflare.com",
+  "assetsBaseUrl": "https://your-assets-base-url.com/"
 }
