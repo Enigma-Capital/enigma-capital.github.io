@@ -373,21 +373,32 @@
 }
 
 /* Loading animation (instead of NaN or --) */
+/* Fancy shine animation for loading values */
+.loading {
+  position: relative;
+  color: #888;          /* dim text while loading */
+  overflow: hidden;
+}
 .loading::after {
-  content: '';
-  display: inline-block;
-  width: 0.8em;
-  height: 0.8em;
-  border: 2px solid #888;
-  border-top: 2px solid #fff;
-  border-radius: 50%;
-  margin-left: 0.5em;
-  animation: spin 0.9s linear infinite;
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 120%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    rgba(255,255,255,0.35) 45%,
+    transparent 80%
+  );
+  animation: shine 1.3s infinite;
 }
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
+  @keyframes shine {
+    0%   { left: -120%; }
+    60%  { left: 120%; }
+    100% { left: 120%; }
+  }
 
 
 
@@ -459,76 +470,59 @@
    
 <script>
     const URL = "https://favors-fees-paragraphs-brad.trycloudflare.com/get_metrics";
-    const winEl = document.getElementById("win-rate");
-    const sharpeEl = document.getElementById("sharpe-ratio");
+const winEl = document.getElementById("win-rate");
+const sharpeEl = document.getElementById("sharpe-ratio");
 
-    // This function sets the element's text content only if the value is a valid number.
-    function setIfValid(el, raw, formatFn) {
-        if (!el) return;
-        const num = parseFloat(raw);
-        if (!isNaN(num) && raw !== null && raw !== undefined) {
-            el.textContent = formatFn(num);
-            el.classList.remove("loading");
-        } else {
-            el.textContent = "--";
-        }
-    }
+function safeDisplay(el, val, suffix = "") {
+  if (!el) return;
 
-    // This is the main function to fetch and update all metrics.
-    async function fetchAndUpdateMetrics() {
-        try {
-            
-            // Immediately start a loading state on all metrics
-            if (winEl) {
-                winEl.classList.add("loading");
-            }
-            if (sharpeEl) {
-                sharpeEl.classList.add("loading");
-            }
-            
+  // Convert to number first
+  const num = parseFloat(val);
+  
+  if (Number.isFinite(num)) {
+    el.textContent = num.toFixed(2) + suffix;
+  } else {
+    el.textContent = "--";
+  }
+}
 
-            const res = await fetch(URL, {
-                headers: {
-                    'Accept': 'application/json',
-                    'ngrok-skip-browser-warning': 'true'
-                }
-            });
+async function fetchAndUpdateMetrics() {
+  winEl.classList.add("loading");
+  sharpeEl.classList.add("loading");
 
-            // Check if the response is valid JSON
-            if (res.ok) {
-                const data = await res.json();
-                console.log("Metrics fetched successfully:", data);
+  // fallback while fetching
+  safeDisplay(winEl, null);
+  safeDisplay(sharpeEl, null);
 
-                // Update the Win Rate
-                setIfValid(winEl, data.win_rate, n => n.toFixed(2) + "%");
+  try {
+    const res = await fetch("https://favors-fees-paragraphs-brad.trycloudflare.com/get_metrics", {
+      headers: { "Accept": "application/json" }
+    });
+    if (!res.ok) throw new Error(res.statusText);
 
-                // Update the Sharpe Ratio
-                setIfValid(sharpeEl, data.sharpe_ratio, n => n.toFixed(2));
-            } else {
-                console.error("Server responded with a non-OK status:", res.status);
-                throw new Error("Invalid response from server");
-                
-            }
+    const data = await res.json();
+    console.log("metrics:", data);
 
-        } catch (err) {
-            console.error("Error fetching or processing metrics:", err);
-            // On error, display the placeholder for both metrics.
-            if (winEl) {
-                winEl.textContent = "--";
-                winEl.classList.remove("loading");
-            }
-            if (sharpeEl) {
-                sharpeEl.textContent = "--";
-                sharpeEl.classList.remove("loading");
-            }
-        }
-    }
+    safeDisplay(winEl, data.win_rate, "%");
+    safeDisplay(sharpeEl, data.sharpe_ratio);
 
-    // Immediately fetch and update on page load.
-    fetchAndUpdateMetrics();
+  } catch (err) {
+    safeDisplay(winEl, null);
+    safeDisplay(sharpeEl, null);
+  } finally {
+    winEl.classList.remove("loading");
+    sharpeEl.classList.remove("loading");
+  }
+}
 
-    // Set up a timer to continuously fetch and update the metrics every 30 seconds.
-    setInterval(fetchAndUpdateMetrics, 10000);
+// Init
+safeDisplay(winEl, null);
+safeDisplay(sharpeEl, null);
+
+// Repeat fetch every 30s
+fetchAndUpdateMetrics();
+setInterval(fetchAndUpdateMetrics, 30000);
+
 </script>
 
 
