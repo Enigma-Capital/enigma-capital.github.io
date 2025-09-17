@@ -470,29 +470,23 @@
    
 <script>
     const URL = "https://favors-fees-paragraphs-brad.trycloudflare.com/get_metrics";
-const winEl = document.getElementById("win-rate");
+    const winEl = document.getElementById("win-rate");
 const sharpeEl = document.getElementById("sharpe-ratio");
 
-function safeDisplay(el, val, suffix = "") {
+// Always start as "--" and remove loading effect if no number yet
+function showDash(el) {
   if (!el) return;
-
-  // Convert to number first
-  const num = parseFloat(val);
-  
-  if (Number.isFinite(num)) {
-    el.textContent = num.toFixed(2) + suffix;
-  } else {
-    el.textContent = "--";
-  }
+  el.textContent = "--";
+  el.classList.remove("loading");
 }
 
 async function fetchAndUpdateMetrics() {
+  // show fallback immediately
+  showDash(winEl);
+  showDash(sharpeEl);
+
   winEl.classList.add("loading");
   sharpeEl.classList.add("loading");
-
-  // fallback while fetching
-  safeDisplay(winEl, null);
-  safeDisplay(sharpeEl, null);
 
   try {
     const res = await fetch("https://favors-fees-paragraphs-brad.trycloudflare.com/get_metrics", {
@@ -503,26 +497,30 @@ async function fetchAndUpdateMetrics() {
     const data = await res.json();
     console.log("metrics:", data);
 
-    safeDisplay(winEl, data.win_rate, "%");
-    safeDisplay(sharpeEl, data.sharpe_ratio);
+    // Only show numbers if valid
+    winEl.textContent = typeof data.win_rate === "number" ? data.win_rate.toFixed(2) + "%" : "--";
+    sharpeEl.textContent = typeof data.sharpe_ratio === "number" ? data.sharpe_ratio.toFixed(2) : "--";
 
   } catch (err) {
-    safeDisplay(winEl, null);
-    safeDisplay(sharpeEl, null);
+    // On fetch error, keep the dash
+    showDash(winEl);
+    showDash(sharpeEl);
   } finally {
     winEl.classList.remove("loading");
     sharpeEl.classList.remove("loading");
   }
 }
 
-// Init
-safeDisplay(winEl, null);
-safeDisplay(sharpeEl, null);
 
-// Repeat fetch every 30s
-fetchAndUpdateMetrics();
-setInterval(fetchAndUpdateMetrics, 30000);
 
+
+
+
+    // Immediately fetch and update on page load.
+    fetchAndUpdateMetrics();
+
+    // Set up a timer to continuously fetch and update the metrics every 30 seconds.
+    setInterval(fetchAndUpdateMetrics, 10000);
 </script>
 
 
