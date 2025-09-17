@@ -406,6 +406,50 @@
     @media (prefers-reduced-motion: reduce){
       *{animation:none !important;transition:none !important}
     }
+
+
+  /* --- Sexy horizontal scrollbar just for the timeline --- */
+.timeline .nodes::-webkit-scrollbar {
+  height: 8px;                     /* slim */
+}
+
+.timeline .nodes::-webkit-scrollbar-track {
+  background: rgba(255,255,255,0.05);
+  border-radius: 4px;
+}
+
+.timeline .nodes::-webkit-scrollbar-thumb {
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  border-radius: 4px;
+  box-shadow: 0 0 6px rgba(0,255,247,0.35);
+}
+
+.timeline .nodes::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(90deg, var(--accent-2), var(--accent));
+}
+
+/* Firefox support */
+.timeline .nodes {
+  scrollbar-color: var(--accent) rgba(255,255,255,0.05);
+  scrollbar-width: thin;
+}
+
+.rotator .cursor {
+  width: 3px;
+  height: 1.2em;
+  background: var(--accent-2);   /* bright cyan instead of same blue */
+  border-radius: 2px;
+  animation:
+    blink 1s step-end infinite,
+    pulse 1.4s ease-in-out infinite;
+  box-shadow: 0 0 6px var(--accent-2), 0 0 12px rgba(0,255,247,.5);
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scaleY(1); opacity: 1; }
+  50%      { transform: scaleY(0.75); opacity: 0.6; }
+}
+
   </style>
 </head>
 <body>
