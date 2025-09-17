@@ -111,9 +111,6 @@
   </div>
 
   <div id="range-buttons">
-    <!-- <button data-range="30m">30m</button>
-    <button data-range="2h">2h</button>
-    <button data-range="6h">6h</button> -->
     <button data-range="1d">Daily</button>
     <button data-range="all" class="active">ALL</button>
    </div>
@@ -145,14 +142,8 @@ function hideError(){ errorBox.style.display = "none"; }
 function updateStats(data){
   if(!data.length) return;
   const last = data[data.length-1]["PnL%"];
-  const today = new Date().toDateString();
-  const firstToday = data.find(d => new Date(d.DATETIME).toDateString() === today);
-  // const change = firstToday ? last - firstToday["PnL%"] : 0;
-  // console.log(firstToday)
-  // console.log(last)
   const maxDD = Math.min(...data.map(d=>d["PnL%"]));
   document.getElementById("latest").textContent = `Latest: ${last.toFixed(2)}%`;
-  // document.getElementById("change").textContent = `Daily: ${change.toFixed(2)}%`;
   document.getElementById("dd").textContent = `Max DD: ${maxDD.toFixed(2)}%`;
 }
 
@@ -161,9 +152,6 @@ function applyRange(range, all){
   const now = new Date();
   let cutoff;
   switch(range){
-    case '30m': cutoff = new Date(now - 30*60*1000); break;
-    case '2h':  cutoff = new Date(now - 2*60*60*1000); break;
-    case '6h':  cutoff = new Date(now - 6*60*60*1000); break;
     case '1d':  cutoff = new Date(now - 24*60*60*1000); break;
   }
   return all.filter(d => new Date(d.DATETIME) >= cutoff);
@@ -174,7 +162,7 @@ function getTimeOpts(range){
     case '30m': return {unit:'minute', stepSize:5};
     case '2h':  return {unit:'minute', stepSize:15};
     case '6h':  return {unit:'minute', stepSize:30};
-    case '1d':  return {unit:'minute', stepSize:30};
+    case '1d':  return {unit:'minute', stepSize:10}; // 👈 10-min ticks
     default:    return {unit:'day'};
   }
 }
@@ -192,8 +180,6 @@ async function fetchData(i=0){
 
     const labels = data.map(x=>new Date(x.DATETIME));
     const sonic = data.map(x=>x["PnL%"]);
-    const ibit  = data.map(x=>x["IBIT"]);
-    const btc   = data.map(x=>x["BTCUSDT"]);
 
     const ctx = document.getElementById('myChart').getContext('2d');
     chart = new Chart(ctx,{
@@ -203,8 +189,7 @@ async function fetchData(i=0){
         datasets:[
           {label:'SONIC cumulative returns (%)', data:sonic,
            borderColor:'#00facc', backgroundColor:'rgba(0,250,204,0.15)',
-           borderWidth:2, tension:.3, pointRadius:1},
-    
+           borderWidth:2, tension:.3, pointRadius:1.2}
         ]
       },
       options:{
@@ -217,8 +202,8 @@ async function fetchData(i=0){
             ticks:{
               color:'#ccc',
               autoSkip:true,
-              maxTicksLimit:8,
-              maxRotation:0
+              maxTicksLimit: 8, 
+              maxRotation:45
             },
             grid:{color:'rgba(255,255,255,0.05)'},
             title:{display:true,text:'Time',color:'#00facc'}
@@ -244,8 +229,6 @@ async function fetchData(i=0){
         const filtered = applyRange(btn.dataset.range, fullData);
         chart.data.labels = filtered.map(x=>new Date(x.DATETIME));
         chart.data.datasets[0].data = filtered.map(x=>x["PnL%"]);
-        chart.data.datasets[1].data = filtered.map(x=>x["IBIT"]);
-        chart.data.datasets[2].data = filtered.map(x=>x["BTCUSDT"]);
         chart.options.scales.x.time = getTimeOpts(btn.dataset.range);
         chart.update();
         updateStats(filtered);
@@ -260,7 +243,6 @@ async function fetchData(i=0){
 
 window.addEventListener("DOMContentLoaded",()=>fetchData());
 </script>
-
 
 </body>
 </html>
