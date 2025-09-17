@@ -106,7 +106,7 @@
 
   <div id="stats-bar">
     <span id="latest">Latest: --%</span>
-    <span id="change">Daily: --%</span>
+    <!-- <span id="change">Daily: --%</span> -->
     <span id="dd">Max DD: --%</span>
   </div>
 
@@ -147,10 +147,12 @@ function updateStats(data){
   const last = data[data.length-1]["PnL%"];
   const today = new Date().toDateString();
   const firstToday = data.find(d => new Date(d.DATETIME).toDateString() === today);
-  const change = firstToday ? last - firstToday["PnL%"] : 0;
+  // const change = firstToday ? last - firstToday["PnL%"] : 0;
+  // console.log(firstToday)
+  // console.log(last)
   const maxDD = Math.min(...data.map(d=>d["PnL%"]));
   document.getElementById("latest").textContent = `Latest: ${last.toFixed(2)}%`;
-  document.getElementById("change").textContent = `Daily: ${change.toFixed(2)}%`;
+  // document.getElementById("change").textContent = `Daily: ${change.toFixed(2)}%`;
   document.getElementById("dd").textContent = `Max DD: ${maxDD.toFixed(2)}%`;
 }
 
@@ -201,7 +203,7 @@ async function fetchData(i=0){
         datasets:[
           {label:'SONIC cumulative returns (%)', data:sonic,
            borderColor:'#00facc', backgroundColor:'rgba(0,250,204,0.15)',
-           borderWidth:2, tension:.3, pointRadius:0},
+           borderWidth:2, tension:.3, pointRadius:1},
     
         ]
       },
