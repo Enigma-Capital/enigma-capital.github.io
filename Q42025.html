@@ -7,19 +7,10 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
   <style>
-    /* CSS from main page for background consistency */
     :root{
       --bg:#0a0b0c;
-      --panel:rgba(14,16,20,.5);
-      --glass:rgba(16,20,24,.55);
       --text:#e6f1ff;
-      --muted:#9fb0c3;
-      --accent:#00fff7;
-      --accent-2:#7c5cff;
-      --border:rgba(0,255,247,.25);
-      --success:#3ee98a;
-      --danger:#ff5c8a;
-      --shadow:0 10px 30px rgba(0,0,0,.45);
+      --accent:#00facc;
     }
     
     body {
@@ -27,17 +18,17 @@
                   radial-gradient(900px 700px at 110% 10%, rgba(124,92,255,.08), transparent 60%),
                   var(--bg);
       color:var(--text);
-      font-family:Montserrat,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial,"Noto Sans","Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+      font-family:Montserrat,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial,"Noto Sans";
       overflow-x:hidden;
-      margin: 0; /* Ensures the background covers the whole page */
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      cursor: none;
+      margin:0;
+      height:100vh;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+      cursor:none;
     }
 
-    /* WebGL background styles */
     canvas#shader{
       position:fixed;inset:0;z-index:-2;display:block;
       filter:contrast(1.1) brightness(1.05) saturate(1.05);
@@ -49,7 +40,6 @@
       mix-blend-mode:screen;pointer-events:none;
     }
 
-    /* Existing chart page styles */
     #chart-container {
       width: 65%;
       height: 75vh;
@@ -60,23 +50,18 @@
       box-shadow: 0 0 15px rgba(0,250,204,0.4), inset 0 0 8px rgba(0,250,204,0.1);
       background: transparent;
       position: relative;
-      transition: transform 0.2s ease;
       backdrop-filter: blur(10px);
       display: flex;
       align-items: stretch;
       justify-content: stretch;
+      transition: transform 0.2s ease;
     }
-
     #chart-container:hover {
       transform: scale(1.02);
       box-shadow: 0 0 20px rgba(0,250,204,0.6), inset 0 0 12px rgba(0,250,204,0.2);
     }
 
-    canvas {
-      background: transparent !important;
-      opacity: 0;
-      transition: opacity .4s ease;
-    }
+    canvas { background: transparent !important; opacity: 0; transition: opacity .4s ease; }
 
     #loading {
       position: absolute;
@@ -106,6 +91,34 @@
       50% { box-shadow:0 0 24px rgba(0,250,204,.8)} 
     }
 
+    /* Neon legend */
+    #legend {
+      margin-top: 18px;
+      text-align: center;
+      font-weight: bold;
+      color: #00facc;
+      font-size: 14px;
+      letter-spacing: 0.5px;
+      display: flex;
+      justify-content: space-around;
+      padding: 12px;
+      border: 1px solid rgba(0,250,204,0.3);
+      border-radius: 12px;
+      backdrop-filter: blur(6px);
+      box-shadow: 0 0 12px rgba(0,250,204,0.4);
+      width: 65%;
+      max-width: 800px;
+    }
+    #legend div {
+      flex: 1;
+      padding: 6px;
+      transition: transform 0.2s ease, text-shadow 0.2s ease;
+    }
+    #legend div:hover {
+      transform: scale(1.1);
+      text-shadow: 0 0 8px currentColor, 0 0 15px currentColor;
+    }
+
     .cursor {
       position: fixed;
       top: 0; left: 0;
@@ -123,7 +136,6 @@
       background: rgba(0, 250, 204, 0.4);
     }
   </style>
-
 </head>
 <body>
   <canvas id="shader" aria-hidden="true"></canvas>
@@ -134,29 +146,30 @@
     <div id="loading">
       <div class="spinner"></div>
       <div>Loading data…</div>
-      <div style="position:relative; width:100%; text-align:center; margin-top:12px; color:#00facc; font-weight:bold;">
-  Assets
-</div>
-
     </div>
+  </div>
+
+  <!-- Neon Legend -->
+  <div id="legend">
+    <div><span style="color:#FFD700">BTC</span> → BTCUSDT:BINANCE</div>
+    <div><span style="color:#ff5733">IBIT</span> → BLACKROCK’s IBIT</div>
+    <div><span style="color:#00facc">STURM</span> → ENIGMACAPITAL’s STURMCAPY</div>
+    <div><span style="color:#85bfd5">SCONQ</span> → ENIGMACAPITAL’s SUPERCONQUERER</div>
   </div>
 
   <div class="cursor" id="cursor"></div>
 
   <script>
-    const urls = [
-      'https://fairy-tracking-ash-hit.trycloudflare.com/Q4results',
-    ];
-
+    const urls = ['https://fairy-tracking-ash-hit.trycloudflare.com/Q4results'];
     let chart = null;
 
-    const labels = ["BTCUSDT:BINANCE", "BLACKROCK's IBIT", "ENIGMACAPITAL's STURMCAPY","ENIGMACAPITAL's SUPERCONQUERER"];
+    const labels = ["BTC", "IBIT", "STURM", "SCONQ"];
     const barColors = ["#FFD700", "#ff5733", "#00facc","#85bfd5"];
 
-    function showLoading(msg = "Loading data…") {
+    function showLoading(msg = "") {
       const loading = document.getElementById("loading");
       loading.style.display = "flex";
-      loading.querySelector('div:last-child').textContent = msg;
+      if (msg) loading.querySelector('div:last-child').textContent = msg;
     }
     function hideLoading() {
       document.getElementById("loading").style.display = "none";
@@ -171,9 +184,6 @@
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const data = await response.json();
 
-        console.log(data)
-
-        // Prepare values
         const values = [
           Number(data.btcusdt) || 0,
           Number(data.ibit) || 0,
@@ -250,23 +260,14 @@
             }
           },
           scales: {
-                x: {
-          grid: { color: "rgba(0,250,204,0.2)" },
-          ticks: {
-            color: (context) => barColors[context.index] || "#00facc",
-            font: { weight: "bold", size: 12 }
-          },
-          title: {
-            display: true,
-            text: "Assets",
-            color: "#00facc",
-            font: { size: 14, weight: "bold" },
-            padding: { top: 20 },   // push it away from ticks
-            align: "center"         // force center under axis
-          }
-        },
-
-
+            x: {
+              grid: { color: "rgba(0,250,204,0.2)" },
+              ticks: {
+                color: (context) => barColors[context.index] || "#00facc",
+                font: { weight: "bold", size: 13 },
+                padding: 12
+              }
+            },
             y: {
               beginAtZero: true,
               grid: { color: "rgba(0,250,204,0.15)" },
@@ -278,92 +279,6 @@
       });
     }
 
-    // WebGL Shader Script
-    (function(){
-      const canvas = document.getElementById('shader');
-      const gl = canvas && canvas.getContext('webgl', {antialias:false, preserveDrawingBuffer:false});
-      if(!gl){ console.warn('WebGL not supported'); return; }
-
-      const vSrc = `
-        attribute vec4 a_position;
-        void main(){ gl_Position = a_position; }
-      `;
-      const fSrc = `
-        precision highp float;
-        uniform vec2 u_resolution;
-        uniform float u_time;
-
-        float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1,311.7))) * 43758.5453123); }
-
-        float noise(vec2 p){
-          vec2 i=floor(p), f=fract(p);
-          float a=hash(i), b=hash(i+vec2(1.,0.)), c=hash(i+vec2(0.,1.)), d=hash(i+vec2(1.,1.));
-          vec2 u=f*f*(3.-2.*f);
-          return mix(a,b,u.x)+ (c-a)*u.y*(1.-u.x) + (d-b)*u.x*u.y;
-        }
-
-        void main(){
-          vec2 st = gl_FragCoord.xy / u_resolution.xy;
-          st.x *= u_resolution.x / u_resolution.y;
-
-          float t = u_time * .2;
-          float n = noise(st*3.0 + vec2(t, -t))*0.6 + noise(st*8.0 - t)*0.25;
-
-          float grid = smoothstep(.49,.5, abs(fract(st.x*10.)-.5)) * .08 +
-                       smoothstep(.49,.5, abs(fract(st.y*10.)-.5)) * .08;
-
-          float vignette = smoothstep(1.2,.2, distance(st, vec2(.5)));
-
-          vec3 c = vec3(n*0.45 + grid*0.7, n*0.35 + grid*0.4, n*0.55);
-          c *= vignette;
-
-          gl_FragColor = vec4(c, 1.0);
-        }
-      `;
-
-      function compile(type, src){
-        const s = gl.createShader(type);
-        gl.shaderSource(s, src); gl.compileShader(s);
-        return s;
-      }
-      const vs = compile(gl.VERTEX_SHADER, vSrc);
-      const fs = compile(gl.FRAGMENT_SHADER, fSrc);
-      const prog = gl.createProgram();
-      gl.attachShader(prog, vs); gl.attachShader(prog, fs); gl.linkProgram(prog);
-      gl.useProgram(prog);
-
-      const posLoc = gl.getAttribLocation(prog, 'a_position');
-      const resLoc = gl.getUniformLocation(prog, 'u_resolution');
-      const timeLoc = gl.getUniformLocation(prog, 'u_time');
-
-      const buf = gl.createBuffer();
-      gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
-      gl.enableVertexAttribArray(posLoc);
-      gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
-
-      function resize(){
-        const dpr = Math.min(window.devicePixelRatio || 1, 1.6);
-        const w = Math.floor(innerWidth * dpr), h = Math.floor(innerHeight * dpr);
-        if(canvas.width !== w || canvas.height !== h){
-          canvas.width = w; canvas.height = h; gl.viewport(0, 0, w, h);
-        }
-      }
-      resize(); addEventListener('resize', resize, {passive:true});
-
-      const start = performance.now();
-      function frame(now){
-        resize();
-        gl.clearColor(0,0,0,1); gl.clear(gl.COLOR_BUFFER_BIT);
-        gl.uniform2f(resLoc, canvas.width, canvas.height);
-        gl.uniform1f(timeLoc, (now - start) * 0.001);
-        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-        requestAnimationFrame(frame);
-      }
-      requestAnimationFrame(frame);
-    })();
-
-    // Kick off (chart is NOT created until data is ready)
     fetchQ4Results();
 
     // Neon cursor
@@ -374,7 +289,6 @@
     });
     document.addEventListener("mousedown", () => cursor.classList.add("active"));
     document.addEventListener("mouseup", () => cursor.classList.remove("active"));
-    
   </script>
 </body>
 </html>
