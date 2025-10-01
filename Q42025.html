@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Q3 2025 Performance</title>
+  <title>Q4 2025 Performance</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
   <style>
@@ -134,6 +134,10 @@
     <div id="loading">
       <div class="spinner"></div>
       <div>Loading data…</div>
+      <div style="position:relative; width:100%; text-align:center; margin-top:12px; color:#00facc; font-weight:bold;">
+  Assets
+</div>
+
     </div>
   </div>
 
@@ -146,8 +150,8 @@
 
     let chart = null;
 
-    const labels = ["BTCUSDT:BINANCE", "BLACKROCK's IBIT", "ENIGMACAPITAL's STURMCAPY"];
-    const barColors = ["#FFD700", "#ff5733", "#00facc"];
+    const labels = ["BTCUSDT:BINANCE", "BLACKROCK's IBIT", "ENIGMACAPITAL's STURMCAPY","ENIGMACAPITAL's SUPERCONQUERER"];
+    const barColors = ["#FFD700", "#ff5733", "#00facc","#85bfd5"];
 
     function showLoading(msg = "Loading data…") {
       const loading = document.getElementById("loading");
@@ -167,11 +171,14 @@
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const data = await response.json();
 
+        console.log(data)
+
         // Prepare values
         const values = [
           Number(data.btcusdt) || 0,
           Number(data.ibit) || 0,
-          Number(data.sturmcapy) || 0
+          Number(data.sturmcapy) || 0,
+          Number(data.superconquerer) || 0
         ];
 
         createChartWithData(values);
@@ -227,7 +234,7 @@
             },
             title: {
               display: true,
-              text: "Q3 2025 Performance",
+              text: "Q4 2025 Performance",
               color: "#00facc",
               font: { size: 22, weight: "bold" },
               padding: { bottom: 20 }
@@ -243,13 +250,23 @@
             }
           },
           scales: {
-            x: {
-              grid: { color: "rgba(0,250,204,0.2)" },
-              ticks: {
-                color: (context) => barColors[context.index] || "#00facc",
-                font: { weight: "bold", size: 12 }
-              }
-            },
+                x: {
+          grid: { color: "rgba(0,250,204,0.2)" },
+          ticks: {
+            color: (context) => barColors[context.index] || "#00facc",
+            font: { weight: "bold", size: 12 }
+          },
+          title: {
+            display: true,
+            text: "Assets",
+            color: "#00facc",
+            font: { size: 14, weight: "bold" },
+            padding: { top: 20 },   // push it away from ticks
+            align: "center"         // force center under axis
+          }
+        },
+
+
             y: {
               beginAtZero: true,
               grid: { color: "rgba(0,250,204,0.15)" },
