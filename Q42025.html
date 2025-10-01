@@ -12,7 +12,7 @@
       --text:#e6f1ff;
       --accent:#00facc;
     }
-    
+
     body {
       background: radial-gradient(1200px 800px at 20% -10%, rgba(0,255,247,.08), transparent 60%),
                   radial-gradient(900px 700px at 110% 10%, rgba(124,92,255,.08), transparent 60%),
@@ -26,18 +26,18 @@
       flex-direction:column;
       justify-content:center;
       align-items:center;
-      cursor:none;
+      cursor:default;
     }
 
     canvas#shader{
-      position:fixed;inset:0;z-index:-2;display:block;
+      position:fixed; inset:0; z-index:-2; display:block;
       filter:contrast(1.1) brightness(1.05) saturate(1.05);
     }
     .bg-fade{
-      position:fixed;inset:0;z-index:-1;
+      position:fixed; inset:0; z-index:-1;
       background: radial-gradient(800px 500px at 70% 10%, rgba(0,255,247,.10), transparent 60%),
                   radial-gradient(700px 500px at 20% 80%, rgba(124,92,255,.08), transparent 55%);
-      mix-blend-mode:screen;pointer-events:none;
+      mix-blend-mode:screen; pointer-events:none;
     }
 
     #chart-container {
@@ -91,34 +91,6 @@
       50% { box-shadow:0 0 24px rgba(0,250,204,.8)} 
     }
 
-    /* Neon legend */
-    #legend {
-      margin-top: 18px;
-      text-align: center;
-      font-weight: bold;
-      color: #00facc;
-      font-size: 14px;
-      letter-spacing: 0.5px;
-      display: flex;
-      justify-content: space-around;
-      padding: 12px;
-      border: 1px solid rgba(0,250,204,0.3);
-      border-radius: 12px;
-      backdrop-filter: blur(6px);
-      box-shadow: 0 0 12px rgba(0,250,204,0.4);
-      width: 65%;
-      max-width: 800px;
-    }
-    #legend div {
-      flex: 1;
-      padding: 6px;
-      transition: transform 0.2s ease, text-shadow 0.2s ease;
-    }
-    #legend div:hover {
-      transform: scale(1.1);
-      text-shadow: 0 0 8px currentColor, 0 0 15px currentColor;
-    }
-
     .cursor {
       position: fixed;
       top: 0; left: 0;
@@ -135,6 +107,21 @@
       width: 40px; height: 40px;
       background: rgba(0, 250, 204, 0.4);
     }
+
+    /* Tooltip for x-axis labels */
+    #xTooltip {
+      position: absolute;
+      background: rgba(0,250,204,0.9);
+      color: #000;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      pointer-events: none;
+      display: none;
+      transform: translate(-50%, 0);
+      z-index: 1000;
+      white-space: nowrap;
+    }
   </style>
 </head>
 <body>
@@ -149,22 +136,22 @@
     </div>
   </div>
 
-  <!-- Neon Legend -->
-  <div id="legend">
-    <div><span style="color:#FFD700">BTC</span> → BTCUSDT:BINANCE</div>
-    <div><span style="color:#ff5733">IBIT</span> → BLACKROCK’s IBIT</div>
-    <div><span style="color:#00facc">STURM</span> → ENIGMACAPITAL’s STURMCAPY</div>
-    <div><span style="color:#85bfd5">SCONQ</span> → ENIGMACAPITAL’s SUPERCONQUERER</div>
-  </div>
-
-  <div class="cursor" id="cursor"></div>
+  <div id="xTooltip"></div>
 
   <script>
     const urls = ['https://fairy-tracking-ash-hit.trycloudflare.com/Q4results'];
     let chart = null;
-
+    
     const labels = ["BTC", "IBIT", "STURM", "SCONQ"];
     const barColors = ["#FFD700", "#ff5733", "#00facc","#85bfd5"];
+    const fullForms = {
+      BTC: "BTCUSDT: Binance Coin / Tether pair",
+      IBIT: "BlackRock's IBIT Fund",
+      STURM: "EnigmaCapital's STURMCAPY strategy",
+      SCONQ: "EnigmaCapital's SUPERCONQUERER strategy"
+    };
+
+    const tooltipEl = document.getElementById('xTooltip');
 
     function showLoading(msg = "") {
       const loading = document.getElementById("loading");
@@ -209,73 +196,47 @@
       if (chart) { chart.destroy(); }
       chart = new Chart(ctx, {
         type: "bar",
-        data: {
-          labels,
-          datasets: [{
-            label: "Return (%)",
-            data: values,
-            backgroundColor: "transparent",
-            borderWidth: 4,
-            borderColor: barColors,
-            barThickness: 40
-          }]
-        },
+        data: { labels, datasets: [{ label: "Return (%)", data: values, backgroundColor: "transparent", borderWidth: 4, borderColor: barColors, barThickness: 40 }] },
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          animation: {
-            y: {
-              from: (ctx) => ctx.chart.scales.y.getPixelForValue(0),
-              duration: 2000,
-              easing: "easeOutCubic",
-              delay: (ctx) => ctx.dataIndex * 300
-            }
-          },
+          animation: { y: { from: ctx => ctx.chart.scales.y.getPixelForValue(0), duration: 2000, easing: "easeOutCubic", delay: ctx => ctx.dataIndex * 300 } },
           plugins: {
             legend: { display: false },
-            tooltip: {
-              backgroundColor: "rgba(0, 0, 0, 0.85)",
-              borderColor: "#00facc",
-              borderWidth: 1,
-              titleColor: "#00facc",
-              bodyColor: "#fff",
-              cornerRadius: 8,
-              boxPadding: 6,
-            },
-            title: {
-              display: true,
-              text: "Q4 2025 Performance",
-              color: "#00facc",
-              font: { size: 22, weight: "bold" },
-              padding: { bottom: 20 }
-            },
-            datalabels: {
-              color: "#fff",
-              anchor: "end",
-              align: "end",
-              offset: 4,
-              font: { weight: "bold", size: 12 },
-              formatter: (v) => `${Number(v).toFixed(2)}%`,
-              display: (ctx) => Number(ctx.dataset.data[ctx.dataIndex]) !== 0
-            }
+            tooltip: { enabled: false },
+            title: { display: true, text: "Q4 2025 Performance", color: "#00facc", font: { size: 22, weight: "bold" }, padding: { bottom: 20 } },
+            datalabels: { color: "#fff", anchor: "end", align: "end", offset: 4, font: { weight: "bold", size: 12 }, formatter: v => `${Number(v).toFixed(2)}%`, display: ctx => Number(ctx.dataset.data[ctx.dataIndex]) !== 0 }
           },
           scales: {
-            x: {
-              grid: { color: "rgba(0,250,204,0.2)" },
-              ticks: {
-                color: (context) => barColors[context.index] || "#00facc",
-                font: { weight: "bold", size: 13 },
-                padding: 12
-              }
-            },
-            y: {
-              beginAtZero: true,
-              grid: { color: "rgba(0,250,204,0.15)" },
-              ticks: { color: "#00facc" }
-            }
+            x: { grid: { color: "rgba(0,250,204,0.2)" }, ticks: { color: (ctx) => barColors[ctx.index] || "#00facc", font: { weight: "bold", size: 13 }, padding: 12 } },
+            y: { beginAtZero: true, grid: { color: "rgba(0,250,204,0.15)" }, ticks: { color: "#00facc" } }
           }
         },
         plugins: [ChartDataLabels]
+      });
+
+      // Handle tooltip on hover over x-axis labels
+      const canvas = document.getElementById('myChart');
+      canvas.addEventListener('mousemove', e => {
+        const xScale = chart.scales.x;
+        const yScale = chart.scales.y;
+        const rect = canvas.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left;
+        const mouseY = e.clientY - rect.top;
+
+        let found = false;
+        labels.forEach((label, i) => {
+          const labelX = xScale.getPixelForTick(i);
+          const width = 20; // hover area half-width
+          if(mouseX >= labelX - width && mouseX <= labelX + width && mouseY >= yScale.bottom) {
+            tooltipEl.style.display = 'block';
+            tooltipEl.style.left = e.clientX + 'px';
+            tooltipEl.style.top = e.clientY + 20 + 'px';
+            tooltipEl.innerText = fullForms[label];
+            found = true;
+          }
+        });
+        if(!found) tooltipEl.style.display = 'none';
       });
     }
 
@@ -283,10 +244,7 @@
 
     // Neon cursor
     const cursor = document.getElementById("cursor");
-    document.addEventListener("mousemove", e => {
-      cursor.style.top = e.clientY + "px";
-      cursor.style.left = e.clientX + "px";
-    });
+    document.addEventListener("mousemove", e => { cursor.style.top = e.clientY + "px"; cursor.style.left = e.clientX + "px"; });
     document.addEventListener("mousedown", () => cursor.classList.add("active"));
     document.addEventListener("mouseup", () => cursor.classList.remove("active"));
   </script>
