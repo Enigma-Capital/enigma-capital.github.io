@@ -141,7 +141,7 @@
 
   <script>
     const urls = [
-      'https://rules-established-governmental-seeking.trycloudflare.com/Q4results',
+      'https://fairy-tracking-ash-hit.trycloudflare.com/Q4results',
     ];
 
     let chart = null;
@@ -158,7 +158,7 @@
       document.getElementById("loading").style.display = "none";
     }
 
-    async function fetchQ3Results(urlIndex = 0) {
+    async function fetchQ4Results(urlIndex = 0) {
       try {
         showLoading();
         const response = await fetch(urls[urlIndex], {
@@ -180,7 +180,7 @@
       } catch (err) {
         console.error(`Error with ${urls[urlIndex]}:`, err);
         if (urlIndex + 1 < urls.length) {
-          await fetchQ3Results(urlIndex + 1);
+          await fetchQ4Results(urlIndex + 1);
         } else {
           showLoading("Failed to load data. Please try again later.");
         }
@@ -347,7 +347,7 @@
     })();
 
     // Kick off (chart is NOT created until data is ready)
-    fetchQ3Results();
+    fetchQ4Results();
 
     // Neon cursor
     const cursor = document.getElementById("cursor");
