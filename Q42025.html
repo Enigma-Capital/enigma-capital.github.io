@@ -174,10 +174,11 @@
 
         const values = [
           Number(data.btcusdt) || 0,
+          Number(data.ethusdt) || 0,
           Number(data.ibit) || 0,
           Number(data.sturmcapy) || 0,
-          Number(data.superconquerer) || 0,
-          Number(data.ethusdt) || 0
+          Number(data.superconquerer) || 0
+          
         ];
 
         createChartWithData(values);
