@@ -486,7 +486,7 @@
       </div>
 
     <!-- Metrics -->
-    <div class="metrics">
+    <!-- <div class="metrics">
     <!-- <div class="metric-box">
         <h4>YTD Return</h4>
         <div class="value">
@@ -494,7 +494,7 @@
         <span id="ytd-trend" class="trend">--</span>
         </div>
     </div> -->
-    <div class="metric-box">
+<!-- <div class="metric-box">
         <h4>Win Rate</h4>
         <div class="value">
         <span id="win-rate" class="count loading">--</span>
@@ -506,8 +506,7 @@
         <span id="sharpe-ratio" class="count loading">--</span>
         </div>
     </div>
-    </div>
-
+    </div> --> 
 
  
    
@@ -530,7 +529,7 @@ async function fetchAndUpdateMetrics() {
 
   winEl.classList.add("loading");
   sharpeEl.classList.add("loading");
-
+    
   try {
     const res = await fetch("https://personally-lamp-affecting-reggae.trycloudflare.com/get_metrics", {
       headers: { "Accept": "application/json" }
