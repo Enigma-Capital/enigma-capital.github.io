@@ -301,7 +301,7 @@ async function fetchStats() {
       document.getElementById("statsContent").innerHTML = statsHtml;
 
       document.querySelectorAll(".stat-value").forEach(el => {
-        animateValue(el, 0, parseFloat(el.dataset.value), 900);
+        animateValue(el, 0, parseFloat(el.dataset.value), 1000);
       });
 
     } catch (err) {
@@ -310,7 +310,7 @@ async function fetchStats() {
     }
   }
 
-  setTimeout(() => loadStats(), 3000);
+  setTimeout(() => loadStats(), 1000);
 }
 
 fetchStats();
