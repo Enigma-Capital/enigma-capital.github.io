@@ -302,7 +302,7 @@ async function fetchStats() {
       document.getElementById("statsContent").innerHTML = statsHtml;
 
       document.querySelectorAll(".stat-value").forEach(el => {
-        animateValue(el, 0, parseFloat(el.dataset.value), 1000);
+        animateValue(el, 0, parseFloat(el.dataset.value), 500);
       });
 
     } catch (err) {
