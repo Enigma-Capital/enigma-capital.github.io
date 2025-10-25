@@ -33,7 +33,6 @@
       background: url('sturmcapylogo.png') no-repeat center center;
       background-size: contain;
       animation: fadeInLogo 2s ease forwards;
-      /* filter: brightness(2) contrast(2) saturate(1.4); */
     }
 
     @keyframes fadeInLogo {
@@ -52,7 +51,7 @@
       max-width: 1200px;
       opacity: 0;
       animation: fadeInContent 2s ease forwards;
-      animation-delay: 2.2s; /* after logo */
+      animation-delay: 2.2s;
       text-align: center;
     }
 
@@ -150,7 +149,7 @@
       transition: all 0.5s ease;
     }
 
-    /* 🚀 New Neon Buttons */
+    /* 🚀 Neon Buttons */
     .button-group {
       display: flex;
       gap: 1rem;
@@ -195,6 +194,22 @@
       box-shadow: 0 0 20px rgba(0,255,231,0.8), 0 0 40px rgba(51,214,166,0.6);
     }
 
+    /* 🔹 Loading animation */
+    .loading {
+      grid-column: 1 / -1;
+      text-align: center;
+      color: #00ffe7;
+      font-size: 1.2rem;
+      letter-spacing: 1px;
+      animation: pulse 1.4s infinite;
+      padding: 2rem 0;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 1; }
+    }
+
     /* 🔹 Clean animated STURMCAPY */
     .title h1 {
       left: 15rem;
@@ -231,13 +246,16 @@
     }
   </style>
 </head>
+
 <body>
 <div class="container">
   <div class="background-image"></div>
   <div class="content">
     <div id="stats">
       <h2>| LIVE STATS</h2>
-      <div id="statsContent" class="stats-grid"></div>
+      <div id="statsContent" class="stats-grid">
+        <div class="loading">Loading stats…</div>
+      </div>
 
       <!-- 🔥 Neon Buttons -->
       <div class="button-group">
@@ -269,9 +287,11 @@ async function fetchStats() {
   ];
 
   async function loadStats(urlIndex = 0) {
+    const statsContent = document.getElementById("statsContent");
+    statsContent.innerHTML = `<div class="loading">Loading stats…</div>`;
+
     if (urlIndex >= statsUrls.length) {
-      document.getElementById("statsContent").innerHTML =
-        `<p style="color: red;">All stats servers failed.</p>`;
+      statsContent.innerHTML = `<p style="color: red;">All stats servers failed.</p>`;
       return;
     }
 
@@ -298,10 +318,10 @@ async function fetchStats() {
         </div>
       `).join("");
 
-      document.getElementById("statsContent").innerHTML = statsHtml;
+      statsContent.innerHTML = statsHtml;
 
       document.querySelectorAll(".stat-value").forEach(el => {
-        animateValue(el, 0, parseFloat(el.dataset.value), 1000);
+        animateValue(el, 0, parseFloat(el.dataset.value), 600);
       });
 
     } catch (err) {
@@ -310,7 +330,7 @@ async function fetchStats() {
     }
   }
 
-  setTimeout(() => loadStats(), 1000);
+  setTimeout(() => loadStats(), 500);
 }
 
 fetchStats();
