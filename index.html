@@ -511,7 +511,7 @@
  
    
 <script>
-    const URL = "https://satellite-raising-helen-privileges.trycloudflare.com/get_metrics";
+    const URL = "https://commodities-regular-week-another.trycloudflare.com/get_metrics";
     const winEl = document.getElementById("win-rate");
 const sharpeEl = document.getElementById("sharpe-ratio");
 
@@ -531,7 +531,7 @@ async function fetchAndUpdateMetrics() {
   sharpeEl.classList.add("loading");
     
   try {
-    const res = await fetch("https://satellite-raising-helen-privileges.trycloudflare.com/get_metrics", {
+    const res = await fetch("https://commodities-regular-week-another.trycloudflare.com/get_metrics", {
       headers: { "Accept": "application/json" }
     });
     if (!res.ok) throw new Error(res.statusText);
