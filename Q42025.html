@@ -142,14 +142,15 @@
     const urls = ['https://subjective-masters-radios-valves.trycloudflare.com/Q4results'];
     let chart = null;
     
-    const labels = ["BTC", 'ETH',"IBIT", 'ARKB',"SPX","AT-EX1", "AT-BX1",];
-    const barColors = ["#f6931b", "#435295", "#1da9dd",'#eca821','#c4162e', "#00facc","#85bfd5"];
+    const labels = ["BTC", 'ETH',"IBIT", 'ARKB',"SPX",'NIFTY50',"AT-EX1", "AT-BX1"];
+    const barColors = ["#f6931b", "#435295", "#1da9dd",'#eca821','#c4162e','#22255e', "#00facc","#85bfd5"];
     const fullForms = {
       BTC: "BTCUSDT: Binance Coin / Tether pair",
       ETH: "ETHUSDT: Ethereum / Tether pair",
       IBIT: "IBIT: BlackRock's IBIT Fund",
       ARKB: "ARKB: ARK 21Shares Bitcoin ETF",
       SPX: "S&P 500 Index",
+      NIFTY50: "NIFTY 50 Index",
       'AT-EX1': "EnigmaCapital's Ethereum Trading Algorithm",
       'AT-BX1': "EnigmaCapital's Bitcoin Trading Algorithm"
     };
@@ -180,6 +181,7 @@
           Number(data.ibit) || 0,
           Number(data.arkb) || 0,
           Number(data.spx) || 0,
+          Number(data.nifty50) || 0,
           Number(data.sturmcapy) || 0,
           Number(data.superconquerer) || 0
           
