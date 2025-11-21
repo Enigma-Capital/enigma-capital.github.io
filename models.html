@@ -243,7 +243,7 @@ function setUpdatedDate(cardId){
 }
 async function loadAlgoStats(){
   try{
-    const res=await fetch('https://compact-kingdom-latinas-inflation.trycloudflare.com/getmodelstats');
+    const res=await fetch('https://mining-friend-belief-fancy.trycloudflare.com/getmodelstats');
     if(!res.ok)throw new Error('server returned an error');
     const data=await res.json();
     Object.entries(data).forEach(([key,fields])=>{
