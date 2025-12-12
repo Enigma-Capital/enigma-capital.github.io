@@ -243,7 +243,7 @@ function setUpdatedDate(cardId){
 }
 async function loadAlgoStats(){
   try{
-    const res=await fetch('https://sampling-solomon-contained-proceeding.trycloudflare.com/getmodelstats');
+    const res=await fetch('https://lid-among-insights-instruction.trycloudflare.com/getmodelstats');
     if(!res.ok)throw new Error('server returned an error');
     const data=await res.json();
     Object.entries(data).forEach(([key,fields])=>{
