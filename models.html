@@ -243,7 +243,7 @@ function setUpdatedDate(cardId){
 }
 async function loadAlgoStats(){
   try{
-    const res=await fetch('https://lid-among-insights-instruction.trycloudflare.com/getmodelstats');
+    const res=await fetch('https://defeat-rocks-composition-molecules.trycloudflare.com/getmodelstats');
     if(!res.ok)throw new Error('server returned an error');
     const data=await res.json();
     Object.entries(data).forEach(([key,fields])=>{
