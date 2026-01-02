@@ -139,7 +139,7 @@
   <div id="xTooltip"></div>
 
   <script>
-    const urls = ['https://lanes-isaac-disc-exceptional.trycloudflare.com/Q4results'];
+    const urls = ['https://lanes-isaac-disc-exceptional.trycloudflare.com/Q12026results'];
     let chart = null;
     
     const labels = ["BTC", 'ETH',"IBIT", 'ARKB',"SPX",'NIFTY50',"AT-EX1", "AT-BX1"];
@@ -213,7 +213,7 @@
           plugins: {
             legend: { display: false },
             tooltip: { enabled: false },
-            title: { display: true, text: "Q4 2025 Performance", color: "#00facc", font: { size: 22, weight: "bold" }, padding: { bottom: 20 } },
+            title: { display: true, text: "Q1 2026 Performance", color: "#00facc", font: { size: 22, weight: "bold" }, padding: { bottom: 20 } },
             datalabels: { color: "#fff", anchor: "end", align: "end", offset: 4, font: { weight: "bold", size: 12 }, formatter: v => `${Number(v).toFixed(2)}%`, display: ctx => Number(ctx.dataset.data[ctx.dataIndex]) !== 0 }
           },
           scales: {

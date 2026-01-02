@@ -511,7 +511,7 @@
  
    
 <script>
-    const URL = "ttps://concert-incident-display-push.trycloudflare.com/get_metrics";
+    const URL = "https://lanes-isaac-disc-exceptional.trycloudflare.com/get_metrics";
     const winEl = document.getElementById("win-rate");
 const sharpeEl = document.getElementById("sharpe-ratio");
 
@@ -531,7 +531,7 @@ async function fetchAndUpdateMetrics() {
   sharpeEl.classList.add("loading");
     
   try {
-    const res = await fetch("ttps://concert-incident-display-push.trycloudflare.com/get_metrics", {
+    const res = await fetch("https://lanes-isaac-disc-exceptional.trycloudflare.com/get_metrics", {
       headers: { "Accept": "application/json" }
     });
     if (!res.ok) throw new Error(res.statusText);
@@ -596,14 +596,16 @@ async function fetchAndUpdateMetrics() {
         <a href="Q42025.html" aria-label="Open Q3 2025 performance">
           <div class="q">Q4</div>
           <div class="y">2025</div>
-          <div class="badge">Live</div>
+          <div class="badge">Closed</div>
         </a>
       </div>
       
       <div class="node">
-        <div class="q">Q1</div>
-        <div class="y">2026</div>
-        <div class="badge">Coming soon</div>
+        <a href="Q12026.html" aria-label="Open Q3 2025 performance">
+          <div class="q">Q1</div>
+          <div class="y">2026</div>
+          <div class="badge">Coming soon....</div>
+        </a>
       </div>
 
       <div class="node">
